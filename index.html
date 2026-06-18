@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIFA World Cup 2026 Predictor Portal</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts for Football Aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for Premium Icons & Badge Symbols -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Montserrat', 'sans-serif'],
+            sport: ['Chakra Petch', 'sans-serif'],
+          },
+          screens: {
+            'xs': '375px',
+          },
+          colors: {
+            emerald: {
+              500: '#10b981',
+              600: '#059669',
+              400: '#34d399',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .font-sporty {
+      font-family: 'Chakra Petch', sans-serif;
+    }
+    
+    .glow-emerald {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.20);
+    }
+    
+    .glow-emerald-lg {
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.45);
+    }
+
+    /* Podium Medal Animations */
+    @keyframes pulse-gold {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.6)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.9)); }
+    }
+    @keyframes pulse-diamond {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.9)); }
+    }
+    @keyframes pulse-silver {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(148, 163, 184, 0.5)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(148, 163, 184, 0.8)); }
+    }
+
+    .animate-gold {
+      animation: pulse-gold 2s infinite ease-in-out;
+    }
+    .animate-diamond {
+      animation: pulse-diamond 2.2s infinite ease-in-out;
+    }
+    .animate-silver {
+      animation: pulse-silver 2.4s infinite ease-in-out;
+    }
+
+    .tab-content {
+      transition: all 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen selection:bg-emerald-500 selection:text-slate-900 overflow-x-hidden">
+
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-3 md:px-4 py-3">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchTab('predictions')">
+        <div class="bg-gradient-to-tr from-emerald-600 to-teal-400 p-1.5 xs:p-2 rounded-xl text-slate-950 font-bold flex items-center justify-center shadow-lg">
+          <i class="fa-solid fa-trophy text-base xs:text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-lg xs:text-xl md:text-2xl font-black tracking-tight font-sporty bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200">
+            FIFA 2026 <span class="text-slate-100 text-[10px] xs:text-xs font-light uppercase tracking-widest block sm:inline sm:ml-1 sm:border-l sm:border-slate-700 sm:pl-2">Predictor</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Right Side Controls -->
+      <div class="flex items-center space-x-2 xs:space-x-4">
+        <!-- Live Sync Status Banner -->
+        <div id="sync-pill" class="hidden lg:flex items-center space-x-2 bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 px-3 py-1 rounded-full text-xs font-semibold">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span>Synced to Live Database</span>
+        </div>
+
+        <!-- Profile Widget -->
+        <div class="relative" id="profile-container">
+          <button id="profile-btn" class="flex items-center space-x-1.5 xs:space-x-2 bg-slate-900 hover:bg-slate-800 transition-colors border border-slate-700 px-2.5 xs:px-3 py-1.5 rounded-full text-xs xs:text-sm">
+            <i class="fa-solid fa-circle-user text-base xs:text-lg text-emerald-400"></i>
+            <span id="nav-user-email" class="max-w-[80px] xs:max-w-[120px] md:max-w-[180px] truncate font-medium">Guest User</span>
+            <i class="fa-solid fa-caret-down text-[10px] text-slate-400"></i>
+          </button>
+          
+          <!-- Dropdown menu -->
+          <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-52 xs:w-56 bg-slate-900 border border-slate-800 rounded-xl shadow-xl py-2 z-50">
+            <div class="px-4 py-2 border-b border-slate-800">
+              <p class="text-[10px] text-slate-400">Signed in as</p>
+              <p class="text-xs xs:text-sm font-semibold truncate text-slate-100" id="dropdown-user-email">guest@fifa.com</p>
+              <div class="mt-2 bg-slate-950/80 px-2 py-1 rounded border border-slate-800 flex justify-between items-center">
+                <span class="text-[10px] text-slate-400">Your Score:</span>
+                <span class="text-xs font-bold text-emerald-400 font-sporty" id="dropdown-user-points">0 pts</span>
+              </div>
+            </div>
+            
+            <button id="menu-sync-btn" onclick="triggerManualSync()" class="w-full text-left px-4 py-2 text-xs xs:text-sm text-slate-300 hover:bg-slate-800 hover:text-slate-100 flex items-center space-x-2">
+              <i class="fa-solid fa-rotate text-emerald-400"></i>
+              <span>Sync & Claim Points</span>
+            </button>
+            
+            <button id="logout-btn" class="w-full text-left px-4 py-2 text-xs xs:text-sm text-rose-400 hover:bg-rose-950/20 hover:text-rose-300 flex items-center space-x-2 border-t border-slate-800 mt-1">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Notification Banner Center Container (Now fully centered on mobile) -->
+  <div id="toast-container" class="fixed top-20 right-4 left-4 sm:left-auto sm:right-4 z-50 flex flex-col space-y-2 max-w-sm pointer-events-none"></div>
+
+  <!-- Main Content Wrapper -->
+  <main class="flex-grow max-w-7xl w-full mx-auto p-3 xs:p-4 flex flex-col justify-center">
+
+    <!-- AUTHENTICATION VIEW (Hidden once logged in) -->
+    <section id="auth-view" class="w-full max-w-md mx-auto my-4 xs:my-8 bg-slate-900 border border-slate-800 rounded-2xl p-5 xs:p-6 md:p-8 shadow-2xl relative overflow-hidden">
+      <!-- Background Pitch Overlay -->
+      <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle at center, #10b981 1px, transparent 1px); background-size: 24px 24px;"></div>
+      
+      <div class="text-center mb-6 xs:mb-8 relative">
+        <div class="inline-flex p-2.5 xs:p-3 bg-emerald-950/80 rounded-2xl text-emerald-400 border border-emerald-800/50 mb-3 animate-bounce">
+          <i class="fa-solid fa-soccer-ball text-2xl xs:text-3xl"></i>
+        </div>
+        <h2 class="text-xl xs:text-2xl font-black font-sporty" id="auth-title">Welcome to Stadium Portal</h2>
+        <p class="text-[11px] xs:text-xs text-slate-400 mt-1">Sign in to predict live fixtures and climb the rank table</p>
+      </div>
+
+      <!-- Error Message Area -->
+      <div id="auth-error-box" class="hidden mb-4 p-3 bg-rose-950/60 border border-rose-800/80 rounded-xl text-rose-300 text-xs flex items-start space-x-2">
+        <i class="fa-solid fa-circle-exclamation mt-0.5 flex-shrink-0"></i>
+        <span id="auth-error-msg">Failed to authenticate. Please review login info.</span>
+      </div>
+
+      <!-- Optimized mobile form input font-sizes to avoid iOS zoom issues -->
+      <form id="auth-form" class="space-y-4">
+        <div>
+          <label class="block text-[10px] xs:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5" for="auth-email">Email Address</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+              <i class="fa-solid fa-envelope text-xs"></i>
+            </span>
+            <input type="email" id="auth-email" required class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 xs:py-3 pl-10 pr-4 text-base md:text-sm text-slate-200 placeholder-slate-600 transition-colors outline-none" placeholder="striker@fifa2026.com">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] xs:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5" for="auth-password">Password</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+              <i class="fa-solid fa-lock text-xs"></i>
+            </span>
+            <input type="password" id="auth-password" required minlength="6" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 xs:py-3 pl-10 pr-4 text-base md:text-sm text-slate-200 placeholder-slate-600 transition-colors outline-none" placeholder="••••••••">
+          </div>
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl py-3 text-xs xs:text-sm hover:opacity-90 transition-opacity font-sporty tracking-wide shadow-lg">
+          LOG IN TO PORTAL
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-xs">
+        <span class="text-slate-500" id="auth-toggle-desc">Don't have an active predictor profile?</span>
+        <button id="auth-toggle-btn" class="text-emerald-400 hover:text-emerald-300 font-semibold ml-1 underline transition-colors">Create Profile</button>
+      </div>
+    </section>
+
+    <!-- DASHBOARD VIEW (Hidden until user logs in) -->
+    <section id="dashboard-view" class="hidden w-full space-y-4 xs:space-y-6 animate-fade-in py-2">
+      
+      <!-- User stats HUD and Info Bar -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 xs:gap-4">
+        
+        <!-- Welcome HUD card -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-4 xs:p-5 rounded-2xl flex items-center justify-between shadow-xl relative overflow-hidden">
+          <div class="absolute right-0 bottom-0 opacity-[0.04] text-slate-600 transform translate-x-2 translate-y-4 scale-150">
+            <i class="fa-solid fa-shield-halved text-9xl text-emerald-500"></i>
+          </div>
+          <div class="z-10">
+            <p class="text-[10px] xs:text-xs font-bold text-emerald-400 uppercase tracking-widest font-sporty">FIFA Player Profile</p>
+            <h3 class="text-base xs:text-lg md:text-xl font-black mt-1 text-slate-100 truncate max-w-[240px] md:max-w-full" id="user-hud-email">loading@user.com</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Predict upcoming matches below to gather score statistics</p>
+          </div>
+        </div>
+
+        <!-- Match Points Standings HUD Card -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-4 xs:p-5 rounded-2xl flex items-center justify-between shadow-xl relative overflow-hidden">
+          <div class="absolute right-0 bottom-0 opacity-[0.04] text-slate-600 transform translate-x-4 translate-y-4 scale-150">
+            <i class="fa-solid fa-star text-9xl text-amber-500"></i>
+          </div>
+          <div class="z-10">
+            <p class="text-[10px] xs:text-xs font-bold text-amber-400 uppercase tracking-widest font-sporty">Total Predictor Score</p>
+            <div class="flex items-baseline space-x-2 mt-1">
+              <span class="text-2xl xs:text-3xl md:text-4xl font-extrabold font-sporty text-slate-100" id="user-hud-points">0</span>
+              <span class="text-xs font-bold text-amber-400 font-sporty">pts</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Updates live. (Win: 3 pts | Draw outcome but predicted a win: 1 pt)</p>
+          </div>
+        </div>
+
+        <!-- Sync Actions Bar -->
+        <div class="bg-gradient-to-br from-slate-900 to-emerald-950/20 border border-slate-800 p-4 xs:p-5 rounded-2xl flex flex-col justify-between shadow-xl">
+          <div>
+            <h4 class="text-[10px] xs:text-xs font-bold text-emerald-400 uppercase tracking-wider font-sporty">Scores & System State</h4>
+            <p class="text-xs text-slate-300 mt-1">Simulate official match scores to sync results instantly and update the scoreboard.</p>
+          </div>
+          <div class="mt-3 xs:mt-4 flex space-x-2">
+            <button onclick="triggerManualSync()" class="flex-grow bg-emerald-600 hover:bg-emerald-500 transition-colors text-slate-950 font-bold py-2.5 px-3 rounded-xl text-xs font-sporty flex items-center justify-center space-x-1.5 shadow-lg">
+              <i class="fa-solid fa-rotate-right"></i>
+              <span>Sync Scores</span>
+            </button>
+            <button onclick="resetAllPredictions()" class="bg-slate-800 hover:bg-slate-700 transition-colors text-slate-300 hover:text-slate-100 px-3.5 rounded-xl text-xs flex items-center justify-center shadow-lg" title="Reset Predictions">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Dual Navigation Tabs (Predictions vs Leaderboard) - Adaptive layout flex and layout -->
+      <div class="border-b border-slate-800 flex flex-col sm:flex-row justify-between items-stretch sm:items-center pt-2 gap-3 sm:gap-0">
+        <div class="flex space-x-2 sm:space-x-6 w-full sm:w-auto">
+          <button id="tab-btn-predictions" onclick="switchTab('predictions')" class="flex-1 sm:flex-initial border-b-2 border-emerald-500 text-emerald-400 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2">
+            <i class="fa-solid fa-calendar-check text-[10px] xs:text-xs"></i>
+            <span>Matches & Predictions</span>
+          </button>
+          <button id="tab-btn-leaderboard" onclick="switchTab('leaderboard')" class="flex-1 sm:flex-initial border-b-2 border-transparent text-slate-400 hover:text-slate-200 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2">
+            <i class="fa-solid fa-ranking-star text-[10px] xs:text-xs"></i>
+            <span>Leaderboard</span>
+          </button>
+        </div>
+        
+        <!-- Live count tag -->
+        <div id="predictions-count-tag" class="text-[10px] xs:text-xs text-slate-400 font-sporty bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full text-center">
+          Total Predictions Made: <span class="text-emerald-400 font-bold" id="saved-predictions-counter">0</span>
+        </div>
+      </div>
+
+      <!-- Tab Area 1: Predictions -->
+      <div id="tab-content-predictions" class="tab-content space-y-4 xs:space-y-6">
+        
+        <!-- Quick State Filter / Help Info -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/60 border border-slate-800 p-3.5 xs:p-4 rounded-xl">
+          <div class="text-[10px] xs:text-xs text-slate-400 space-y-1.5">
+            <p><span class="inline-block w-2 h-2 rounded-full bg-blue-500 mr-1.5 animate-pulse"></span> <strong class="text-slate-200">Upcoming Match:</strong> Fully open for prediction. Edit anytime before match starts.</p>
+            <p><span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span> <strong class="text-slate-200">Live Match:</strong> Match in progress. Predictions are strictly locked.</p>
+            <p><span class="inline-block w-2 h-2 rounded-full bg-slate-600 mr-1.5"></span> <strong class="text-slate-200">Completed Match:</strong> Match finished. Points have been calculated.</p>
+          </div>
+          
+          <div class="flex items-center justify-between md:justify-end space-x-2 border-t border-slate-800/60 md:border-t-0 pt-3 md:pt-0">
+            <span class="text-[10px] xs:text-xs text-slate-400 font-sporty uppercase tracking-wide">Filter Stages:</span>
+            <!-- Responsive selector height/width for touch navigation -->
+            <select id="match-group-filter" onchange="renderMatches()" class="bg-slate-950 border border-slate-800 text-xs rounded-lg px-2.5 py-1.5 text-slate-300 outline-none focus:border-emerald-500 min-h-[35px]">
+              <option value="ALL">All Match Stages</option>
+              <option value="Upcoming">Upcoming Only</option>
+              <option value="Live">Live Only</option>
+              <option value="Completed">Completed Only</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Matches Cards Grid Container -->
+        <div id="matches-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-6">
+          <!-- Dynamically populated via renderMatches() -->
+        </div>
+
+      </div>
+
+      <!-- Tab Area 2: Leaderboard -->
+      <div id="tab-content-leaderboard" class="tab-content hidden space-y-6">
+        
+        <!-- Podium Highlight Area - Shifted from Grid to Adaptive Flex with Order Utilities for Mobile-first hierarchy -->
+        <div class="flex flex-col md:flex-row gap-4 pt-4 pb-2 justify-center" id="leaderboard-podium">
+          <!-- Top 3 dynamically generated with Diamond, Gold and Silver badges -->
+        </div>
+
+        <!-- Rest of Leaderboard Table -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+            <h3 class="text-xs xs:text-sm font-bold font-sporty tracking-wider text-slate-300 uppercase">World Standings Table</h3>
+            <span class="text-[10px] text-slate-500">Includes secure privacy masking</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 bg-slate-950 text-slate-400 text-[10px] xs:text-xs uppercase font-sporty">
+                  <th class="py-3 px-3 font-semibold text-center w-12 xs:w-16">Rank</th>
+                  <th class="py-3 px-3 font-semibold">User Profile (Secure Masking)</th>
+                  <th class="py-3 px-3 font-semibold text-right">Predictions</th>
+                  <th class="py-3 px-3 font-semibold text-right pr-4 xs:pr-6">Total Score</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-rows" class="divide-y divide-slate-800/60 text-xs xs:text-sm">
+                <!-- Dynamically populated via renderLeaderboard() -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-900 bg-slate-950/45 py-6 px-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left text-[11px] text-slate-500">
+      <div>
+        <p>&copy; 2026 FIFA World Cup Predictor Portal. Built for sports fans globally.</p>
+        <p class="text-[9px] text-slate-600 mt-1">Prototype using real-time Firebase Auth and localized Firestore integration.</p>
+      </div>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="#" class="hover:text-slate-400">Terms of Play</a>
+        <a href="#" class="hover:text-slate-400">Security Guidelines</a>
+        <a href="#" class="hover:text-slate-400">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase Integration CDN Script imports -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, onSnapshot, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Provided User Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCYm4vzwvh_CZ8nvGat5KQPsyPQsjin8C4",
+      authDomain: "fifa-world-cup-predictor-lns.firebaseapp.com",
+      projectId: "fifa-world-cup-predictor-lns",
+      storageBucket: "fifa-world-cup-predictor-lns.firebasestorage.app",
+      messagingSenderId: "1027176481894",
+      appId: "1:1027176481894:web:0f945d97124423942019a7"
+    };
+
+    // Global variables & state trackers
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const appId = "fifa-world-cup-predictor-lns";
+
+    let currentUser = null;
+    let localPredictions = {}; 
+    let leaderboardUsers = [];
+
+    // Real tournament fixtures matching UTC+6 (Dhaka Time) on Thursday, June 18, 2026, 12:13 PM
+    const matchesDatabase = [
+      {
+        id: "match_1",
+        homeTeam: "Mexico",
+        homeFlag: "mx",
+        awayTeam: "South Africa",
+        awayFlag: "za",
+        stage: "Group A",
+        status: "Completed",
+        date: "June 11, 2026",
+        actualScore: { home: 2, away: 0 }, 
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_2",
+        homeTeam: "South Korea",
+        homeFlag: "kr",
+        awayTeam: "Czechia",
+        awayFlag: "cz",
+        stage: "Group A",
+        status: "Completed",
+        date: "June 11, 2026",
+        actualScore: { home: 2, away: 1 }, 
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_3",
+        homeTeam: "Canada",
+        homeFlag: "ca",
+        awayTeam: "Bosnia and Herzegovina",
+        awayFlag: "ba",
+        stage: "Group B",
+        status: "Completed",
+        date: "June 12, 2026",
+        actualScore: { home: 1, away: 1 }, 
+        result: "DRAW"
+      },
+      {
+        id: "match_4",
+        homeTeam: "USA",
+        homeFlag: "us",
+        awayTeam: "Paraguay",
+        awayFlag: "py",
+        stage: "Group D",
+        status: "Completed",
+        date: "June 12, 2026",
+        actualScore: { home: 4, away: 1 }, 
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_5",
+        homeTeam: "Brazil",
+        homeFlag: "br",
+        awayTeam: "Morocco",
+        awayFlag: "ma",
+        stage: "Group C",
+        status: "Completed",
+        date: "June 13, 2026",
+        actualScore: { home: 1, away: 1 },
+        result: "DRAW"
+      },
+      {
+        id: "match_6",
+        homeTeam: "Argentina",
+        homeFlag: "ar",
+        awayTeam: "Algeria",
+        awayFlag: "dz",
+        stage: "Group J",
+        status: "Completed",
+        date: "June 16, 2026",
+        actualScore: { home: 3, away: 0 }, 
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_7",
+        homeTeam: "France",
+        homeFlag: "fr",
+        awayTeam: "Senegal",
+        awayFlag: "sn",
+        stage: "Group I",
+        status: "Completed",
+        date: "June 16, 2026",
+        actualScore: { home: 3, away: 1 },
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_8",
+        homeTeam: "England",
+        homeFlag: "gb-eng",
+        awayTeam: "Croatia",
+        awayFlag: "hr",
+        stage: "Group L",
+        status: "Completed",
+        date: "June 17, 2026",
+        actualScore: { home: 4, away: 2 },
+        result: "HOME_WIN"
+      },
+      {
+        id: "match_9",
+        homeTeam: "Uzbekistan",
+        homeFlag: "uz",
+        awayTeam: "Colombia",
+        awayFlag: "co",
+        stage: "Group K",
+        status: "Completed",
+        date: "June 18, 2026 (08:00 AM Dhaka)",
+        actualScore: { home: 1, away: 3 }, 
+        result: "AWAY_WIN"
+      },
+      // Upcoming Matches over the next 2 Days (June 18 - June 20, 2026 UTC+6)
+      {
+        id: "match_10",
+        homeTeam: "Czechia",
+        homeFlag: "cz",
+        awayTeam: "South Africa",
+        awayFlag: "za",
+        stage: "Group A",
+        status: "Upcoming",
+        date: "June 18, 10:00 PM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_11",
+        homeTeam: "Switzerland",
+        homeFlag: "ch",
+        awayTeam: "Bosnia and Herzegovina",
+        awayFlag: "ba",
+        stage: "Group B",
+        status: "Upcoming",
+        date: "June 19, 01:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_12",
+        homeTeam: "Canada",
+        homeFlag: "ca",
+        awayTeam: "Qatar",
+        awayFlag: "qa",
+        stage: "Group B",
+        status: "Upcoming",
+        date: "June 19, 04:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_13",
+        homeTeam: "Mexico",
+        homeFlag: "mx",
+        awayTeam: "South Korea",
+        awayFlag: "kr",
+        stage: "Group A",
+        status: "Upcoming",
+        date: "June 19, 07:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_14",
+        homeTeam: "USA",
+        homeFlag: "us",
+        awayTeam: "Australia",
+        awayFlag: "au",
+        stage: "Group D",
+        status: "Upcoming",
+        date: "June 20, 01:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_15",
+        homeTeam: "Scotland",
+        homeFlag: "gb-sct",
+        awayTeam: "Morocco",
+        awayFlag: "ma",
+        stage: "Group C",
+        status: "Upcoming",
+        date: "June 20, 04:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_16",
+        homeTeam: "Brazil",
+        homeFlag: "br",
+        awayTeam: "Haiti",
+        awayFlag: "ht",
+        stage: "Group C",
+        status: "Upcoming",
+        date: "June 20, 06:30 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      },
+      {
+        id: "match_17",
+        homeTeam: "Turkiye",
+        homeFlag: "tr",
+        awayTeam: "Paraguay",
+        awayFlag: "py",
+        stage: "Group D",
+        status: "Upcoming",
+        date: "June 20, 09:00 AM (Dhaka)",
+        actualScore: null,
+        result: null
+      }
+    ];
+
+    // Auth-state handling and initialization logic
+    function showNotification(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      
+      const colors = {
+        success: "bg-emerald-950 border-emerald-500 text-emerald-400",
+        error: "bg-rose-950 border-rose-500 text-rose-400",
+        info: "bg-slate-900 border-slate-700 text-slate-300"
+      };
+
+      const icons = {
+        success: "fa-circle-check",
+        error: "fa-triangle-exclamation",
+        info: "fa-circle-info"
+      };
+
+      toast.className = `p-3 xs:p-4 border rounded-xl shadow-2xl flex items-start space-x-3 transition-all duration-300 transform translate-x-12 opacity-0 pointer-events-auto ${colors[type]}`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icons[type]} mt-0.5 text-base"></i>
+        <div class="flex-grow">
+          <p class="text-xs font-semibold">${message}</p>
+        </div>
+        <button class="text-slate-400 hover:text-slate-200 transition-colors" onclick="this.parentElement.remove()">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      `;
+
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove("translate-x-12", "opacity-0");
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-x-12");
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
+
+    const profileBtn = document.getElementById("profile-btn");
+    const profileDropdown = document.getElementById("profile-dropdown");
+    
+    profileBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", () => {
+      profileDropdown.classList.add("hidden");
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      const authView = document.getElementById("auth-view");
+      const dashboardView = document.getElementById("dashboard-view");
+      const profileContainer = document.getElementById("profile-container");
+      
+      if (user) {
+        currentUser = user;
+        
+        document.getElementById("nav-user-email").textContent = user.email || "Anonymous";
+        document.getElementById("dropdown-user-email").textContent = user.email || "Anonymous User";
+        document.getElementById("user-hud-email").textContent = user.email || "Anonymous User";
+        document.getElementById("sync-pill").classList.remove("hidden");
+
+        authView.classList.add("hidden");
+        dashboardView.classList.remove("hidden");
+        profileContainer.classList.remove("hidden");
+
+        await initializeUserProfile(user);
+        listenToUserPredictions(user);
+        listenToGlobalLeaderboard();
+        
+        showNotification(`Welcome back, ${user.email || 'Champion'}! Portal ready.`, "success");
+      } else {
+        currentUser = null;
+        
+        authView.classList.remove("hidden");
+        dashboardView.classList.add("hidden");
+        profileContainer.classList.add("hidden");
+        document.getElementById("sync-pill").classList.add("hidden");
+        
+        localPredictions = {};
+        leaderboardUsers = [];
+      }
+    });
+
+    async function initializeUserProfile(user) {
+      const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+      try {
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          const freshData = {
+            uid: user.uid,
+            email: user.email || "anonymous@fifa.com",
+            points: 0,
+            predictionCount: 0,
+            lastSynced: Date.now()
+          };
+          await setDoc(userRef, freshData);
+          document.getElementById("user-hud-points").textContent = "0";
+          document.getElementById("dropdown-user-points").textContent = "0 pts";
+        } else {
+          const userData = userSnap.data();
+          document.getElementById("user-hud-points").textContent = userData.points || 0;
+          document.getElementById("dropdown-user-points").textContent = `${userData.points || 0} pts`;
+        }
+      } catch (err) {
+        console.error("Error setting up user profile: ", err);
+      }
+    }
+
+    function listenToUserPredictions(user) {
+      const q = doc(db, 'artifacts', appId, 'users', user.uid, 'predictions', 'all_predictions');
+      
+      onSnapshot(q, (snapshot) => {
+        if (snapshot.exists()) {
+          localPredictions = snapshot.data();
+        } else {
+          localPredictions = {};
+        }
+        updatePredictionsCounter();
+        renderMatches();
+      }, (error) => {
+        console.error("Firestore predictions list error: ", error);
+      });
+    }
+
+    function listenToGlobalLeaderboard() {
+      const usersCol = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+      
+      onSnapshot(usersCol, (snapshot) => {
+        leaderboardUsers = [];
+        snapshot.forEach((doc) => {
+          leaderboardUsers.push(doc.data());
+        });
+        leaderboardUsers.sort((a, b) => (b.points || 0) - (a.points || 0));
+        renderLeaderboard();
+      }, (error) => {
+        console.error("Leaderboard database listing error: ", error);
+      });
+    }
+
+    function updatePredictionsCounter() {
+      const count = Object.keys(localPredictions).length;
+      document.getElementById("saved-predictions-counter").textContent = count;
+    }
+
+    window.switchTab = function(tabName) {
+      const tabPredictions = document.getElementById("tab-btn-predictions");
+      const tabLeaderboard = document.getElementById("tab-btn-leaderboard");
+      const contentPredictions = document.getElementById("tab-content-predictions");
+      const contentLeaderboard = document.getElementById("tab-content-leaderboard");
+
+      if (tabName === 'predictions') {
+        tabPredictions.className = "flex-1 sm:flex-initial border-b-2 border-emerald-500 text-emerald-400 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2";
+        tabLeaderboard.className = "flex-1 sm:flex-initial border-b-2 border-transparent text-slate-400 hover:text-slate-200 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2";
+        
+        contentPredictions.classList.remove("hidden");
+        contentLeaderboard.classList.add("hidden");
+      } else {
+        tabLeaderboard.className = "flex-1 sm:flex-initial border-b-2 border-emerald-500 text-emerald-400 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2";
+        tabPredictions.className = "flex-1 sm:flex-initial border-b-2 border-transparent text-slate-400 hover:text-slate-200 pb-3 px-1 text-xs xs:text-sm md:text-base font-bold font-sporty tracking-wide transition-all flex items-center justify-center sm:justify-start space-x-2";
+        
+        contentLeaderboard.classList.remove("hidden");
+        contentPredictions.classList.add("hidden");
+        renderLeaderboard();
+      }
+    };
+
+    window.renderMatches = function() {
+      const grid = document.getElementById("matches-grid");
+      const filter = document.getElementById("match-group-filter").value;
+      
+      grid.innerHTML = "";
+
+      let filteredMatches = matchesDatabase;
+      if (filter !== "ALL") {
+        filteredMatches = matchesDatabase.filter(m => m.status === filter);
+      }
+
+      filteredMatches.sort((a, b) => {
+        const order = { "Upcoming": 1, "Live": 2, "Completed": 3 };
+        return order[a.status] - order[b.status];
+      });
+
+      if (filteredMatches.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full bg-slate-900/40 border border-dashed border-slate-800 rounded-2xl py-12 px-4 text-center">
+            <i class="fa-solid fa-circle-question text-3xl text-slate-600 mb-2"></i>
+            <p class="text-sm text-slate-400">No matching fixtures found for this group filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filteredMatches.forEach((match) => {
+        const userPrediction = localPredictions[match.id] || null;
+        const isLocked = match.status === "Live" || match.status === "Completed";
+        
+        let badgeStyle = "";
+        let statusIcon = "";
+        
+        if (match.status === "Upcoming") {
+          badgeStyle = "bg-blue-950/80 text-blue-400 border border-blue-900/50";
+          statusIcon = "fa-clock animate-pulse";
+        } else if (match.status === "Live") {
+          badgeStyle = "bg-emerald-950/90 text-emerald-400 border border-emerald-800 animate-pulse";
+          statusIcon = "fa-gamepad";
+        } else {
+          badgeStyle = "bg-slate-900/90 text-slate-400 border border-slate-800";
+          statusIcon = "fa-circle-check";
+        }
+
+        const activeHomeStyle = userPrediction === "HOME_WIN" 
+          ? "bg-emerald-500 text-slate-950 font-black border-transparent shadow-lg glow-emerald" 
+          : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700";
+        
+        const activeDrawStyle = userPrediction === "DRAW" 
+          ? "bg-emerald-500 text-slate-950 font-black border-transparent shadow-lg glow-emerald" 
+          : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700";
+          
+        const activeAwayStyle = userPrediction === "AWAY_WIN" 
+          ? "bg-emerald-500 text-slate-950 font-black border-transparent shadow-lg glow-emerald" 
+          : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700";
+
+        const card = document.createElement("div");
+        card.className = `bg-slate-900 rounded-2xl border ${isLocked ? 'border-slate-800/80 bg-slate-950/40' : 'border-slate-800 hover:border-slate-700'} p-3.5 xs:p-5 relative overflow-hidden transition-all flex flex-col justify-between shadow-lg`;
+        
+        card.innerHTML = `
+          <!-- Header details -->
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-[11px] font-bold font-sporty tracking-wider text-slate-400 uppercase bg-slate-950 px-2.5 py-1 rounded-full border border-slate-800/80">
+              ${match.stage}
+            </span>
+            <div class="flex items-center space-x-1.5 ${badgeStyle} text-[10px] font-bold font-sporty tracking-widest px-2.5 py-1 rounded-full uppercase">
+              <i class="fa-solid ${statusIcon}"></i>
+              <span>${match.status}</span>
+            </div>
+          </div>
+
+          <!-- Teams and Flags matchup block (Fully mobile adaptive sizes) -->
+          <div class="grid grid-cols-7 gap-1 items-center my-2 text-center">
+            
+            <!-- Home Team -->
+            <div class="col-span-3 flex flex-col items-center">
+              <div class="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 rounded-full bg-slate-950 border-2 border-slate-800 p-1 flex items-center justify-center overflow-hidden mb-2 relative">
+                <img src="https://flagcdn.com/w160/${match.homeFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.homeTeam}" onerror="this.src='https://flagcdn.com/w160/un.png'">
+              </div>
+              <span class="text-[11px] xs:text-xs md:text-sm font-bold tracking-tight line-clamp-1 text-slate-200">${match.homeTeam}</span>
+            </div>
+
+            <!-- Score / Versus Segment -->
+            <div class="col-span-1 flex flex-col justify-center items-center">
+              ${match.actualScore 
+                ? `<div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">${match.actualScore.home}:${match.actualScore.away}</div>`
+                : `<div class="text-xs font-bold font-sporty text-slate-500 uppercase tracking-widest">VS</div>`
+              }
+              <span class="text-[8px] xs:text-[9px] text-slate-500 mt-1 uppercase font-sporty text-center break-words leading-tight">${match.date}</span>
+            </div>
+
+            <!-- Away Team -->
+            <div class="col-span-3 flex flex-col items-center">
+              <div class="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 rounded-full bg-slate-950 border-2 border-slate-800 p-1 flex items-center justify-center overflow-hidden mb-2 relative">
+                <img src="https://flagcdn.com/w160/${match.awayFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.awayTeam}" onerror="this.src='https://flagcdn.com/w160/un.png'">
+              </div>
+              <span class="text-[11px] xs:text-xs md:text-sm font-bold tracking-tight line-clamp-1 text-slate-200">${match.awayTeam}</span>
+            </div>
+
+          </div>
+
+          <!-- Prediction Interface -->
+          <div class="mt-4 pt-4 border-t border-slate-800/60">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-[10px] xs:text-[11px] font-bold tracking-widest text-slate-400 uppercase font-sporty flex items-center space-x-1">
+                <i class="fa-solid fa-wand-magic-sparkles text-emerald-500"></i>
+                <span>Your Prediction:</span>
+              </span>
+              
+              ${isLocked 
+                ? `<span class="text-[10px] text-amber-500 bg-amber-950/20 border border-amber-900/40 px-2 py-0.5 rounded font-sporty"><i class="fa-solid fa-lock mr-1"></i>Locked</span>`
+                : `<span class="text-[10px] text-emerald-400 bg-emerald-950/20 border border-emerald-900/40 px-2 py-0.5 rounded font-sporty"><i class="fa-solid fa-pen-to-square mr-1"></i>Open</span>`
+              }
+            </div>
+
+            <!-- Highly resilient buttons layout designed to fit nicely on small screen dimensions -->
+            <div class="grid grid-cols-3 gap-1.5 xs:gap-2">
+              <button 
+                onclick="submitPrediction('${match.id}', 'HOME_WIN', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeHomeStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold truncate max-w-full px-1">Win ${match.homeTeam}</span>
+                <span class="text-[9px] opacity-75">Team 1</span>
+              </button>
+
+              <button 
+                onclick="submitPrediction('${match.id}', 'DRAW', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeDrawStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold">Tie</span>
+                <span class="text-[9px] opacity-75">Draw</span>
+              </button>
+
+              <button 
+                onclick="submitPrediction('${match.id}', 'AWAY_WIN', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeAwayStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold truncate max-w-full px-1">Win ${match.awayTeam}</span>
+                <span class="text-[9px] opacity-75">Team 2</span>
+              </button>
+            </div>
+
+            <!-- Scoring Result Feedback -->
+            ${match.status === "Completed" ? `
+              <div class="mt-3 p-2 rounded-xl text-xs flex items-center justify-between font-sporty ${userPrediction === match.result ? 'bg-emerald-950/40 border border-emerald-800 text-emerald-400' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? 'bg-amber-950/40 border border-amber-800/80 text-amber-300' : 'bg-slate-950/80 border border-slate-800 text-slate-400'}">
+                <span class="flex items-center space-x-1">
+                  <i class="fa-solid ${userPrediction === match.result ? 'fa-square-check text-emerald-400' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? 'fa-circle-half-stroke text-amber-300' : 'fa-rectangle-xmark text-slate-500'}"></i>
+                  <span class="text-[10px] xs:text-xs">Result: ${userPrediction === match.result ? 'Correct Outcome!' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? 'Win predicted, but Ended in Tie' : 'Incorrect'}</span>
+                </span>
+                <span class="font-bold text-[10px] xs:text-xs">${userPrediction === match.result ? '+3 Pts' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? '+1 Pt' : '0 Pts'}</span>
+              </div>
+            ` : ''}
+
+            ${match.status === "Live" ? `
+              <div class="mt-3 p-2 bg-amber-950/20 border border-amber-900/30 rounded-xl text-[11px] text-amber-400 text-center font-sporty animate-pulse">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Match is in play. Live status scoring soon.
+              </div>
+            ` : ''}
+
+          </div>
+        `;
+        
+        grid.appendChild(card);
+      });
+    };
+
+    const authForm = document.getElementById("auth-form");
+    const authToggleBtn = document.getElementById("auth-toggle-btn");
+    const authTitle = document.getElementById("auth-title");
+    const authToggleDesc = document.getElementById("auth-toggle-desc");
+    const authSubmitBtn = document.getElementById("auth-submit-btn");
+    const authErrorBox = document.getElementById("auth-error-box");
+    const authErrorMsg = document.getElementById("auth-error-msg");
+
+    let authMode = "login"; 
+
+    authToggleBtn.addEventListener("click", () => {
+      authErrorBox.classList.add("hidden");
+      if (authMode === "login") {
+        authMode = "signup";
+        authTitle.textContent = "Register Stadium ID";
+        authToggleDesc.textContent = "Already have a ticket to the portal?";
+        authToggleBtn.textContent = "Log In Here";
+        authSubmitBtn.textContent = "CREATE NEW ACCOUNT";
+      } else {
+        authMode = "login";
+        authTitle.textContent = "Welcome to Stadium Portal";
+        authToggleDesc.textContent = "Don't have an active predictor profile?";
+        authToggleBtn.textContent = "Create Profile";
+        authSubmitBtn.textContent = "LOG IN TO PORTAL";
+      }
+    });
+
+    authForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("auth-email").value.trim();
+      const password = document.getElementById("auth-password").value;
+      
+      authErrorBox.classList.add("hidden");
+      authSubmitBtn.disabled = true;
+      authSubmitBtn.textContent = "PROCESSING PASS...";
+
+      try {
+        if (authMode === "login") {
+          await signInWithEmailAndPassword(auth, email, password);
+        } else {
+          await createUserWithEmailAndPassword(auth, email, password);
+        }
+      } catch (err) {
+        console.error(err);
+        authErrorBox.classList.remove("hidden");
+        authErrorMsg.textContent = err.message || "Failed to process authentication. Review details.";
+        showNotification("Authentication issue detected. Please check credentials.", "error");
+      } finally {
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.textContent = authMode === "login" ? "LOG IN TO PORTAL" : "CREATE NEW ACCOUNT";
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        showNotification("Successfully signed out of 2026 World Cup Portal.", "info");
+      } catch (err) {
+        showNotification("Failed to sign out cleanly.", "error");
+      }
+    });
+
+    window.submitPrediction = async function(matchId, choice, isLocked) {
+      if (!currentUser) {
+        showNotification("Please log in to submit match predictions.", "error");
+        return;
+      }
+      
+      if (isLocked) {
+        showNotification("This match is Live/Completed. Prediction modifications are locked.", "error");
+        return;
+      }
+
+      localPredictions[matchId] = choice;
+      updatePredictionsCounter();
+      renderMatches();
+
+      try {
+        const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
+        await setDoc(docRef, localPredictions, { merge: true });
+        
+        showNotification("Prediction saved to live database!", "success");
+      } catch (error) {
+        console.error("Firestore save error: ", error);
+        showNotification("Unable to write match prediction to database.", "error");
+      }
+    };
+
+    // STRICT SCORE CALCULATION - ONLY process completed matches (with scores)
+    window.syncWithWorldCupScores = async function() {
+      if (!currentUser) {
+        showNotification("Sync process requires an active login session.", "error");
+        return;
+      }
+
+      showNotification("Syncing prediction profiles with Live FIFA 2026 scores...", "info");
+
+      let scoreCalculated = 0;
+      let totalCompletedPredictions = 0;
+
+      matchesDatabase.forEach((match) => {
+        // Only evaluate predictions for matches strictly marked Completed
+        if (match.status === "Completed") {
+          const prediction = localPredictions[match.id];
+          if (prediction) {
+            totalCompletedPredictions++;
+            
+            // STRICT IMPLEMENTATION OF THE POINTS MATRIX (Verbatim to image_ffbd75.png):
+            if (prediction === match.result) {
+              // Correct prediction outcome -> 3 Points
+              scoreCalculated += 3;
+            } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
+              // Predicted Win (Team 1 or Team 2), but result was a Draw -> 1 Point
+              scoreCalculated += 1;
+            } else {
+              // Mismatch -> 0 Points
+              scoreCalculated += 0;
+            }
+          }
+        }
+      });
+
+      try {
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+        await updateDoc(userRef, {
+          points: scoreCalculated,
+          predictionCount: Object.keys(localPredictions).length,
+          lastSynced: Date.now()
+        });
+
+        document.getElementById("user-hud-points").textContent = scoreCalculated;
+        document.getElementById("dropdown-user-points").textContent = `${scoreCalculated} pts`;
+
+        showNotification(`Sync Complete! Your Score: ${scoreCalculated} pts (${totalCompletedPredictions} matches verified)`, "success");
+      } catch (error) {
+        console.error("Error updating synced points in database: ", error);
+        showNotification("Failed to write updated score to leaderboards.", "error");
+      }
+    };
+
+    window.triggerManualSync = function() {
+      syncWithWorldCupScores();
+    };
+
+    // Custom Modal Controllers (Replaces native confirm/alert prompts to avoid iFrame sandbox blocks)
+    const confirmModal = document.getElementById("custom-confirm-modal");
+    const modalCancelBtn = document.getElementById("modal-cancel-btn");
+    const modalConfirmBtn = document.getElementById("modal-confirm-btn");
+    let confirmCallback = null;
+
+    window.showConfirmModal = function(callback) {
+      confirmCallback = callback;
+      if (confirmModal) confirmModal.classList.remove("hidden");
+    };
+
+    window.closeConfirmModal = function() {
+      if (confirmModal) confirmModal.classList.add("hidden");
+      confirmCallback = null;
+    };
+
+    if (modalCancelBtn) {
+      modalCancelBtn.addEventListener("click", () => {
+        closeConfirmModal();
+      });
+    }
+
+    if (modalConfirmBtn) {
+      modalConfirmBtn.addEventListener("click", async () => {
+        if (confirmCallback) {
+          await confirmCallback();
+        }
+        closeConfirmModal();
+      });
+    }
+
+    window.resetAllPredictions = function() {
+      if (!currentUser) return;
+      
+      showConfirmModal(async () => {
+        localPredictions = {};
+        updatePredictionsCounter();
+        renderMatches();
+
+        try {
+          const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
+          await setDoc(docRef, {});
+          
+          // Direct points reset in Firestore to solve user stale caching points
+          const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+          await updateDoc(userRef, {
+            points: 0,
+            predictionCount: 0,
+            lastSynced: Date.now()
+          });
+
+          document.getElementById("user-hud-points").textContent = "0";
+          document.getElementById("dropdown-user-points").textContent = "0 pts";
+          
+          showNotification("All predictions cleared & points reset to 0!", "success");
+        } catch (err) {
+          console.error(err);
+          showNotification("Failed to clear predictions and reset points properly.", "error");
+        }
+      });
+    };
+
+    window.renderLeaderboard = function() {
+      const podiumContainer = document.getElementById("leaderboard-podium");
+      const rowsContainer = document.getElementById("leaderboard-rows");
+      
+      podiumContainer.innerHTML = "";
+      rowsContainer.innerHTML = "";
+
+      if (leaderboardUsers.length === 0) {
+        rowsContainer.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center py-8 text-slate-500">No active portal users found yet.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      const sortedUsers = [...leaderboardUsers].sort((a, b) => (b.points || 0) - (a.points || 0));
+      const topThree = sortedUsers.slice(0, 3);
+
+      // Re-ordered visual array mapped with Tailwind's ordering variables to guarantee Rank 1 sits at the absolute top on mobile stacked layout
+      const podiumOrder = [];
+      if (topThree[1]) podiumOrder.push({ user: topThree[1], rank: 2 }); // Desktop: Left, Mobile: Second
+      if (topThree[0]) podiumOrder.push({ user: topThree[0], rank: 1 }); // Desktop: Center, Mobile: First
+      if (topThree[2]) podiumOrder.push({ user: topThree[2], rank: 3 }); // Desktop: Right, Mobile: Third
+
+      podiumOrder.forEach((item) => {
+        const isSelf = currentUser && item.user.uid === currentUser.uid;
+        const displayName = isSelf ? item.user.email : maskEmailSecure(item.user.email);
+        
+        let badgeIcon = "";
+        let badgeColor = "";
+        let borderGlow = "";
+        let animClass = "";
+        let visualOrderClass = "";
+
+        if (item.rank === 1) {
+          badgeIcon = `<i class="fa-solid fa-gem text-3xl text-sky-400"></i>`;
+          badgeColor = "text-sky-400";
+          borderGlow = "border-sky-500/50 bg-slate-900 glow-emerald-lg ring-2 ring-sky-500/20";
+          animClass = "animate-diamond";
+          visualOrderClass = "order-1 md:order-2 md:-translate-y-3"; // Rank 1 sits visually top on mobile, center on desktop
+        } else if (item.rank === 2) {
+          badgeIcon = `<i class="fa-solid fa-medal text-3xl text-amber-400"></i>`;
+          badgeColor = "text-amber-400";
+          borderGlow = "border-amber-500/30 bg-slate-900";
+          animClass = "animate-gold";
+          visualOrderClass = "order-2 md:order-1"; // Rank 2 sits visually middle on mobile, left on desktop
+        } else {
+          badgeIcon = `<i class="fa-solid fa-medal text-3xl text-slate-400"></i>`;
+          badgeColor = "text-slate-400";
+          borderGlow = "border-slate-700/40 bg-slate-900";
+          animClass = "animate-silver";
+          visualOrderClass = "order-3 md:order-3"; // Rank 3 sits visually bottom on mobile, right on desktop
+        }
+
+        const podCard = document.createElement("div");
+        podCard.className = `w-full md:w-1/3 border rounded-2xl p-5 text-center flex flex-col items-center justify-center relative overflow-hidden transition-all transform hover:scale-[1.02] ${borderGlow} ${visualOrderClass}`;
+        
+        podCard.innerHTML = `
+          <div class="absolute top-2 left-2 font-sporty text-xs font-bold px-2 py-0.5 rounded-md bg-slate-950 border border-slate-800 text-slate-400">
+            #${item.rank}
+          </div>
+
+          <div class="mb-3 ${animClass}">
+            ${badgeIcon}
+          </div>
+
+          <div class="text-sm font-bold truncate max-w-full ${isSelf ? 'text-emerald-400 font-extrabold' : 'text-slate-200'}">
+            ${displayName}
+            ${isSelf ? '<span class="block text-[10px] text-emerald-400 font-semibold uppercase tracking-widest mt-0.5">(You)</span>' : ''}
+          </div>
+
+          <div class="mt-2 font-sporty flex items-baseline space-x-1">
+            <span class="text-2xl font-extrabold ${badgeColor}">${item.user.points || 0}</span>
+            <span class="text-xs text-slate-400 font-bold">pts</span>
+          </div>
+          
+          <span class="text-[10px] text-slate-500 mt-1 uppercase tracking-wide font-sporty">
+            ${item.user.predictionCount || 0} Predicted
+          </span>
+        `;
+        podiumContainer.appendChild(podCard);
+      });
+
+      sortedUsers.forEach((userItem, index) => {
+        const rank = index + 1;
+        const isSelf = currentUser && userItem.uid === currentUser.uid;
+        const displayName = isSelf ? userItem.email : maskEmailSecure(userItem.email);
+
+        const row = document.createElement("tr");
+        row.className = `hover:bg-slate-900/40 transition-colors ${isSelf ? 'bg-emerald-950/20 border-l-2 border-l-emerald-500' : ''}`;
+        
+        let rankBadge = `<span class="font-sporty font-bold text-slate-400">#${rank}</span>`;
+        if (rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sky-950 border border-sky-600 text-sky-400 font-bold font-sporty text-xs">1</span>`;
+        if (rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-950 border border-amber-600 text-amber-400 font-bold font-sporty text-xs">2</span>`;
+        if (rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-800 border border-slate-600 text-slate-300 font-bold font-sporty text-xs">3</span>`;
+
+        row.innerHTML = `
+          <td class="py-3 px-3 text-center">${rankBadge}</td>
+          <td class="py-3 px-3">
+            <div class="flex items-center space-x-2">
+              <span class="font-semibold text-slate-200 truncate max-w-[120px] xs:max-w-none ${isSelf ? 'text-emerald-400 font-black' : ''}">
+                ${displayName}
+              </span>
+              ${isSelf ? '<span class="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded uppercase font-bold">YOU</span>' : ''}
+            </div>
+          </td>
+          <td class="py-3 px-3 text-right font-sporty text-slate-400 text-xs">
+            ${userItem.predictionCount || 0} Pred
+          </td>
+          <td class="py-3 px-3 text-right pr-4 xs:pr-6">
+            <span class="font-sporty font-bold text-slate-100">${userItem.points || 0}</span>
+            <span class="text-[11px] text-slate-500 font-semibold font-sporty ml-0.5">pts</span>
+          </td>
+        `;
+        rowsContainer.appendChild(row);
+      });
+    };
+
+    function maskEmailSecure(email) {
+      if (!email) return "anonymous***@fifa.com";
+      const parts = email.split("@");
+      if (parts.length !== 2) return "user***";
+      
+      const username = parts[0];
+      const domain = parts[1];
+
+      if (username.length <= 3) {
+        return `${username}***@${domain}`;
+      } else {
+        return `${username.substring(0, 3)}***@${domain}`;
+      }
+    }
+
+  </script>
+
+  <!-- Custom Confirmation Modal (Rule Compliant - Replaces native confirm) -->
+  <div id="custom-confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl transform scale-100 transition-transform">
+      <div class="text-center">
+        <div class="inline-flex p-3 bg-rose-950/50 rounded-full text-rose-500 border border-rose-800/50 mb-4">
+          <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-bold text-slate-100 font-sporty">Reset Predictions & Points?</h3>
+        <p class="text-xs text-slate-400 mt-2">This will permanently delete your predictions and reset your total score back to <span class="text-emerald-400 font-bold">0 pts</span>.</p>
+      </div>
+      <div class="mt-6 flex space-x-3">
+        <button id="modal-cancel-btn" class="flex-1 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 transition-colors text-slate-300 rounded-xl text-xs font-semibold uppercase tracking-wider min-h-[44px]">
+          Cancel
+        </button>
+        <button id="modal-confirm-btn" class="flex-1 py-2.5 px-4 bg-gradient-to-r from-rose-500 to-red-600 hover:opacity-90 transition-opacity text-white rounded-xl text-xs font-bold uppercase tracking-wider font-sporty min-h-[44px]">
+          Reset to 0
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
