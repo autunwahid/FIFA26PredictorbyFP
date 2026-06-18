@@ -89,7 +89,6 @@
 </head>
 <body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen selection:bg-emerald-500 selection:text-slate-900 overflow-x-hidden">
 
-  <!-- Header / Navigation -->
   <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-3 md:px-4 py-3">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       
@@ -124,23 +123,53 @@
             <i class="fa-solid fa-caret-down text-[10px] text-slate-400"></i>
           </button>
           
-          <!-- Dropdown menu -->
-          <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-52 xs:w-56 bg-slate-900 border border-slate-800 rounded-xl shadow-xl py-2 z-50">
+          <!-- Dropdown menu (Enriched with Score Actions, Sync Buttons and Automated Scheduler Info) -->
+          <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 xs:w-72 bg-slate-900 border border-slate-800 rounded-xl shadow-xl py-2.5 z-50">
             <div class="px-4 py-2 border-b border-slate-800">
               <p class="text-[10px] text-slate-400">Signed in as</p>
               <p class="text-xs xs:text-sm font-semibold truncate text-slate-100" id="dropdown-user-email">guest@fifa.com</p>
-              <div class="mt-2 bg-slate-950/80 px-2 py-1 rounded border border-slate-800 flex justify-between items-center">
-                <span class="text-[10px] text-slate-400">Your Score:</span>
+              
+              <!-- Points Sub-widget -->
+              <div class="mt-2 bg-slate-950/80 px-2.5 py-1.5 rounded border border-slate-800 flex justify-between items-center">
+                <span class="text-[10px] text-slate-400">Your Current Score:</span>
                 <span class="text-xs font-bold text-emerald-400 font-sporty" id="dropdown-user-points">0 pts</span>
               </div>
             </div>
+
+            <div class="px-2 py-1.5 border-b border-slate-800 space-y-1">
+              <button id="menu-sync-btn" onclick="triggerManualSync()" class="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-slate-100 rounded-lg flex items-center justify-between transition-colors">
+                <span class="flex items-center space-x-2">
+                  <i class="fa-solid fa-rotate text-emerald-400"></i>
+                  <span>Sync & Claim Points</span>
+                </span>
+                <span class="text-[9px] bg-slate-950 text-slate-400 px-1.5 py-0.5 rounded">Manual</span>
+              </button>
+              
+              <button onclick="resetAllPredictions()" class="w-full text-left px-3 py-2 text-xs text-rose-300 hover:bg-rose-950/20 hover:text-rose-200 rounded-lg flex items-center space-x-2 transition-colors">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Reset All & Clear Score</span>
+              </button>
+            </div>
+
+            <!-- Automated System Scheduler Info Panel -->
+            <div class="px-4 py-2 text-[10px] border-b border-slate-800 bg-slate-950/30">
+              <p class="font-bold text-emerald-400 uppercase tracking-wider font-sporty mb-1">
+                <i class="fa-regular fa-calendar-check mr-1 text-emerald-400"></i>
+                Database Scheduler Runs
+              </p>
+              <p class="text-slate-400 leading-tight">Everyday 3 times (UTC +6 Dhaka):</p>
+              <div class="flex gap-2 mt-1 mb-1.5 font-sporty font-medium text-slate-300">
+                <span class="bg-slate-950/80 px-1 py-0.5 rounded">01:30 AM</span>
+                <span class="bg-slate-950/80 px-1 py-0.5 rounded">05:30 AM</span>
+                <span class="bg-slate-950/80 px-1 py-0.5 rounded">09:30 AM</span>
+              </div>
+              <div class="text-slate-400">
+                Next scheduled evaluation:
+                <span id="next-auto-run" class="text-emerald-400 font-bold block mt-0.5">Calculating...</span>
+              </div>
+            </div>
             
-            <button id="menu-sync-btn" onclick="triggerManualSync()" class="w-full text-left px-4 py-2 text-xs xs:text-sm text-slate-300 hover:bg-slate-800 hover:text-slate-100 flex items-center space-x-2">
-              <i class="fa-solid fa-rotate text-emerald-400"></i>
-              <span>Sync & Claim Points</span>
-            </button>
-            
-            <button id="logout-btn" class="w-full text-left px-4 py-2 text-xs xs:text-sm text-rose-400 hover:bg-rose-950/20 hover:text-rose-300 flex items-center space-x-2 border-t border-slate-800 mt-1">
+            <button id="logout-btn" class="w-full text-left px-4 py-2.5 text-xs xs:text-sm text-rose-400 hover:bg-rose-950/10 hover:text-rose-300 flex items-center space-x-2 mt-1">
               <i class="fa-solid fa-right-from-bracket"></i>
               <span>Sign Out</span>
             </button>
@@ -151,7 +180,7 @@
     </div>
   </header>
 
-  <!-- Notification Banner Center Container (Now fully centered on mobile) -->
+  <!-- Notification Banner Center Container -->
   <div id="toast-container" class="fixed top-20 right-4 left-4 sm:left-auto sm:right-4 z-50 flex flex-col space-y-2 max-w-sm pointer-events-none"></div>
 
   <!-- Main Content Wrapper -->
@@ -212,53 +241,34 @@
     <!-- DASHBOARD VIEW (Hidden until user logs in) -->
     <section id="dashboard-view" class="hidden w-full space-y-4 xs:space-y-6 animate-fade-in py-2">
       
-      <!-- User stats HUD and Info Bar -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 xs:gap-4">
+      <!-- HERO HUD CARD: Clean design focusing directly on "TOTAL PREDICTOR SCORE" as requested -->
+      <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-5 md:p-6 rounded-2xl shadow-2xl relative overflow-hidden">
+        <div class="absolute right-0 bottom-0 opacity-[0.05] text-slate-600 transform translate-x-4 translate-y-4 scale-150">
+          <i class="fa-solid fa-star text-9xl text-amber-500"></i>
+        </div>
         
-        <!-- Welcome HUD card -->
-        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-4 xs:p-5 rounded-2xl flex items-center justify-between shadow-xl relative overflow-hidden">
-          <div class="absolute right-0 bottom-0 opacity-[0.04] text-slate-600 transform translate-x-2 translate-y-4 scale-150">
-            <i class="fa-solid fa-shield-halved text-9xl text-emerald-500"></i>
-          </div>
-          <div class="z-10">
-            <p class="text-[10px] xs:text-xs font-bold text-emerald-400 uppercase tracking-widest font-sporty">FIFA Player Profile</p>
-            <h3 class="text-base xs:text-lg md:text-xl font-black mt-1 text-slate-100 truncate max-w-[240px] md:max-w-full" id="user-hud-email">loading@user.com</h3>
-            <p class="text-[11px] text-slate-400 mt-0.5">Predict upcoming matches below to gather score statistics</p>
-          </div>
-        </div>
-
-        <!-- Match Points Standings HUD Card -->
-        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-4 xs:p-5 rounded-2xl flex items-center justify-between shadow-xl relative overflow-hidden">
-          <div class="absolute right-0 bottom-0 opacity-[0.04] text-slate-600 transform translate-x-4 translate-y-4 scale-150">
-            <i class="fa-solid fa-star text-9xl text-amber-500"></i>
-          </div>
-          <div class="z-10">
-            <p class="text-[10px] xs:text-xs font-bold text-amber-400 uppercase tracking-widest font-sporty">Total Predictor Score</p>
-            <div class="flex items-baseline space-x-2 mt-1">
-              <span class="text-2xl xs:text-3xl md:text-4xl font-extrabold font-sporty text-slate-100" id="user-hud-points">0</span>
-              <span class="text-xs font-bold text-amber-400 font-sporty">pts</span>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-1">Updates live. (Win: 3 pts | Draw outcome but predicted a win: 1 pt)</p>
-          </div>
-        </div>
-
-        <!-- Sync Actions Bar -->
-        <div class="bg-gradient-to-br from-slate-900 to-emerald-950/20 border border-slate-800 p-4 xs:p-5 rounded-2xl flex flex-col justify-between shadow-xl">
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h4 class="text-[10px] xs:text-xs font-bold text-emerald-400 uppercase tracking-wider font-sporty">Scores & System State</h4>
-            <p class="text-xs text-slate-300 mt-1">Simulate official match scores to sync results instantly and update the scoreboard.</p>
+            <p class="text-xs font-bold text-amber-400 uppercase tracking-widest font-sporty flex items-center gap-1.5">
+              <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+              </span>
+              <span>Total Predictor Score</span>
+            </p>
+            <div class="flex items-baseline space-x-2 mt-1">
+              <span class="text-4xl xs:text-5xl md:text-6xl font-black font-sporty text-slate-100" id="user-hud-points">0</span>
+              <span class="text-sm font-bold text-amber-400 font-sporty">pts earned</span>
+            </div>
           </div>
-          <div class="mt-3 xs:mt-4 flex space-x-2">
-            <button onclick="triggerManualSync()" class="flex-grow bg-emerald-600 hover:bg-emerald-500 transition-colors text-slate-950 font-bold py-2.5 px-3 rounded-xl text-xs font-sporty flex items-center justify-center space-x-1.5 shadow-lg">
-              <i class="fa-solid fa-rotate-right"></i>
-              <span>Sync Scores</span>
-            </button>
-            <button onclick="resetAllPredictions()" class="bg-slate-800 hover:bg-slate-700 transition-colors text-slate-300 hover:text-slate-100 px-3.5 rounded-xl text-xs flex items-center justify-center shadow-lg" title="Reset Predictions">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
+
+          <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 md:max-w-md text-xs text-slate-400 space-y-1">
+            <p class="font-semibold text-slate-300">Predictor Scoring System Matrix:</p>
+            <p><span class="text-emerald-400 font-bold font-sporty">• 3 points</span>: Correct outcome (Win/Loss prediction matches actual, or Correct Tie prediction).</p>
+            <p><span class="text-amber-400 font-bold font-sporty">• 1 point</span>: Predicted Win outcome (Team 1 or 2), but result ended in a Draw.</p>
+            <p><span class="text-slate-500 font-bold font-sporty">• 0 points</span>: Incorrect predictions.</p>
           </div>
         </div>
-
       </div>
 
       <!-- Dual Navigation Tabs (Predictions vs Leaderboard) - Adaptive layout flex and layout -->
@@ -389,7 +399,7 @@
     let localPredictions = {}; 
     let leaderboardUsers = [];
 
-    // Real tournament fixtures matching UTC+6 (Dhaka Time) on Thursday, June 18, 2026, 12:13 PM
+    // Real tournament fixtures matching UTC+6 (Dhaka Time) on Thursday, June 18, 2026, 2:55 PM
     const matchesDatabase = [
       {
         id: "match_1",
@@ -660,7 +670,6 @@
         
         document.getElementById("nav-user-email").textContent = user.email || "Anonymous";
         document.getElementById("dropdown-user-email").textContent = user.email || "Anonymous User";
-        document.getElementById("user-hud-email").textContent = user.email || "Anonymous User";
         document.getElementById("sync-pill").classList.remove("hidden");
 
         authView.classList.add("hidden");
@@ -670,6 +679,7 @@
         await initializeUserProfile(user);
         listenToUserPredictions(user);
         listenToGlobalLeaderboard();
+        calculateNextScheduledSyncTime();
         
         showNotification(`Welcome back, ${user.email || 'Champion'}! Portal ready.`, "success");
       } else {
@@ -684,6 +694,51 @@
         leaderboardUsers = [];
       }
     });
+
+    // Runs automatically behind the scenes to estimate when the next automated score calculations evaluate
+    function calculateNextScheduledSyncTime() {
+      const now = new Date();
+      
+      // Target schedule times in Dhaka time (Dhaka is UTC+6)
+      // Convert current local time to UTC first to accurately determine Dhaka hours
+      const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const dhakaTime = new Date(utcTime + (3600000 * 6));
+      
+      const currentDhakaYear = dhakaTime.getFullYear();
+      const currentDhakaMonth = dhakaTime.getMonth();
+      const currentDhakaDate = dhakaTime.getDate();
+      
+      // Candidate runs (01:30 AM, 05:30 AM, 09:30 AM)
+      const runs = [
+        new Date(currentDhakaYear, currentDhakaMonth, currentDhakaDate, 1, 30, 0),
+        new Date(currentDhakaYear, currentDhakaMonth, currentDhakaDate, 5, 30, 0),
+        new Date(currentDhakaYear, currentDhakaMonth, currentDhakaDate, 9, 30, 0),
+        // Tomorrow's first run
+        new Date(currentDhakaYear, currentDhakaMonth, currentDhakaDate + 1, 1, 30, 0)
+      ];
+      
+      let nextRun = runs[3]; // Fallback to tomorrow 01:30 AM
+      for (const run of runs) {
+        if (run > dhakaTime) {
+          nextRun = run;
+          break;
+        }
+      }
+      
+      // Calculate countdown duration in hours/minutes
+      const diffMs = nextRun - dhakaTime;
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffMins = Math.floor((diffMs % 3600000) / 60000);
+      
+      const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+      const formattedRunDate = nextRun.toLocaleString('en-US', options);
+      
+      const statusStr = `${formattedRunDate} (in ${diffHours}h ${diffMins}m)`;
+      document.getElementById("next-auto-run").textContent = statusStr;
+    }
+
+    // Refresh scheduled evaluation calculations every 1 minute
+    setInterval(calculateNextScheduledSyncTime, 60000);
 
     async function initializeUserProfile(user) {
       const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
