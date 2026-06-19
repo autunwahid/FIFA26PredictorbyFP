@@ -136,6 +136,17 @@
               </div>
             </div>
 
+            <!-- Nickname Edit Form Segment -->
+            <div class="px-4 py-2.5 border-b border-slate-800 space-y-2 bg-slate-950/30">
+              <label class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Your Nickname</label>
+              <div class="flex space-x-1.5">
+                <input type="text" id="profile-nickname-input" maxlength="20" class="flex-grow min-w-0 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 outline-none focus:border-emerald-500" placeholder="Set a nickname...">
+                <button onclick="saveNickname()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors font-sporty">
+                  Save
+                </button>
+              </div>
+            </div>
+
             <div class="px-2 py-1.5 border-b border-slate-800 space-y-1">
               <button id="menu-sync-btn" onclick="triggerManualSync()" class="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-slate-100 rounded-lg flex items-center justify-between transition-colors">
                 <span class="flex items-center space-x-2">
@@ -261,10 +272,10 @@
           </div>
 
           <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 md:max-w-md text-xs text-slate-400 space-y-1">
-            <p class="font-semibold text-slate-300">Predictor Scoring System Matrix:</p>
+            <p class="font-semibold text-slate-300">Predictor Scoring System Matrix & Tiebreaker Rules:</p>
             <p><span class="text-emerald-400 font-bold font-sporty">• 3 points</span>: Correct outcome (Win/Loss prediction matches actual, or Correct Tie prediction).</p>
             <p><span class="text-amber-400 font-bold font-sporty">• 1 point</span>: Predicted Win outcome (Team 1 or 2), but result ended in a Draw.</p>
-            <p><span class="text-slate-500 font-bold font-sporty">• 0 points</span>: Incorrect predictions.</p>
+            <p class="pt-1 text-[11px] text-slate-300 border-t border-slate-800"><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i> Leaderboard Tiebreakers: Highest Points &rarr; Prediction Success Rate % &rarr; Alphabetical order (Nicknames).</p>
           </div>
         </div>
       </div>
@@ -329,7 +340,7 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
           <div class="p-4 border-b border-slate-800 flex justify-between items-center">
             <h3 class="text-xs xs:text-sm font-bold font-sporty tracking-wider text-slate-300 uppercase">World Standings Table</h3>
-            <span class="text-[10px] text-slate-500">Includes secure privacy masking</span>
+            <span class="text-[10px] text-slate-500">Includes secure privacy masking and success rate tiebreaker evaluation</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -337,8 +348,8 @@
               <thead>
                 <tr class="border-b border-slate-800 bg-slate-950 text-slate-400 text-[10px] xs:text-xs uppercase font-sporty">
                   <th class="py-3 px-3 font-semibold text-center w-12 xs:w-16">Rank</th>
-                  <th class="py-3 px-3 font-semibold">User Profile (Secure Masking)</th>
-                  <th class="py-3 px-3 font-semibold text-right">Predictions</th>
+                  <th class="py-3 px-3 font-semibold">User Profile (Nickname / Secure Email)</th>
+                  <th class="py-3 px-3 font-semibold text-right">Predictions & Success</th>
                   <th class="py-3 px-3 font-semibold text-right pr-4 xs:pr-6">Total Score</th>
                 </tr>
               </thead>
@@ -394,11 +405,11 @@
     let currentUser = null;
     let localPredictions = {}; 
     let leaderboardUsers = [];
+    let currentNickname = "";
 
     // Define standard playtime globally (90 minutes standard play + 15 minutes halftime limit)
     const PLAY_DURATION_MS = 105 * 60 * 1000; 
 
-    // Streamlined real-world tournament database
     const matchesDatabase = [
       {
         id: "match_1",
@@ -552,7 +563,7 @@
         awayFlag: "kr",
         stage: "Group A",
         kickoffTime: "2026-06-19T07:00:00+06:00", 
-        actualScore: { home: 1, away: 0 }, // Fixed score! (Correct 1-0 outcome shown in image_726ca6.png)
+        actualScore: { home: 1, away: 0 }, 
         result: "HOME_WIN",
         date: "June 19, 07:00 AM (Dhaka)"
       },
@@ -608,13 +619,12 @@
 
     // True World Cup Oracle verification fallback scores mapping
     const realWorldScoresFallback = {
-      "match_10": { home: 1, away: 1, status: "Completed", result: "DRAW" }, // Czechia vs South Africa (1-1)
-      "match_11": { home: 4, away: 1, status: "Completed", result: "HOME_WIN" }, // Switzerland vs Bosnia (4-1)
-      "match_12": { home: 6, away: 0, status: "Completed", result: "HOME_WIN" }, // Canada vs Qatar (6-0)
-      "match_13": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" } // Mexico vs South Korea (1-0, verified via image_726ca6.png)
+      "match_10": { home: 1, away: 1, status: "Completed", result: "DRAW" }, 
+      "match_11": { home: 4, away: 1, status: "Completed", result: "HOME_WIN" }, 
+      "match_12": { home: 6, away: 0, status: "Completed", result: "HOME_WIN" }, 
+      "match_13": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" } 
     };
 
-    // Dynamic state decider based on actual clock relative to UTC+6
     function resolveMatchStatesAndOutputs() {
       const now = new Date();
       matchesDatabase.forEach((match) => {
@@ -739,6 +749,12 @@
       });
     }
 
+    if (profileDropdown) {
+      profileDropdown.addEventListener("click", (e) => {
+        e.stopPropagation(); // Stops clicks inside the menu from closing it
+      });
+    }
+
     document.addEventListener("click", () => {
       if (profileDropdown) profileDropdown.classList.add("hidden");
     });
@@ -751,7 +767,21 @@
       if (user) {
         currentUser = user;
         
-        document.getElementById("nav-user-email").textContent = user.email || "Anonymous";
+        // Load initial profile data including custom nickname
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+        try {
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            currentNickname = userSnap.data().nickname || "";
+          } else {
+            currentNickname = "";
+          }
+        } catch (err) {
+          console.warn("Failed to retrieve profile nickname on init: ", err);
+        }
+
+        document.getElementById("profile-nickname-input").value = currentNickname;
+        document.getElementById("nav-user-email").textContent = currentNickname || maskEmailSecure(user.email);
         document.getElementById("dropdown-user-email").textContent = user.email || "Anonymous User";
         document.getElementById("sync-pill").classList.remove("hidden");
 
@@ -766,9 +796,10 @@
         listenToGlobalLeaderboard();
         calculateNextScheduledSyncTime();
         
-        showNotification(`Welcome back, ${user.email || 'Champion'}! Portal ready.`, "success");
+        showNotification(`Welcome back, ${currentNickname || 'Champion'}! Portal ready.`, "success");
       } else {
         currentUser = null;
+        currentNickname = "";
         
         authView.classList.remove("hidden");
         dashboardView.classList.add("hidden");
@@ -779,6 +810,39 @@
         leaderboardUsers = [];
       }
     });
+
+    window.saveNickname = async function() {
+      if (!currentUser) {
+        showNotification("Please sign in to update your profile nickname.", "error");
+        return;
+      }
+
+      const nicknameInput = document.getElementById("profile-nickname-input");
+      const chosenNickname = nicknameInput.value.trim();
+
+      if (chosenNickname.length > 20) {
+        showNotification("Nickname must be 20 characters or less.", "error");
+        return;
+      }
+
+      try {
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+        await setDoc(userRef, {
+          nickname: chosenNickname
+        }, { merge: true });
+
+        currentNickname = chosenNickname;
+        document.getElementById("nav-user-email").textContent = chosenNickname || maskEmailSecure(currentUser.email);
+        
+        showNotification("Profile nickname updated successfully!", "success");
+        
+        // Force manual recalculated state broadcast
+        await autoRecalculateAndSavePoints();
+      } catch (err) {
+        console.error("Error setting custom nickname: ", err);
+        showNotification("Unable to write your nickname to the secure database.", "error");
+      }
+    };
 
     function calculateNextScheduledSyncTime() {
       const now = new Date();
@@ -818,13 +882,13 @@
 
     setInterval(calculateNextScheduledSyncTime, 60000);
 
-    // Dynamic point calculation and Firestore auto-save function
     async function autoRecalculateAndSavePoints() {
       if (!currentUser) return;
 
       resolveMatchStatesAndOutputs();
 
       let scoreCalculated = 0;
+      let successCount = 0;
       let totalCompletedPredictions = 0;
 
       matchesDatabase.forEach((match) => {
@@ -835,8 +899,10 @@
             
             if (prediction === match.result) {
               scoreCalculated += 3;
+              successCount++;
             } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
               scoreCalculated += 1;
+              successCount++; // Partial success is counted as prediction success!
             }
           }
         }
@@ -846,12 +912,14 @@
       document.getElementById("user-hud-points").textContent = scoreCalculated;
       document.getElementById("dropdown-user-points").textContent = `${scoreCalculated} pts`;
 
-      // Save to shared Firestore space
+      // Save complete metrics to public Firestore space for Leaderboard logic
       try {
         const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
         await setDoc(userRef, {
           points: scoreCalculated,
           predictionCount: Object.keys(localPredictions).length,
+          successCount: successCount,
+          nickname: currentNickname || "",
           lastSynced: Date.now()
         }, { merge: true });
       } catch (error) {
@@ -869,6 +937,8 @@
             email: user.email || "anonymous@fifa.com",
             points: 0,
             predictionCount: 0,
+            successCount: 0,
+            nickname: "",
             lastSynced: Date.now()
           };
           await setDoc(userRef, freshData);
@@ -933,7 +1003,35 @@
         snapshot.forEach((doc) => {
           leaderboardUsers.push(doc.data());
         });
-        leaderboardUsers.sort((a, b) => (b.points || 0) - (a.points || 0));
+        
+        // SORTING CRITERIA:
+        // 1. Highest total points (points descending)
+        // 2. Success Rate % (successCount / predictionCount descending)
+        // 3. Alphabetical order of nicknames / masked emails (ascending)
+        leaderboardUsers.sort((a, b) => {
+          const pointsA = a.points || 0;
+          const pointsB = b.points || 0;
+          if (pointsB !== pointsA) {
+            return pointsB - pointsA;
+          }
+
+          const predA = a.predictionCount || 0;
+          const predB = b.predictionCount || 0;
+          const succA = a.successCount || 0;
+          const succB = b.successCount || 0;
+
+          const rateA = predA > 0 ? (succA / predA) : 0;
+          const rateB = predB > 0 ? (succB / predB) : 0;
+
+          if (rateB !== rateA) {
+            return rateB - rateA;
+          }
+
+          const nameA = (a.nickname || maskEmailSecure(a.email || "")).toLowerCase();
+          const nameB = (b.nickname || maskEmailSecure(b.email || "")).toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+
         renderLeaderboard();
       }, (error) => {
         console.error("Leaderboard database listing error: ", error);
@@ -1242,12 +1340,7 @@
         const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
         await setDoc(docRef, localPredictions, { merge: true });
         
-        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
-        await setDoc(userRef, {
-          predictionCount: Object.keys(localPredictions).length,
-          lastSynced: Date.now()
-        }, { merge: true });
-        
+        await autoRecalculateAndSavePoints();
         showNotification("Prediction saved to live database!", "success");
       } catch (error) {
         console.error("Firestore save error: ", error);
@@ -1318,6 +1411,7 @@
           await setDoc(userRef, {
             points: 0,
             predictionCount: 0,
+            successCount: 0,
             lastSynced: Date.now()
           }, { merge: true });
 
@@ -1349,8 +1443,8 @@
         return;
       }
 
-      const sortedUsers = [...leaderboardUsers].sort((a, b) => (b.points || 0) - (a.points || 0));
-      const topThree = sortedUsers.slice(0, 3);
+      // Slice the top 3 users for the Podium cards
+      const topThree = leaderboardUsers.slice(0, 3);
 
       const podiumOrder = [];
       if (topThree[1]) podiumOrder.push({ user: topThree[1], rank: 2 }); 
@@ -1359,7 +1453,8 @@
 
       podiumOrder.forEach((item) => {
         const isSelf = currentUser && item.user.uid === currentUser.uid;
-        const displayName = isSelf ? item.user.email : maskEmailSecure(item.user.email);
+        // Verify custom nickname availability, fallback to secure masking email address
+        const displayName = item.user.nickname || maskEmailSecure(item.user.email);
         
         let badgeIcon = "";
         let badgeColor = "";
@@ -1387,6 +1482,10 @@
           visualOrderClass = "order-3 md:order-3"; 
         }
 
+        const predCount = item.user.predictionCount || 0;
+        const succCount = item.user.successCount || 0;
+        const successRatePercent = predCount > 0 ? Math.round((succCount / predCount) * 100) : 0;
+
         const podCard = document.createElement("div");
         podCard.className = `w-full md:w-1/3 border rounded-2xl p-5 text-center flex flex-col items-center justify-center relative overflow-hidden transition-all transform hover:scale-[1.02] ${borderGlow} ${visualOrderClass}`;
         
@@ -1409,17 +1508,22 @@
             <span class="text-xs text-slate-400 font-bold">pts</span>
           </div>
           
-          <span class="text-[10px] text-slate-500 mt-1 uppercase tracking-wide font-sporty">
-            ${item.user.predictionCount || 0} Predicted
-          </span>
+          <div class="flex flex-col items-center mt-1.5 space-y-0.5">
+            <span class="text-[10px] text-slate-400 uppercase tracking-wide font-sporty">
+              ${predCount} Predicted
+            </span>
+            <span class="text-[9px] bg-slate-950/60 text-emerald-400 border border-emerald-850 px-2 py-0.5 rounded font-sporty">
+              Rate: ${successRatePercent}%
+            </span>
+          </div>
         `;
         podiumContainer.appendChild(podCard);
       });
 
-      sortedUsers.forEach((userItem, index) => {
+      leaderboardUsers.forEach((userItem, index) => {
         const rank = index + 1;
         const isSelf = currentUser && userItem.uid === currentUser.uid;
-        const displayName = isSelf ? userItem.email : maskEmailSecure(userItem.email);
+        const displayName = userItem.nickname || maskEmailSecure(userItem.email);
 
         const row = document.createElement("tr");
         row.className = `hover:bg-slate-900/40 transition-colors ${isSelf ? 'bg-emerald-950/20 border-l-2 border-l-emerald-500' : ''}`;
@@ -1428,6 +1532,10 @@
         if (rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sky-950 border border-sky-600 text-sky-400 font-bold font-sporty text-xs">1</span>`;
         if (rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-950 border border-amber-600 text-amber-400 font-bold font-sporty text-xs">2</span>`;
         if (rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-800 border border-slate-600 text-slate-300 font-bold font-sporty text-xs">3</span>`;
+
+        const predCount = userItem.predictionCount || 0;
+        const succCount = userItem.successCount || 0;
+        const successRatePercent = predCount > 0 ? Math.round((succCount / predCount) * 100) : 0;
 
         row.innerHTML = `
           <td class="py-3 px-3 text-center">${rankBadge}</td>
@@ -1440,7 +1548,10 @@
             </div>
           </td>
           <td class="py-3 px-3 text-right font-sporty text-slate-400 text-xs">
-            ${userItem.predictionCount || 0} Pred
+            <div class="flex flex-col items-end">
+              <span>${predCount} Pred</span>
+              <span class="text-[9px] text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-900/30 mt-0.5">Rate: ${successRatePercent}%</span>
+            </div>
           </td>
           <td class="py-3 px-3 text-right pr-4 xs:pr-6">
             <span class="font-sporty font-bold text-slate-100">${userItem.points || 0}</span>
