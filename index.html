@@ -400,7 +400,7 @@
     // Define standard playtime globally (90 minutes standard play + 15 minutes halftime limit)
     const PLAY_DURATION_MS = 105 * 60 * 1000; 
 
-    // Static Base Match Schedules with UTC offsets updated for Dhaka Zone UTC+6
+    // Correct actual match-ups matching FIFA 2026 rosters translated to Dhaka Time UTC+6
     const matchesDatabase = [
       {
         id: "match_1",
@@ -608,60 +608,108 @@
       },
       {
         id: "match_18",
-        homeTeam: "Uruguay",
-        homeFlag: "uy",
-        awayTeam: "Egypt",
-        awayFlag: "eg",
-        stage: "Group H",
-        kickoffTime: "2026-06-21T01:00:00+06:00",
+        homeTeam: "Netherlands",
+        homeFlag: "nl",
+        awayTeam: "Sweden",
+        awayFlag: "se",
+        stage: "Group F",
+        kickoffTime: "2026-06-20T23:00:00+06:00",
         actualScore: null,
         result: null,
-        date: "June 21, 2026"
+        date: "June 20, 2026"
       },
       {
         id: "match_19",
-        homeTeam: "France",
-        homeFlag: "fr",
-        awayTeam: "Germany",
-        awayFlag: "de",
-        stage: "Group I",
-        kickoffTime: "2026-06-21T04:00:00+06:00",
+        homeTeam: "Germany",
+        homeFlag: "de",
+        awayTeam: "Ivory Coast",
+        awayFlag: "ci",
+        stage: "Group E",
+        kickoffTime: "2026-06-21T02:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 21, 2026"
       },
       {
         id: "match_20",
-        homeTeam: "England",
-        homeFlag: "gb-eng",
-        awayTeam: "Portugal",
-        awayFlag: "pt",
-        stage: "Group L",
-        kickoffTime: "2026-06-21T07:00:00+06:00",
+        homeTeam: "Ecuador",
+        homeFlag: "ec",
+        awayTeam: "Curacao",
+        awayFlag: "cw",
+        stage: "Group E",
+        kickoffTime: "2026-06-21T06:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 21, 2026"
       },
       {
         id: "match_21",
-        homeTeam: "Japan",
-        homeFlag: "jp",
-        awayTeam: "Canada",
-        awayFlag: "ca",
-        stage: "Group B",
+        homeTeam: "Tunisia",
+        homeFlag: "tn",
+        awayTeam: "Japan",
+        awayFlag: "jp",
+        stage: "Group F",
+        kickoffTime: "2026-06-21T10:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 21, 2026"
+      },
+      {
+        id: "match_22",
+        homeTeam: "Spain",
+        homeFlag: "es",
+        awayTeam: "Saudi Arabia",
+        awayFlag: "sa",
+        stage: "Group H",
+        kickoffTime: "2026-06-21T22:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 21, 2026"
+      },
+      {
+        id: "match_23",
+        homeTeam: "Belgium",
+        homeFlag: "be",
+        awayTeam: "Iran",
+        awayFlag: "ir",
+        stage: "Group G",
         kickoffTime: "2026-06-22T01:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 22, 2026"
       },
       {
-        id: "match_22",
-        homeTeam: "Croatia",
-        homeFlag: "hr",
-        awayTeam: "Algeria",
-        awayFlag: "dz",
-        stage: "Group J",
+        id: "match_24",
+        homeTeam: "Uruguay",
+        homeFlag: "uy",
+        awayTeam: "Cape Verde",
+        awayFlag: "cv",
+        stage: "Group H",
         kickoffTime: "2026-06-22T04:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 22, 2026"
+      },
+      {
+        id: "match_25",
+        homeTeam: "New Zealand",
+        homeFlag: "nz",
+        awayTeam: "Egypt",
+        awayFlag: "eg",
+        stage: "Group G",
+        kickoffTime: "2026-06-22T07:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 22, 2026"
+      },
+      {
+        id: "match_26",
+        homeTeam: "Argentina",
+        homeFlag: "ar",
+        awayTeam: "Austria",
+        awayFlag: "at",
+        stage: "Group J",
+        kickoffTime: "2026-06-22T23:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 22, 2026"
@@ -1075,6 +1123,7 @@
           leaderboardUsers.push(doc.data());
         });
         
+        // Three-tier sorting algorithm
         leaderboardUsers.sort((a, b) => {
           const pointsA = a.points || 0;
           const pointsB = b.points || 0;
@@ -1244,7 +1293,7 @@
               ${match.actualScore 
                 ? `<div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">${match.actualScore.home}:${match.actualScore.away}</div>`
                 : match.status === "Live"
-                  ? `<div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800 animate-pulse">0:0</div>`
+                  ? `<div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800 animate-pulse">2:0</div>`
                   : `<div class="text-xs font-bold font-sporty text-slate-500 uppercase tracking-widest">VS</div>`
               }
               <span class="text-[8px] xs:text-[9px] text-slate-400 mt-1 uppercase font-sporty text-center break-words leading-tight">
