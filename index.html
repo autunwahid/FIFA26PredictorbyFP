@@ -402,7 +402,7 @@
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
-      "match_17", "match_18", "match_19", "match_20"
+      "match_17", "match_18", "match_19", "match_20", "match_21", "match_22", "match_23", "match_24", "match_25"
     ];
 
     // Correct actual match-ups matching FIFA 2026 rosters translated to Dhaka Time UTC+6
@@ -655,7 +655,7 @@
         awayFlag: "jp",
         stage: "Group F",
         kickoffTime: "2026-06-21T10:00:00+06:00",
-        actualScore: { home: 0, away: 2 },
+        actualScore: { home: 0, away: 4 },
         result: "AWAY_WIN",
         date: "June 21, 2026"
       },
@@ -667,8 +667,8 @@
         awayFlag: "sa",
         stage: "Group H",
         kickoffTime: "2026-06-21T22:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 4, away: 0 },
+        result: "HOME_WIN",
         date: "June 21, 2026"
       },
       {
@@ -679,8 +679,8 @@
         awayFlag: "ir",
         stage: "Group G",
         kickoffTime: "2026-06-22T01:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 0 },
+        result: "DRAW",
         date: "June 22, 2026"
       },
       {
@@ -691,8 +691,8 @@
         awayFlag: "cv",
         stage: "Group H",
         kickoffTime: "2026-06-22T04:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 2, away: 2 },
+        result: "DRAW",
         date: "June 22, 2026"
       },
       {
@@ -703,8 +703,8 @@
         awayFlag: "eg",
         stage: "Group G",
         kickoffTime: "2026-06-22T07:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 3 },
+        result: "AWAY_WIN",
         date: "June 22, 2026"
       },
       {
@@ -718,6 +718,90 @@
         actualScore: null,
         result: null,
         date: "June 22, 2026"
+      },
+      {
+        id: "match_27",
+        homeTeam: "France",
+        homeFlag: "fr",
+        awayTeam: "Iraq",
+        awayFlag: "iq",
+        stage: "Group I",
+        kickoffTime: "2026-06-23T03:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 23, 2026"
+      },
+      {
+        id: "match_28",
+        homeTeam: "Norway",
+        homeFlag: "no",
+        awayTeam: "Senegal",
+        awayFlag: "sn",
+        stage: "Group I",
+        kickoffTime: "2026-06-23T06:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 23, 2026"
+      },
+      {
+        id: "match_29",
+        homeTeam: "Jordan",
+        homeFlag: "jo",
+        awayTeam: "Algeria",
+        awayFlag: "dz",
+        stage: "Group J",
+        kickoffTime: "2026-06-23T09:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 23, 2026"
+      },
+      {
+        id: "match_30",
+        homeTeam: "Portugal",
+        homeFlag: "pt",
+        awayTeam: "Uzbekistan",
+        awayFlag: "uz",
+        stage: "Group K",
+        kickoffTime: "2026-06-23T23:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 23, 2026"
+      },
+      {
+        id: "match_31",
+        homeTeam: "England",
+        homeFlag: "gb-eng",
+        awayTeam: "Ghana",
+        awayFlag: "gh",
+        stage: "Group L",
+        kickoffTime: "2026-06-24T02:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 24, 2026"
+      },
+      {
+        id: "match_32",
+        homeTeam: "Panama",
+        homeFlag: "pa",
+        awayTeam: "Croatia",
+        awayFlag: "hr",
+        stage: "Group L",
+        kickoffTime: "2026-06-24T05:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 24, 2026"
+      },
+      {
+        id: "match_33",
+        homeTeam: "Colombia",
+        homeFlag: "co",
+        awayTeam: "DR Congo",
+        awayFlag: "cd",
+        stage: "Group K",
+        kickoffTime: "2026-06-24T08:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 24, 2026"
       }
     ];
 
@@ -743,7 +827,11 @@
       "match_18": { home: 5, away: 1, status: "Completed", result: "HOME_WIN" },
       "match_19": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
       "match_20": { home: 0, away: 0, status: "Completed", result: "DRAW" },
-      "match_21": { home: 0, away: 2, status: "Live", result: "AWAY_WIN" }
+      "match_21": { home: 0, away: 4, status: "Completed", result: "AWAY_WIN" },
+      "match_22": { home: 4, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_23": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_24": { home: 2, away: 2, status: "Completed", result: "DRAW" },
+      "match_25": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" }
     };
 
     // Evaluate live dynamic timestamps cleanly
@@ -810,14 +898,14 @@
       const promptText = `
         Search using Google Search grounding on the official webpage: 
         https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=BD&wtw-filter=ALL
-        Find the true results, live scores, and statuses for matches from June 20 to June 22, 2026.
+        Find the true results, live scores, and statuses for matches from June 20 to June 24, 2026.
         Return a simple JSON array structure matching the following key parameters:
         [
           {
-            "id": "match_17",
+            "id": "match_21",
             "homeScore": 0,
-            "awayScore": 1,
-            "status": "Live",
+            "awayScore": 4,
+            "status": "Completed",
             "result": "AWAY_WIN"
           }
         ]
