@@ -89,6 +89,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen selection:bg-emerald-500 selection:text-slate-900 overflow-x-hidden">
 
+  <!-- HEADER NAVIGATION BAR -->
   <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-3 md:px-4 py-3">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       
@@ -184,6 +185,7 @@
   <!-- Notification Banner Center Container -->
   <div id="toast-container" class="fixed top-20 right-4 left-4 sm:left-auto sm:right-4 z-50 flex flex-col space-y-2 max-w-sm pointer-events-none"></div>
 
+  <!-- MAIN APP WINDOW -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-3 xs:p-4 flex flex-col justify-center">
 
     <!-- AUTHENTICATION VIEW -->
@@ -369,6 +371,7 @@
     </div>
   </footer>
 
+  <!-- PLATFORM LOGIC & SCRIPTS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -398,11 +401,12 @@
     // Define standard playtime globally (90 minutes standard play + 15 minutes halftime limit)
     const PLAY_DURATION_MS = 105 * 60 * 1000; 
 
-    // Historical completed match IDs that are strictly hard-locked to prevent Firestore or scraper pollution
+    // Historical completed matches up to match_29 that are locked from external overrides to align with image_d39a67.png
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
-      "match_17", "match_18", "match_19", "match_20", "match_21", "match_22", "match_23", "match_24", "match_25"
+      "match_17", "match_18", "match_19", "match_20", "match_21", "match_22", "match_23", "match_24", 
+      "match_25", "match_26", "match_27", "match_28", "match_29"
     ];
 
     // Correct actual match-ups matching FIFA 2026 rosters translated to Dhaka Time UTC+6
@@ -715,8 +719,8 @@
         awayFlag: "at",
         stage: "Group J",
         kickoffTime: "2026-06-22T23:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 2, away: 0 },
+        result: "HOME_WIN",
         date: "June 22, 2026"
       },
       {
@@ -727,8 +731,8 @@
         awayFlag: "iq",
         stage: "Group I",
         kickoffTime: "2026-06-23T03:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 3, away: 0 },
+        result: "HOME_WIN",
         date: "June 23, 2026"
       },
       {
@@ -739,8 +743,8 @@
         awayFlag: "sn",
         stage: "Group I",
         kickoffTime: "2026-06-23T06:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 3, away: 2 },
+        result: "HOME_WIN",
         date: "June 23, 2026"
       },
       {
@@ -751,8 +755,8 @@
         awayFlag: "dz",
         stage: "Group J",
         kickoffTime: "2026-06-23T09:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 2 },
+        result: "AWAY_WIN",
         date: "June 23, 2026"
       },
       {
@@ -802,10 +806,82 @@
         actualScore: null,
         result: null,
         date: "June 24, 2026"
+      },
+      {
+        id: "match_34",
+        homeTeam: "USA",
+        homeFlag: "us",
+        awayTeam: "Turkiye",
+        awayFlag: "tr",
+        stage: "Group D",
+        kickoffTime: "2026-06-24T22:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 24, 2026"
+      },
+      {
+        id: "match_35",
+        homeTeam: "Australia",
+        homeFlag: "au",
+        awayTeam: "Paraguay",
+        awayFlag: "py",
+        stage: "Group D",
+        kickoffTime: "2026-06-25T01:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 25, 2026"
+      },
+      {
+        id: "match_36",
+        homeTeam: "Morocco",
+        homeFlag: "ma",
+        awayTeam: "Haiti",
+        awayFlag: "ht",
+        stage: "Group C",
+        kickoffTime: "2026-06-25T04:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 25, 2026"
+      },
+      {
+        id: "match_37",
+        homeTeam: "Brazil",
+        homeFlag: "br",
+        awayTeam: "Scotland",
+        awayFlag: "gb-sct",
+        stage: "Group C",
+        kickoffTime: "2026-06-25T07:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 25, 2026"
+      },
+      {
+        id: "match_38",
+        homeTeam: "Sweden",
+        homeFlag: "se",
+        awayTeam: "Tunisia",
+        awayFlag: "tn",
+        stage: "Group F",
+        kickoffTime: "2026-06-25T22:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 25, 2026"
+      },
+      {
+        id: "match_39",
+        homeTeam: "Japan",
+        homeFlag: "jp",
+        awayTeam: "Netherlands",
+        awayFlag: "nl",
+        stage: "Group F",
+        kickoffTime: "2026-06-26T01:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 26, 2026"
       }
     ];
 
-    // Real World scores mapping for baseline safe backup validation
+    // Fallbacks mapped for absolute baseline safety
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -831,7 +907,11 @@
       "match_22": { home: 4, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_23": { home: 0, away: 0, status: "Completed", result: "DRAW" },
       "match_24": { home: 2, away: 2, status: "Completed", result: "DRAW" },
-      "match_25": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" }
+      "match_25": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_26": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_27": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_28": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_29": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" }
     };
 
     // Evaluate live dynamic timestamps cleanly
@@ -880,6 +960,7 @@
       });
     }
 
+    // GROUNDED SYNC SERVICE (FETCH OFFICIAL FIFA DATA VIA GEMINI SEARCH)
     async function syncWithFifaOfficialURL() {
       const syncPill = document.getElementById("sync-pill");
       const syncPillText = document.getElementById("sync-pill-text");
@@ -898,7 +979,7 @@
       const promptText = `
         Search using Google Search grounding on the official webpage: 
         https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=BD&wtw-filter=ALL
-        Find the true results, live scores, and statuses for matches from June 20 to June 24, 2026.
+        Find the true results, live scores, and statuses for matches from June 20 to June 25, 2026.
         Return a simple JSON array structure matching the following key parameters:
         [
           {
@@ -1012,6 +1093,7 @@
       }
     }
 
+    // HELPER SYSTEM TO DISPATCH POPUP TOASTS
     function showNotification(message, type = "info") {
       const container = document.getElementById("toast-container");
       if (!container) return;
@@ -1052,6 +1134,7 @@
       }, 5000);
     }
 
+    // DROPDOWN TRIGGER INTERACTION
     const profileBtn = document.getElementById("profile-btn");
     const profileDropdown = document.getElementById("profile-dropdown");
     
@@ -1072,6 +1155,7 @@
       if (profileDropdown) profileDropdown.classList.add("hidden");
     });
 
+    // MONITOR USER LIFECYCLE CONTROLLER
     onAuthStateChanged(auth, async (user) => {
       const authView = document.getElementById("auth-view");
       const dashboardView = document.getElementById("dashboard-view");
@@ -1123,6 +1207,7 @@
       }
     });
 
+    // STORE CUSTOM USER PROFILE NAME
     window.saveNickname = async function() {
       if (!currentUser) {
         showNotification("Please sign in to update your profile nickname.", "error");
@@ -1154,6 +1239,7 @@
       }
     };
 
+    // REAL-TIME AUTO CALCULATOR & STANDINGS MATRIX SAVE
     async function autoRecalculateAndSavePoints() {
       if (!currentUser) return;
 
@@ -1187,6 +1273,7 @@
           predictionCount: Object.keys(localPredictions).length,
           successCount: successCount,
           nickname: currentNickname || "",
+          predictions: localPredictions, // Direct copy for secure in-memory global calculations
           lastSynced: Date.now()
         }, { merge: true });
       } catch (error) {
@@ -1194,6 +1281,7 @@
       }
     }
 
+    // CONSTRUCT NEW USER PORTAL ENTRIES
     async function initializeUserProfile(user) {
       const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
       try {
@@ -1206,6 +1294,7 @@
             predictionCount: 0,
             successCount: 0,
             nickname: "",
+            predictions: {},
             lastSynced: Date.now()
           };
           await setDoc(userRef, freshData);
@@ -1221,6 +1310,7 @@
       }
     }
 
+    // GLOBAL DATABASE REALTIME UPDATER FOR ALL CONCURRENT USERS
     function listenToSharedScores() {
       const scoresDoc = doc(db, 'artifacts', appId, 'public', 'data', 'live_scores', 'current_scores');
       onSnapshot(scoresDoc, async (snapshot) => {
@@ -1257,6 +1347,7 @@
       });
     }
 
+    // ATTACH REAL-TIME USER PREDICTIONS DATA FEED
     function listenToUserPredictions(user) {
       const q = doc(db, 'artifacts', appId, 'users', user.uid, 'predictions', 'all_predictions');
       onSnapshot(q, async (snapshot) => {
@@ -1273,12 +1364,42 @@
       });
     }
 
+    // REAL-TIME IN-MEMORY LEADERBOARD SYNC (RECALCULATES ALL PLAYERS' POINTS ON THE FLY)
     function listenToGlobalLeaderboard() {
       const usersCol = collection(db, 'artifacts', appId, 'public', 'data', 'users');
       onSnapshot(usersCol, (snapshot) => {
         leaderboardUsers = [];
+        resolveMatchStatesAndOutputs(); // Ensure we have the latest scores ready
+
         snapshot.forEach((doc) => {
-          leaderboardUsers.push(doc.data());
+          const userData = doc.data();
+          const predictions = userData.predictions || {};
+          
+          let scoreCalculated = 0;
+          let successCount = 0;
+
+          // Dynamically compute score for this user based on the active matchesDatabase
+          matchesDatabase.forEach((match) => {
+            if (match.status === "Completed") {
+              const prediction = predictions[match.id];
+              if (prediction) {
+                if (prediction === match.result) {
+                  scoreCalculated += 3;
+                  successCount++;
+                } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
+                  scoreCalculated += 1;
+                  successCount++;
+                }
+              }
+            }
+          });
+
+          // Override local representation with strictly calculated scores
+          userData.points = scoreCalculated;
+          userData.successCount = successCount;
+          userData.predictionCount = Object.keys(predictions).length;
+
+          leaderboardUsers.push(userData);
         });
         
         // Multi-tier Sorting criteria
@@ -1317,6 +1438,7 @@
       document.getElementById("saved-predictions-counter").textContent = count;
     }
 
+    // CORE TAB SWITCHING SYSTEM
     window.switchTab = function(tabName) {
       const tabPredictions = document.getElementById("tab-btn-predictions");
       const tabLeaderboard = document.getElementById("tab-btn-leaderboard");
@@ -1339,6 +1461,7 @@
       }
     };
 
+    // GENERATE INTERACTIVE MATCH CARDS RENDERING ENGINE
     window.renderMatches = function() {
       const grid = document.getElementById("matches-grid");
       const filter = document.getElementById("match-group-filter").value;
@@ -1525,6 +1648,7 @@
       });
     };
 
+    // FORM FIELDS LOGIC DOM ELEMENTS MAP
     const authForm = document.getElementById("auth-form");
     const authToggleBtn = document.getElementById("auth-toggle-btn");
     const authTitle = document.getElementById("auth-title");
@@ -1591,6 +1715,7 @@
       }
     });
 
+    // SUBMIT PREDICTIONS AND SYNC TO BOTH PRIVATE AND PUBLIC COLLECTIONS
     window.submitPrediction = async function(matchId, choice, isLocked) {
       if (!currentUser) {
         showNotification("Please log in to submit match predictions.", "error");
@@ -1622,6 +1747,7 @@
       await syncWithFifaOfficialURL();
     };
 
+    // CUSTOM CONFIRMATION POPUP SYSTEM
     const confirmModal = document.getElementById("custom-confirm-modal");
     const modalCancelBtn = document.getElementById("modal-cancel-btn");
     const modalConfirmBtn = document.getElementById("modal-confirm-btn");
@@ -1669,6 +1795,7 @@
             points: 0,
             predictionCount: 0,
             successCount: 0,
+            predictions: {},
             lastSynced: Date.now()
           }, { merge: true });
 
@@ -1683,6 +1810,7 @@
       });
     };
 
+    // GENERATE LEADERBOARD CARD & PODIUM COMPONENT LAYOUTS
     window.renderLeaderboard = function() {
       const podiumContainer = document.getElementById("leaderboard-podium");
       const rowsContainer = document.getElementById("leaderboard-rows");
