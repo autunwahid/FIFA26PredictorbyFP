@@ -89,7 +89,6 @@
 </head>
 <body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen selection:bg-emerald-500 selection:text-slate-900 overflow-x-hidden">
 
-  <!-- HEADER NAVIGATION BAR -->
   <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-3 md:px-4 py-3">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       
@@ -185,7 +184,6 @@
   <!-- Notification Banner Center Container -->
   <div id="toast-container" class="fixed top-20 right-4 left-4 sm:left-auto sm:right-4 z-50 flex flex-col space-y-2 max-w-sm pointer-events-none"></div>
 
-  <!-- MAIN APP WINDOW -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-3 xs:p-4 flex flex-col justify-center">
 
     <!-- AUTHENTICATION VIEW -->
@@ -371,7 +369,6 @@
     </div>
   </footer>
 
-  <!-- PLATFORM LOGIC & SCRIPTS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -401,7 +398,7 @@
     // Define standard playtime globally (90 minutes standard play + 15 minutes halftime limit)
     const PLAY_DURATION_MS = 105 * 60 * 1000; 
 
-    // Historical completed matches up to match_29 that are locked from external overrides to align with image_d39a67.png
+    // Historical completed match IDs that are strictly hardlocked to prevent Firestore or scraper pollution
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
@@ -809,23 +806,23 @@
       },
       {
         id: "match_34",
-        homeTeam: "USA",
-        homeFlag: "us",
-        awayTeam: "Turkiye",
-        awayFlag: "tr",
-        stage: "Group D",
-        kickoffTime: "2026-06-24T22:00:00+06:00",
+        homeTeam: "Switzerland",
+        homeFlag: "ch",
+        awayTeam: "Canada",
+        awayFlag: "ca",
+        stage: "Group B",
+        kickoffTime: "2026-06-25T01:00:00+06:00",
         actualScore: null,
         result: null,
-        date: "June 24, 2026"
+        date: "June 25, 2026"
       },
       {
         id: "match_35",
-        homeTeam: "Australia",
-        homeFlag: "au",
-        awayTeam: "Paraguay",
-        awayFlag: "py",
-        stage: "Group D",
+        homeTeam: "Bosnia and Herzegovina",
+        homeFlag: "ba",
+        awayTeam: "Qatar",
+        awayFlag: "qa",
+        stage: "Group B",
         kickoffTime: "2026-06-25T01:00:00+06:00",
         actualScore: null,
         result: null,
@@ -845,43 +842,43 @@
       },
       {
         id: "match_37",
-        homeTeam: "Brazil",
-        homeFlag: "br",
-        awayTeam: "Scotland",
-        awayFlag: "gb-sct",
+        homeTeam: "Scotland",
+        homeFlag: "gb-sct",
+        awayTeam: "Brazil",
+        awayFlag: "br",
         stage: "Group C",
-        kickoffTime: "2026-06-25T07:00:00+06:00",
+        kickoffTime: "2026-06-25T04:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 25, 2026"
       },
       {
         id: "match_38",
-        homeTeam: "Sweden",
-        homeFlag: "se",
-        awayTeam: "Tunisia",
-        awayFlag: "tn",
-        stage: "Group F",
-        kickoffTime: "2026-06-25T22:00:00+06:00",
+        homeTeam: "South Africa",
+        homeFlag: "za",
+        awayTeam: "South Korea",
+        awayFlag: "kr",
+        stage: "Group A",
+        kickoffTime: "2026-06-25T07:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 25, 2026"
       },
       {
         id: "match_39",
-        homeTeam: "Japan",
-        homeFlag: "jp",
-        awayTeam: "Netherlands",
-        awayFlag: "nl",
-        stage: "Group F",
-        kickoffTime: "2026-06-26T01:00:00+06:00",
+        homeTeam: "Czechia",
+        homeFlag: "cz",
+        awayTeam: "Mexico",
+        awayFlag: "mx",
+        stage: "Group A",
+        kickoffTime: "2026-06-25T07:00:00+06:00",
         actualScore: null,
         result: null,
-        date: "June 26, 2026"
+        date: "June 25, 2026"
       }
     ];
 
-    // Fallbacks mapped for absolute baseline safety
+    // Real World scores mapping for baseline safe backup validation
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -960,7 +957,6 @@
       });
     }
 
-    // GROUNDED SYNC SERVICE (FETCH OFFICIAL FIFA DATA VIA GEMINI SEARCH)
     async function syncWithFifaOfficialURL() {
       const syncPill = document.getElementById("sync-pill");
       const syncPillText = document.getElementById("sync-pill-text");
@@ -1093,7 +1089,6 @@
       }
     }
 
-    // HELPER SYSTEM TO DISPATCH POPUP TOASTS
     function showNotification(message, type = "info") {
       const container = document.getElementById("toast-container");
       if (!container) return;
@@ -1134,7 +1129,6 @@
       }, 5000);
     }
 
-    // DROPDOWN TRIGGER INTERACTION
     const profileBtn = document.getElementById("profile-btn");
     const profileDropdown = document.getElementById("profile-dropdown");
     
@@ -1155,7 +1149,6 @@
       if (profileDropdown) profileDropdown.classList.add("hidden");
     });
 
-    // MONITOR USER LIFECYCLE CONTROLLER
     onAuthStateChanged(auth, async (user) => {
       const authView = document.getElementById("auth-view");
       const dashboardView = document.getElementById("dashboard-view");
@@ -1207,7 +1200,6 @@
       }
     });
 
-    // STORE CUSTOM USER PROFILE NAME
     window.saveNickname = async function() {
       if (!currentUser) {
         showNotification("Please sign in to update your profile nickname.", "error");
@@ -1239,7 +1231,6 @@
       }
     };
 
-    // REAL-TIME AUTO CALCULATOR & STANDINGS MATRIX SAVE
     async function autoRecalculateAndSavePoints() {
       if (!currentUser) return;
 
@@ -1272,8 +1263,8 @@
           points: scoreCalculated,
           predictionCount: Object.keys(localPredictions).length,
           successCount: successCount,
+          predictions: localPredictions, // Synced publicly to enable dynamic dynamic-scorer recalculations
           nickname: currentNickname || "",
-          predictions: localPredictions, // Direct copy for secure in-memory global calculations
           lastSynced: Date.now()
         }, { merge: true });
       } catch (error) {
@@ -1281,7 +1272,6 @@
       }
     }
 
-    // CONSTRUCT NEW USER PORTAL ENTRIES
     async function initializeUserProfile(user) {
       const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
       try {
@@ -1310,7 +1300,6 @@
       }
     }
 
-    // GLOBAL DATABASE REALTIME UPDATER FOR ALL CONCURRENT USERS
     function listenToSharedScores() {
       const scoresDoc = doc(db, 'artifacts', appId, 'public', 'data', 'live_scores', 'current_scores');
       onSnapshot(scoresDoc, async (snapshot) => {
@@ -1347,7 +1336,6 @@
       });
     }
 
-    // ATTACH REAL-TIME USER PREDICTIONS DATA FEED
     function listenToUserPredictions(user) {
       const q = doc(db, 'artifacts', appId, 'users', user.uid, 'predictions', 'all_predictions');
       onSnapshot(q, async (snapshot) => {
@@ -1364,56 +1352,70 @@
       });
     }
 
-    // REAL-TIME IN-MEMORY LEADERBOARD SYNC (RECALCULATES ALL PLAYERS' POINTS ON THE FLY)
+    // Helper functions to fetch dynamic scores for leaderboard sorting, falling back to legacy values gracefully
+    function getDynamicPoints(userItem) {
+      const legacyPoints = typeof userItem.points === 'number' ? userItem.points : 0;
+      if (userItem.predictions && typeof userItem.predictions === 'object' && Object.keys(userItem.predictions).length > 0) {
+        let calcPoints = 0;
+        matchesDatabase.forEach((match) => {
+          if (match.status === "Completed") {
+            const prediction = userItem.predictions[match.id];
+            if (prediction) {
+              if (prediction === match.result) {
+                calcPoints += 3;
+              } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
+                calcPoints += 1;
+              }
+            }
+          }
+        });
+        return Math.max(calcPoints, legacyPoints);
+      }
+      return legacyPoints;
+    }
+
+    function getDynamicSuccess(userItem) {
+      const legacySuccess = typeof userItem.successCount === 'number' ? userItem.successCount : 0;
+      if (userItem.predictions && typeof userItem.predictions === 'object' && Object.keys(userItem.predictions).length > 0) {
+        let calcSuccess = 0;
+        matchesDatabase.forEach((match) => {
+          if (match.status === "Completed") {
+            const prediction = userItem.predictions[match.id];
+            if (prediction) {
+              if (prediction === match.result) {
+                calcSuccess++;
+              } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
+                calcSuccess++;
+              }
+            }
+          }
+        });
+        return Math.max(calcSuccess, legacySuccess);
+      }
+      return legacySuccess;
+    }
+
     function listenToGlobalLeaderboard() {
       const usersCol = collection(db, 'artifacts', appId, 'public', 'data', 'users');
       onSnapshot(usersCol, (snapshot) => {
         leaderboardUsers = [];
-        resolveMatchStatesAndOutputs(); // Ensure we have the latest scores ready
-
         snapshot.forEach((doc) => {
-          const userData = doc.data();
-          const predictions = userData.predictions || {};
-          
-          let scoreCalculated = 0;
-          let successCount = 0;
-
-          // Dynamically compute score for this user based on the active matchesDatabase
-          matchesDatabase.forEach((match) => {
-            if (match.status === "Completed") {
-              const prediction = predictions[match.id];
-              if (prediction) {
-                if (prediction === match.result) {
-                  scoreCalculated += 3;
-                  successCount++;
-                } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
-                  scoreCalculated += 1;
-                  successCount++;
-                }
-              }
-            }
-          });
-
-          // Override local representation with strictly calculated scores
-          userData.points = scoreCalculated;
-          userData.successCount = successCount;
-          userData.predictionCount = Object.keys(predictions).length;
-
-          leaderboardUsers.push(userData);
+          leaderboardUsers.push(doc.data());
         });
         
-        // Multi-tier Sorting criteria
+        // Multi-tier Sorting criteria using safe dynamic hybrid score calculations
         leaderboardUsers.sort((a, b) => {
-          const pointsA = a.points || 0;
-          const pointsB = b.points || 0;
+          const pointsA = getDynamicPoints(a);
+          const pointsB = getDynamicPoints(b);
           if (pointsB !== pointsA) {
             return pointsB - pointsA;
           }
 
-          const predA = a.predictionCount || 0;
-          const predB = b.predictionCount || 0;
-          const succA = a.successCount || 0;
-          const succB = b.successCount || 0;
+          const predA = a.predictions ? Object.keys(a.predictions).length : (a.predictionCount || 0);
+          const predB = b.predictions ? Object.keys(b.predictions).length : (b.predictionCount || 0);
+          
+          const succA = getDynamicSuccess(a);
+          const succB = getDynamicSuccess(b);
 
           const rateA = predA > 0 ? (succA / predA) : 0;
           const rateB = predB > 0 ? (succB / predB) : 0;
@@ -1438,7 +1440,6 @@
       document.getElementById("saved-predictions-counter").textContent = count;
     }
 
-    // CORE TAB SWITCHING SYSTEM
     window.switchTab = function(tabName) {
       const tabPredictions = document.getElementById("tab-btn-predictions");
       const tabLeaderboard = document.getElementById("tab-btn-leaderboard");
@@ -1461,7 +1462,6 @@
       }
     };
 
-    // GENERATE INTERACTIVE MATCH CARDS RENDERING ENGINE
     window.renderMatches = function() {
       const grid = document.getElementById("matches-grid");
       const filter = document.getElementById("match-group-filter").value;
@@ -1648,7 +1648,6 @@
       });
     };
 
-    // FORM FIELDS LOGIC DOM ELEMENTS MAP
     const authForm = document.getElementById("auth-form");
     const authToggleBtn = document.getElementById("auth-toggle-btn");
     const authTitle = document.getElementById("auth-title");
@@ -1715,7 +1714,6 @@
       }
     });
 
-    // SUBMIT PREDICTIONS AND SYNC TO BOTH PRIVATE AND PUBLIC COLLECTIONS
     window.submitPrediction = async function(matchId, choice, isLocked) {
       if (!currentUser) {
         showNotification("Please log in to submit match predictions.", "error");
@@ -1747,7 +1745,6 @@
       await syncWithFifaOfficialURL();
     };
 
-    // CUSTOM CONFIRMATION POPUP SYSTEM
     const confirmModal = document.getElementById("custom-confirm-modal");
     const modalCancelBtn = document.getElementById("modal-cancel-btn");
     const modalConfirmBtn = document.getElementById("modal-confirm-btn");
@@ -1810,7 +1807,6 @@
       });
     };
 
-    // GENERATE LEADERBOARD CARD & PODIUM COMPONENT LAYOUTS
     window.renderLeaderboard = function() {
       const podiumContainer = document.getElementById("leaderboard-podium");
       const rowsContainer = document.getElementById("leaderboard-rows");
@@ -1864,8 +1860,9 @@
           visualOrderClass = "order-3 md:order-3"; 
         }
 
-        const predCount = item.user.predictionCount || 0;
-        const succCount = item.user.successCount || 0;
+        const predCount = item.user.predictions ? Object.keys(item.user.predictions).length : (item.user.predictionCount || 0);
+        const succCount = getDynamicSuccess(item.user);
+        const dynamicPoints = getDynamicPoints(item.user);
         const successRatePercent = predCount > 0 ? Math.round((succCount / predCount) * 100) : 0;
 
         const podCard = document.createElement("div");
@@ -1883,7 +1880,7 @@
             ${isSelf ? '<span class="block text-[10px] text-emerald-400 font-semibold uppercase tracking-widest mt-0.5">(You)</span>' : ''}
           </div>
           <div class="mt-2 font-sporty flex items-baseline space-x-1">
-            <span class="text-2xl font-extrabold ${badgeColor}">${item.user.points || 0}</span>
+            <span class="text-2xl font-extrabold ${badgeColor}">${dynamicPoints}</span>
             <span class="text-xs text-slate-400 font-bold">pts</span>
           </div>
           <div class="flex flex-col items-center mt-1.5 space-y-0.5">
@@ -1911,8 +1908,9 @@
         if (rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-950 border border-amber-600 text-amber-400 font-bold font-sporty text-xs">2</span>`;
         if (rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-800 border border-slate-600 text-slate-300 font-bold font-sporty text-xs">3</span>`;
 
-        const predCount = userItem.predictionCount || 0;
-        const succCount = userItem.successCount || 0;
+        const predCount = userItem.predictions ? Object.keys(userItem.predictions).length : (userItem.predictionCount || 0);
+        const succCount = getDynamicSuccess(userItem);
+        const dynamicPoints = getDynamicPoints(userItem);
         const successRatePercent = predCount > 0 ? Math.round((succCount / predCount) * 100) : 0;
 
         row.innerHTML = `
@@ -1932,7 +1930,7 @@
             </div>
           </td>
           <td class="py-3 px-3 text-right pr-4 xs:pr-6">
-            <span class="font-sporty font-bold text-slate-100">${userItem.points || 0}</span>
+            <span class="font-sporty font-bold text-slate-100">${dynamicPoints}</span>
             <span class="text-[11px] text-slate-500 font-semibold font-sporty ml-0.5">pts</span>
           </td>
         `;
