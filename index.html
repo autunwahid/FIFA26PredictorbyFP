@@ -403,7 +403,7 @@
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
       "match_17", "match_18", "match_19", "match_20", "match_21", "match_22", "match_23", "match_24", 
-      "match_25", "match_26", "match_27", "match_28", "match_29"
+      "match_25", "match_26", "match_27", "match_28", "match_29", "match_30", "match_31", "match_32", "match_33"
     ];
 
     // Correct actual match-ups matching FIFA 2026 rosters translated to Dhaka Time UTC+6
@@ -764,8 +764,8 @@
         awayFlag: "uz",
         stage: "Group K",
         kickoffTime: "2026-06-23T23:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 5, away: 0 },
+        result: "HOME_WIN",
         date: "June 23, 2026"
       },
       {
@@ -776,8 +776,8 @@
         awayFlag: "gh",
         stage: "Group L",
         kickoffTime: "2026-06-24T02:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 0 },
+        result: "DRAW",
         date: "June 24, 2026"
       },
       {
@@ -788,8 +788,8 @@
         awayFlag: "hr",
         stage: "Group L",
         kickoffTime: "2026-06-24T05:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 1 },
+        result: "AWAY_WIN",
         date: "June 24, 2026"
       },
       {
@@ -800,8 +800,8 @@
         awayFlag: "cd",
         stage: "Group K",
         kickoffTime: "2026-06-24T08:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 0 },
+        result: "HOME_WIN",
         date: "June 24, 2026"
       },
       {
@@ -875,6 +875,78 @@
         actualScore: null,
         result: null,
         date: "June 25, 2026"
+      },
+      {
+        id: "match_40",
+        homeTeam: "Curacao",
+        homeFlag: "cw",
+        awayTeam: "Ivory Coast",
+        awayFlag: "ci",
+        stage: "Group E",
+        kickoffTime: "2026-06-26T02:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 26, 2026"
+      },
+      {
+        id: "match_41",
+        homeTeam: "Ecuador",
+        homeFlag: "ec",
+        awayTeam: "Germany",
+        awayFlag: "de",
+        stage: "Group E",
+        kickoffTime: "2026-06-26T02:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 26, 2026"
+      },
+      {
+        id: "match_42",
+        homeTeam: "Tunisia",
+        homeFlag: "tn",
+        awayTeam: "Netherlands",
+        awayFlag: "nl",
+        stage: "Group F",
+        kickoffTime: "2026-06-26T05:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 26, 2026"
+      },
+      {
+        id: "match_43",
+        homeTeam: "Japan",
+        homeFlag: "jp",
+        awayTeam: "Sweden",
+        awayFlag: "se",
+        stage: "Group F",
+        kickoffTime: "2026-06-26T05:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 26, 2026"
+      },
+      {
+        id: "match_44",
+        homeTeam: "Turkiye",
+        homeFlag: "tr",
+        awayTeam: "USA",
+        awayFlag: "us",
+        stage: "Group D",
+        kickoffTime: "2026-06-26T08:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 26, 2026"
+      },
+      {
+        id: "match_45",
+        homeTeam: "Paraguay",
+        homeFlag: "py",
+        awayTeam: "Australia",
+        awayFlag: "au",
+        stage: "Group D",
+        kickoffTime: "2026-06-26T08:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 26, 2026"
       }
     ];
 
@@ -908,7 +980,11 @@
       "match_26": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_27": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_28": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
-      "match_29": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" }
+      "match_29": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_30": { home: 5, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_31": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_32": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_33": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" }
     };
 
     // Evaluate live dynamic timestamps cleanly
