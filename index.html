@@ -881,7 +881,7 @@
         id: "match_40",
         homeTeam: "Curacao",
         homeFlag: "cw",
-        awayTeam: "Ivory Coast",
+        awayTeam: "Côte d'Ivoire",
         awayFlag: "ci",
         stage: "Group E",
         kickoffTime: "2026-06-26T02:00:00+06:00",
@@ -951,72 +951,72 @@
       },
       {
         id: "match_46",
-        homeTeam: "Belgium",
-        homeFlag: "be",
-        awayTeam: "Egypt",
-        awayFlag: "eg",
+        homeTeam: "New Zealand",
+        homeFlag: "nz",
+        awayTeam: "Belgium",
+        awayFlag: "be",
         stage: "Group G",
-        kickoffTime: "2026-06-26T22:00:00+06:00",
+        kickoffTime: "2026-06-27T09:00:00+06:00",
         actualScore: null,
         result: null,
-        date: "June 26, 2026"
+        date: "June 27, 2026"
       },
       {
         id: "match_47",
-        homeTeam: "Iran",
-        homeFlag: "ir",
-        awayTeam: "New Zealand",
-        awayFlag: "nz",
+        homeTeam: "Egypt",
+        homeFlag: "eg",
+        awayTeam: "Iran",
+        awayFlag: "ir",
         stage: "Group G",
-        kickoffTime: "2026-06-26T22:00:00+06:00",
+        kickoffTime: "2026-06-27T09:00:00+06:00",
         actualScore: null,
         result: null,
-        date: "June 26, 2026"
+        date: "June 27, 2026"
       },
       {
         id: "match_48",
-        homeTeam: "Saudi Arabia",
-        homeFlag: "sa",
-        awayTeam: "Uruguay",
-        awayFlag: "uy",
+        homeTeam: "Uruguay",
+        homeFlag: "uy",
+        awayTeam: "Spain",
+        awayFlag: "es",
         stage: "Group H",
-        kickoffTime: "2026-06-27T01:00:00+06:00",
+        kickoffTime: "2026-06-27T06:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 27, 2026"
       },
       {
         id: "match_49",
-        homeTeam: "Spain",
-        homeFlag: "es",
-        awayTeam: "Cape Verde",
-        awayFlag: "cv",
+        homeTeam: "Cape Verde",
+        homeFlag: "cv",
+        awayTeam: "Saudi Arabia",
+        awayFlag: "sa",
         stage: "Group H",
-        kickoffTime: "2026-06-27T01:00:00+06:00",
+        kickoffTime: "2026-06-27T06:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 27, 2026"
       },
       {
         id: "match_50",
-        homeTeam: "Senegal",
-        homeFlag: "sn",
-        awayTeam: "Iraq",
-        awayFlag: "iq",
+        homeTeam: "Norway",
+        homeFlag: "no",
+        awayTeam: "France",
+        awayFlag: "fr",
         stage: "Group I",
-        kickoffTime: "2026-06-27T04:00:00+06:00",
+        kickoffTime: "2026-06-27T01:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 27, 2026"
       },
       {
         id: "match_51",
-        homeTeam: "Norway",
-        homeFlag: "no",
-        awayTeam: "France",
-        awayFlag: "fr",
+        homeTeam: "Senegal",
+        homeFlag: "sn",
+        awayTeam: "Iraq",
+        awayFlag: "iq",
         stage: "Group I",
-        kickoffTime: "2026-06-27T04:00:00+06:00",
+        kickoffTime: "2026-06-27T01:00:00+06:00",
         actualScore: null,
         result: null,
         date: "June 27, 2026"
@@ -1627,13 +1627,10 @@
 
       let filteredMatches = [];
       const now = new Date();
-      const next48Hours = new Date(now.getTime() + 48 * 60 * 60 * 1000);
 
       if (filter === "48HRS") {
-        filteredMatches = matchesDatabase.filter(m => {
-          const mDate = new Date(m.kickoffTime);
-          return mDate >= now && mDate <= next48Hours;
-        });
+        // Dynamic Shield: Shows all matches whose status is "Upcoming" (matching the limited list of tomorrow's 10 games)
+        filteredMatches = matchesDatabase.filter(m => m.status === "Upcoming");
       } else if (filter !== "ALL") {
         filteredMatches = matchesDatabase.filter(m => m.status === filter);
       } else {
