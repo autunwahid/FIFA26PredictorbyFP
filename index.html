@@ -395,19 +395,20 @@
     let leaderboardUsers = [];
     let currentNickname = "";
 
-    // Define standard playtime globally (90 minutes standard play + 15 minutes halftime limit)
+    // Define standard play duration
     const PLAY_DURATION_MS = 105 * 60 * 1000; 
 
-    // Historical completed match IDs that are strictly hardlocked to prevent Firestore or scraper pollution
+    // Frozen Completed Match IDs to prevent any Firestore or scraper overwrite
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
       "match_17", "match_18", "match_19", "match_20", "match_21", "match_22", "match_23", "match_24", 
       "match_25", "match_26", "match_27", "match_28", "match_29", "match_30", "match_31", "match_32", "match_33",
-      "match_34", "match_35", "match_36", "match_37", "match_38", "match_39"
+      "match_34", "match_35", "match_36", "match_37", "match_38", "match_39", "match_40", "match_41",
+      "match_42", "match_43", "match_44", "match_45"
     ];
 
-    // Correct actual match-ups matching FIFA 2026 rosters translated to Dhaka Time UTC+6
+    // Main World Cup 2026 matches database
     const matchesDatabase = [
       {
         id: "match_1",
@@ -885,8 +886,8 @@
         awayFlag: "ci",
         stage: "Group E",
         kickoffTime: "2026-06-26T02:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 2 },
+        result: "AWAY_WIN",
         date: "June 26, 2026"
       },
       {
@@ -897,8 +898,8 @@
         awayFlag: "de",
         stage: "Group E",
         kickoffTime: "2026-06-26T02:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 2, away: 1 },
+        result: "HOME_WIN",
         date: "June 26, 2026"
       },
       {
@@ -909,8 +910,8 @@
         awayFlag: "nl",
         stage: "Group F",
         kickoffTime: "2026-06-26T05:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 3 },
+        result: "AWAY_WIN",
         date: "June 26, 2026"
       },
       {
@@ -921,8 +922,8 @@
         awayFlag: "se",
         stage: "Group F",
         kickoffTime: "2026-06-26T05:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 1 },
+        result: "DRAW",
         date: "June 26, 2026"
       },
       {
@@ -933,8 +934,8 @@
         awayFlag: "us",
         stage: "Group D",
         kickoffTime: "2026-06-26T08:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 3, away: 2 },
+        result: "HOME_WIN",
         date: "June 26, 2026"
       },
       {
@@ -945,8 +946,8 @@
         awayFlag: "au",
         stage: "Group D",
         kickoffTime: "2026-06-26T08:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 0 },
+        result: "DRAW",
         date: "June 26, 2026"
       },
       {
@@ -1020,10 +1021,82 @@
         actualScore: null,
         result: null,
         date: "June 27, 2026"
+      },
+      {
+        id: "match_52",
+        homeTeam: "Panama",
+        homeFlag: "pa",
+        awayTeam: "England",
+        awayFlag: "gb-eng",
+        stage: "Group L",
+        kickoffTime: "2026-06-28T03:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 28, 2026"
+      },
+      {
+        id: "match_53",
+        homeTeam: "Croatia",
+        homeFlag: "hr",
+        awayTeam: "Ghana",
+        awayFlag: "gh",
+        stage: "Group L",
+        kickoffTime: "2026-06-28T03:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 28, 2026"
+      },
+      {
+        id: "match_54",
+        homeTeam: "Colombia",
+        homeFlag: "co",
+        awayTeam: "Portugal",
+        awayFlag: "pt",
+        stage: "Group K",
+        kickoffTime: "2026-06-28T05:30:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 28, 2026"
+      },
+      {
+        id: "match_55",
+        homeTeam: "DR Congo",
+        homeFlag: "cd",
+        awayTeam: "Uzbekistan",
+        awayFlag: "uz",
+        stage: "Group K",
+        kickoffTime: "2026-06-28T05:30:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 28, 2026"
+      },
+      {
+        id: "match_56",
+        homeTeam: "Algeria",
+        homeFlag: "dz",
+        awayTeam: "Austria",
+        awayFlag: "at",
+        stage: "Group J",
+        kickoffTime: "2026-06-28T08:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 28, 2026"
+      },
+      {
+        id: "match_57",
+        homeTeam: "Jordan",
+        homeFlag: "jo",
+        awayTeam: "Argentina",
+        awayFlag: "ar",
+        stage: "Group J",
+        kickoffTime: "2026-06-28T08:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 28, 2026"
       }
     ];
 
-    // Real World scores mapping for baseline safe backup validation
+    // Real World completed scores fallback data to sync correctly
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -1063,7 +1136,13 @@
       "match_36": { home: 4, away: 2, status: "Completed", result: "HOME_WIN" },
       "match_37": { home: 0, away: 3, status: "Completed", result: "AWAY_WIN" },
       "match_38": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" },
-      "match_39": { home: 0, away: 3, status: "Completed", result: "AWAY_WIN" }
+      "match_39": { home: 0, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_40": { home: 0, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_41": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_42": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_43": { home: 1, away: 1, status: "Completed", result: "DRAW" },
+      "match_44": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_45": { home: 0, away: 0, status: "Completed", result: "DRAW" }
     };
 
     // Evaluate live dynamic timestamps cleanly
@@ -1130,13 +1209,13 @@
       const promptText = `
         Search using Google Search grounding on the official webpage: 
         https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=BD&wtw-filter=ALL
-        Find the true results, live scores, and statuses for matches from June 20 to June 25, 2026.
+        Find the true results, live scores, and statuses for matches from June 24 to June 28, 2026.
         Return a simple JSON array structure matching the following key parameters:
         [
           {
-            "id": "match_21",
-            "homeScore": 0,
-            "awayScore": 4,
+            "id": "match_42",
+            "homeScore": 1,
+            "awayScore": 3,
             "status": "Completed",
             "result": "AWAY_WIN"
           }
@@ -1149,7 +1228,7 @@
           contents: [{ parts: [{ text: promptText }] }],
           tools: [{ "google_search": {} }],
           systemInstruction: {
-            parts: [{ text: "You are a professional tournament database mapper. Output JSON arrays only." }]
+            parts: [{ text: "You are a professional tournament database mounter. Output JSON arrays only." }]
           },
           generationConfig: {
             responseMimeType: "application/json",
@@ -1296,7 +1375,7 @@
 
     if (profileDropdown) {
       profileDropdown.addEventListener("click", (e) => {
-        e.stopPropagation(); // Stops typing and saves from closing dropdown
+        e.stopPropagation();
       });
     }
 
@@ -1418,7 +1497,7 @@
           points: scoreCalculated,
           predictionCount: Object.keys(localPredictions).length,
           successCount: successCount,
-          predictions: localPredictions, // Synced publicly to enable dynamic dynamic-scorer recalculations
+          predictions: localPredictions, 
           nickname: currentNickname || "",
           lastSynced: Date.now()
         }, { merge: true });
@@ -1626,10 +1705,7 @@
       resolveMatchStatesAndOutputs();
 
       let filteredMatches = [];
-      const now = new Date();
-
       if (filter === "48HRS") {
-        // Dynamic Shield: Shows all matches whose status is "Upcoming" (matching the limited list of tomorrow's 10 games)
         filteredMatches = matchesDatabase.filter(m => m.status === "Upcoming");
       } else if (filter !== "ALL") {
         filteredMatches = matchesDatabase.filter(m => m.status === filter);
@@ -1637,7 +1713,6 @@
         filteredMatches = [...matchesDatabase];
       }
 
-      // Sorting groups cleanly
       const upcomingGroup = filteredMatches.filter(m => m.status === "Upcoming")
         .sort((a, b) => new Date(a.kickoffTime) - new Date(b.kickoffTime));
         
