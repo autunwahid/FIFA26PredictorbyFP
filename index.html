@@ -374,7 +374,6 @@
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // Provided User Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyCYm4vzwvh_CZ8nvGat5KQPsyPQsjin8C4",
       authDomain: "fifa-world-cup-predictor-lns.firebaseapp.com",
@@ -384,7 +383,6 @@
       appId: "1:1027176481894:web:0f945d97124423942019a7"
     };
 
-    // Global variables & state trackers
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -395,20 +393,19 @@
     let leaderboardUsers = [];
     let currentNickname = "";
 
-    // Define standard play duration
     const PLAY_DURATION_MS = 105 * 60 * 1000; 
 
-    // Frozen Completed Match IDs to prevent any Firestore or scraper overwrite
+    // Frozen Completed Match IDs based on image_553236.png, image_bb40ec.png etc
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
       "match_17", "match_18", "match_19", "match_20", "match_21", "match_22", "match_23", "match_24", 
       "match_25", "match_26", "match_27", "match_28", "match_29", "match_30", "match_31", "match_32", "match_33",
       "match_34", "match_35", "match_36", "match_37", "match_38", "match_39", "match_40", "match_41",
-      "match_42", "match_43", "match_44", "match_45"
+      "match_42", "match_43", "match_44", "match_45", "match_46", "match_47", "match_48", "match_49",
+      "match_50", "match_51"
     ];
 
-    // Main World Cup 2026 matches database
     const matchesDatabase = [
       {
         id: "match_1",
@@ -958,8 +955,8 @@
         awayFlag: "be",
         stage: "Group G",
         kickoffTime: "2026-06-27T09:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 5 },
+        result: "AWAY_WIN",
         date: "June 27, 2026"
       },
       {
@@ -970,8 +967,8 @@
         awayFlag: "ir",
         stage: "Group G",
         kickoffTime: "2026-06-27T09:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 1 },
+        result: "DRAW",
         date: "June 27, 2026"
       },
       {
@@ -982,8 +979,9 @@
         awayFlag: "es",
         stage: "Group H",
         kickoffTime: "2026-06-27T06:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 1 },
+        result: "AWAY_WIN",
+        homeRedCard: true,
         date: "June 27, 2026"
       },
       {
@@ -994,8 +992,8 @@
         awayFlag: "sa",
         stage: "Group H",
         kickoffTime: "2026-06-27T06:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 0 },
+        result: "DRAW",
         date: "June 27, 2026"
       },
       {
@@ -1006,8 +1004,8 @@
         awayFlag: "fr",
         stage: "Group I",
         kickoffTime: "2026-06-27T01:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 4 },
+        result: "AWAY_WIN",
         date: "June 27, 2026"
       },
       {
@@ -1018,8 +1016,9 @@
         awayFlag: "iq",
         stage: "Group I",
         kickoffTime: "2026-06-27T01:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 5, away: 0 },
+        result: "HOME_WIN",
+        awayRedCard: true,
         date: "June 27, 2026"
       },
       {
@@ -1093,10 +1092,34 @@
         actualScore: null,
         result: null,
         date: "June 28, 2026"
+      },
+      {
+        id: "match_58",
+        homeTeam: "South Africa",
+        homeFlag: "za",
+        awayTeam: "Canada",
+        awayFlag: "ca",
+        stage: "Round of 32",
+        kickoffTime: "2026-06-29T01:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 29, 2026"
+      },
+      {
+        id: "match_59",
+        homeTeam: "Brazil",
+        homeFlag: "br",
+        awayTeam: "Japan",
+        awayFlag: "jp",
+        stage: "Round of 32",
+        kickoffTime: "2026-06-29T23:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 29, 2026"
       }
     ];
 
-    // Real World completed scores fallback data to sync correctly
+    // Real World completed scores fallback database
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -1142,14 +1165,19 @@
       "match_42": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" },
       "match_43": { home: 1, away: 1, status: "Completed", result: "DRAW" },
       "match_44": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
-      "match_45": { home: 0, away: 0, status: "Completed", result: "DRAW" }
+      "match_45": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      // Added new completed matches with fallback profiles
+      "match_46": { home: 1, away: 5, status: "Completed", result: "AWAY_WIN" },
+      "match_47": { home: 1, away: 1, status: "Completed", result: "DRAW" },
+      "match_48": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_49": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_50": { home: 1, away: 4, status: "Completed", result: "AWAY_WIN" },
+      "match_51": { home: 5, away: 0, status: "Completed", result: "HOME_WIN" }
     };
 
-    // Evaluate live dynamic timestamps cleanly
     function resolveMatchStatesAndOutputs() {
       const now = new Date();
       matchesDatabase.forEach((match) => {
-        // First check if this match is historically verified and hardlocked
         if (historicalCompletedIds.includes(match.id)) {
           match.status = "Completed";
           const fallback = realWorldScoresFallback[match.id];
@@ -1265,7 +1293,6 @@
           
           if (Array.isArray(parsedMatches)) {
             parsedMatches.forEach((syncMatch) => {
-              // Block any external sync overrides for finalized historical completed matches
               if (historicalCompletedIds.includes(syncMatch.id)) return;
 
               const localMatch = matchesDatabase.find(m => m.id === syncMatch.id);
@@ -1285,7 +1312,7 @@
               }
             });
 
-            // Sync baseline results up to public Firestore document so all concurrent users immediately receive true values
+            // Write verified updates to Firestore global collection
             const scoresDoc = doc(db, 'artifacts', appId, 'public', 'data', 'live_scores', 'current_scores');
             await setDoc(scoresDoc, {
               matches: matchesDatabase.map(m => ({
@@ -1301,7 +1328,7 @@
           }
         }
       } catch (err) {
-        console.warn("Direct scraping fallback gracefully applied: ", err);
+        console.warn("Scraping failure, falling back to static matrix: ", err);
         resolveMatchStatesAndOutputs();
       } finally {
         resolveMatchStatesAndOutputs();
@@ -1541,7 +1568,6 @@
           const data = snapshot.data();
           if (data.matches && Array.isArray(data.matches)) {
             data.matches.forEach((dbMatch) => {
-              // Lock down finalized completed matches against any inbound Firestore sync overrides
               if (historicalCompletedIds.includes(dbMatch.id)) return;
 
               const localMatch = matchesDatabase.find(m => m.id === dbMatch.id);
@@ -1586,7 +1612,6 @@
       });
     }
 
-    // Helper functions to fetch dynamic scores for leaderboard sorting, falling back to legacy values gracefully
     function getDynamicPoints(userItem) {
       const legacyPoints = typeof userItem.points === 'number' ? userItem.points : 0;
       if (userItem.predictions && typeof userItem.predictions === 'object' && Object.keys(userItem.predictions).length > 0) {
@@ -1637,7 +1662,6 @@
           leaderboardUsers.push(doc.data());
         });
         
-        // Multi-tier Sorting criteria using safe dynamic hybrid score calculations
         leaderboardUsers.sort((a, b) => {
           const pointsA = getDynamicPoints(a);
           const pointsB = getDynamicPoints(b);
@@ -1706,7 +1730,8 @@
 
       let filteredMatches = [];
       if (filter === "48HRS") {
-        filteredMatches = matchesDatabase.filter(m => m.status === "Upcoming");
+        // Safe check to list all pending upcoming games including Spain vs. Cape Verde dynamically
+        filteredMatches = matchesDatabase.filter(m => m.status === "Upcoming" || m.status === "Live");
       } else if (filter !== "ALL") {
         filteredMatches = matchesDatabase.filter(m => m.status === filter);
       } else {
@@ -1793,6 +1818,7 @@
             <div class="col-span-3 flex flex-col items-center">
               <div class="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 rounded-full bg-slate-950 border-2 border-slate-800 p-1 flex items-center justify-center overflow-hidden mb-2 relative">
                 <img src="https://flagcdn.com/w160/${match.homeFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.homeTeam}" onerror="this.src='https://flagcdn.com/w160/un.png'">
+                ${match.homeRedCard ? `<span class="absolute top-1 right-1 w-3 h-4 bg-rose-600 rounded-sm border border-slate-950 block shadow-md animate-pulse" title="Red Card"></span>` : ''}
               </div>
               <span class="text-[11px] xs:text-xs md:text-sm font-bold tracking-tight line-clamp-1 text-slate-200">${match.homeTeam}</span>
             </div>
@@ -1810,6 +1836,7 @@
             <div class="col-span-3 flex flex-col items-center">
               <div class="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 rounded-full bg-slate-950 border-2 border-slate-800 p-1 flex items-center justify-center overflow-hidden mb-2 relative">
                 <img src="https://flagcdn.com/w160/${match.awayFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.awayTeam}" onerror="this.src='https://flagcdn.com/w160/un.png'">
+                ${match.awayRedCard ? `<span class="absolute top-1 right-1 w-3 h-4 bg-rose-600 rounded-sm border border-slate-950 block shadow-md animate-pulse" title="Red Card"></span>` : ''}
               </div>
               <span class="text-[11px] xs:text-xs md:text-sm font-bold tracking-tight line-clamp-1 text-slate-200">${match.awayTeam}</span>
             </div>
@@ -2057,6 +2084,11 @@
       if (topThree[0]) podiumOrder.push({ user: topThree[0], rank: 1 }); 
       if (topThree[2]) podiumOrder.push({ user: topThree[2], rank: 3 }); 
 
+      podOrderList(podiumOrder, podiumContainer);
+      rowOrderList(leaderboardUsers, rowsContainer);
+    };
+
+    function podOrderList(podiumOrder, podiumContainer) {
       podiumOrder.forEach((item) => {
         const isSelf = currentUser && item.user.uid === currentUser.uid;
         const displayName = item.user.nickname || maskEmailSecure(item.user.email);
@@ -2121,7 +2153,9 @@
         `;
         podiumContainer.appendChild(podCard);
       });
+    }
 
+    function rowOrderList(leaderboardUsers, rowsContainer) {
       leaderboardUsers.forEach((userItem, index) => {
         const rank = index + 1;
         const isSelf = currentUser && userItem.uid === currentUser.uid;
@@ -2163,7 +2197,7 @@
         `;
         rowsContainer.appendChild(row);
       });
-    };
+    }
 
     function maskEmailSecure(email) {
       if (!email) return "anonymous***@fifa.com";
