@@ -395,7 +395,7 @@
 
     const PLAY_DURATION_MS = 105 * 60 * 1000; 
 
-    // Frozen Completed Match IDs based on image_553236.png, image_bb40ec.png etc
+    // Frozen Completed Match IDs based on images: image_bb40ec, image_553236, image_f9bbc5 etc.
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
@@ -403,7 +403,7 @@
       "match_25", "match_26", "match_27", "match_28", "match_29", "match_30", "match_31", "match_32", "match_33",
       "match_34", "match_35", "match_36", "match_37", "match_38", "match_39", "match_40", "match_41",
       "match_42", "match_43", "match_44", "match_45", "match_46", "match_47", "match_48", "match_49",
-      "match_50", "match_51"
+      "match_50", "match_51", "match_52", "match_53", "match_54", "match_55", "match_56", "match_57"
     ];
 
     const matchesDatabase = [
@@ -1029,8 +1029,8 @@
         awayFlag: "gb-eng",
         stage: "Group L",
         kickoffTime: "2026-06-28T03:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 2 },
+        result: "AWAY_WIN",
         date: "June 28, 2026"
       },
       {
@@ -1041,8 +1041,8 @@
         awayFlag: "gh",
         stage: "Group L",
         kickoffTime: "2026-06-28T03:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 2, away: 1 },
+        result: "HOME_WIN",
         date: "June 28, 2026"
       },
       {
@@ -1053,8 +1053,8 @@
         awayFlag: "pt",
         stage: "Group K",
         kickoffTime: "2026-06-28T05:30:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 0 },
+        result: "DRAW",
         date: "June 28, 2026"
       },
       {
@@ -1065,8 +1065,8 @@
         awayFlag: "uz",
         stage: "Group K",
         kickoffTime: "2026-06-28T05:30:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 3, away: 1 },
+        result: "HOME_WIN",
         date: "June 28, 2026"
       },
       {
@@ -1077,8 +1077,8 @@
         awayFlag: "at",
         stage: "Group J",
         kickoffTime: "2026-06-28T08:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 3, away: 3 },
+        result: "DRAW",
         date: "June 28, 2026"
       },
       {
@@ -1089,8 +1089,8 @@
         awayFlag: "ar",
         stage: "Group J",
         kickoffTime: "2026-06-28T08:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 3 },
+        result: "AWAY_WIN",
         date: "June 28, 2026"
       },
       {
@@ -1116,6 +1116,54 @@
         actualScore: null,
         result: null,
         date: "June 29, 2026"
+      },
+      {
+        id: "match_60",
+        homeTeam: "Germany",
+        homeFlag: "de",
+        awayTeam: "Paraguay",
+        awayFlag: "py",
+        stage: "Round of 32",
+        kickoffTime: "2026-06-30T02:30:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 30, 2026"
+      },
+      {
+        id: "match_61",
+        homeTeam: "Netherlands",
+        homeFlag: "nl",
+        awayTeam: "Morocco",
+        awayFlag: "ma",
+        stage: "Round of 32",
+        kickoffTime: "2026-06-30T07:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 30, 2026"
+      },
+      {
+        id: "match_62",
+        homeTeam: "Côte d'Ivoire",
+        homeFlag: "ci",
+        awayTeam: "Norway",
+        awayFlag: "no",
+        stage: "Round of 32",
+        kickoffTime: "2026-06-30T23:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "June 30, 2026"
+      },
+      {
+        id: "match_63",
+        homeTeam: "France",
+        homeFlag: "fr",
+        awayTeam: "Sweden",
+        awayFlag: "se",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-01T03:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 1, 2026"
       }
     ];
 
@@ -1166,13 +1214,18 @@
       "match_43": { home: 1, away: 1, status: "Completed", result: "DRAW" },
       "match_44": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
       "match_45": { home: 0, away: 0, status: "Completed", result: "DRAW" },
-      // Added new completed matches with fallback profiles
       "match_46": { home: 1, away: 5, status: "Completed", result: "AWAY_WIN" },
       "match_47": { home: 1, away: 1, status: "Completed", result: "DRAW" },
       "match_48": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
       "match_49": { home: 0, away: 0, status: "Completed", result: "DRAW" },
       "match_50": { home: 1, away: 4, status: "Completed", result: "AWAY_WIN" },
-      "match_51": { home: 5, away: 0, status: "Completed", result: "HOME_WIN" }
+      "match_51": { home: 5, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_52": { home: 0, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_53": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_54": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_55": { home: 3, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_56": { home: 3, away: 3, status: "Completed", result: "DRAW" },
+      "match_57": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" }
     };
 
     function resolveMatchStatesAndOutputs() {
