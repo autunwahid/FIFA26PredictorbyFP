@@ -259,11 +259,15 @@
             </div>
           </div>
 
-          <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 md:max-w-md text-xs text-slate-400 space-y-1">
-            <p class="font-semibold text-slate-300">Predictor Scoring System Matrix & Tiebreaker Rules:</p>
-            <p><span class="text-emerald-400 font-bold font-sporty">• 3 points</span>: Correct outcome (Win/Loss prediction matches actual, or Correct Tie prediction).</p>
-            <p><span class="text-amber-400 font-bold font-sporty">• 1 point</span>: Predicted Win outcome (Team 1 or 2), but result ended in a Draw.</p>
-            <p class="pt-1 text-[11px] text-slate-300 border-t border-slate-800"><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i> Leaderboard Tiebreakers: Highest Points &rarr; Prediction Success Rate % &rarr; Alphabetical order (Nicknames).</p>
+          <!-- Updated Scoring Matrix according to image_13e041.png and Knockout Rules -->
+          <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3.5 md:max-w-md text-xs text-slate-400 space-y-2">
+            <p class="font-semibold text-slate-200">Predictor Scoring System Matrix & Tiebreaker Rules:</p>
+            <div class="space-y-1">
+              <p><span class="text-emerald-400 font-bold font-sporty">• 3 points (Group Stage)</span>: Correct outcome (Win/Loss prediction matches actual, or Correct Tie prediction).</p>
+              <p><span class="text-amber-400 font-bold font-sporty">• 1 point (Group Stage)</span>: Predicted Win outcome (Team 1 or 2), but result ended in a Draw.</p>
+              <p><span class="text-sky-400 font-bold font-sporty">• 8 points (Knockout Stage)</span>: Correct Win/Loss outcome (No ties available. Resolved after extra time & penalties!).</p>
+            </div>
+            <p class="pt-1.5 text-[11px] text-slate-300 border-t border-slate-800"><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i> Leaderboard Tiebreakers: Highest Points &rarr; Prediction Success Rate % &rarr; Alphabetical order (Nicknames).</p>
           </div>
         </div>
       </div>
@@ -393,9 +397,9 @@
     let leaderboardUsers = [];
     let currentNickname = "";
 
-    const PLAY_DURATION_MS = 105 * 60 * 1000; 
+    const PLAY_DURATION_MS = 120 * 60 * 1000; // 120 mins average for knockout stages
 
-    // Frozen Completed Match IDs based on images: image_bb40ec, image_553236, image_f9bbc5 etc.
+    // Guard rails for complete historical verification
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
@@ -403,7 +407,8 @@
       "match_25", "match_26", "match_27", "match_28", "match_29", "match_30", "match_31", "match_32", "match_33",
       "match_34", "match_35", "match_36", "match_37", "match_38", "match_39", "match_40", "match_41",
       "match_42", "match_43", "match_44", "match_45", "match_46", "match_47", "match_48", "match_49",
-      "match_50", "match_51", "match_52", "match_53", "match_54", "match_55", "match_56", "match_57"
+      "match_50", "match_51", "match_52", "match_53", "match_54", "match_55", "match_56", "match_57",
+      "match_58", "match_59", "match_60", "match_61"
     ];
 
     const matchesDatabase = [
@@ -1101,8 +1106,8 @@
         awayFlag: "ca",
         stage: "Round of 32",
         kickoffTime: "2026-06-29T01:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 1 },
+        result: "AWAY_WIN",
         date: "June 29, 2026"
       },
       {
@@ -1113,8 +1118,8 @@
         awayFlag: "jp",
         stage: "Round of 32",
         kickoffTime: "2026-06-29T23:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 2, away: 1 },
+        result: "HOME_WIN",
         date: "June 29, 2026"
       },
       {
@@ -1125,8 +1130,8 @@
         awayFlag: "py",
         stage: "Round of 32",
         kickoffTime: "2026-06-30T02:30:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 1, homePen: 3, awayPen: 4 },
+        result: "AWAY_WIN",
         date: "June 30, 2026"
       },
       {
@@ -1137,8 +1142,8 @@
         awayFlag: "ma",
         stage: "Round of 32",
         kickoffTime: "2026-06-30T07:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 1, homePen: 2, awayPen: 3 },
+        result: "AWAY_WIN",
         date: "June 30, 2026"
       },
       {
@@ -1164,10 +1169,57 @@
         actualScore: null,
         result: null,
         date: "July 1, 2026"
+      },
+      {
+        id: "match_64",
+        homeTeam: "Mexico",
+        homeFlag: "mx",
+        awayTeam: "Ecuador",
+        awayFlag: "ec",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-01T07:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 1, 2026"
+      },
+      {
+        id: "match_65",
+        homeTeam: "England",
+        homeFlag: "gb-eng",
+        awayTeam: "DR Congo",
+        awayFlag: "cd",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-01T22:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 1, 2026"
+      },
+      {
+        id: "match_66",
+        homeTeam: "Belgium",
+        homeFlag: "be",
+        awayTeam: "Senegal",
+        awayFlag: "sn",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-02T02:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 2, 2026"
+      },
+      {
+        id: "match_67",
+        homeTeam: "USA",
+        homeFlag: "us",
+        awayTeam: "Bosnia and Herzegovina",
+        awayFlag: "ba",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-02T06:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 2, 2026"
       }
     ];
 
-    // Real World completed scores fallback database
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -1225,7 +1277,11 @@
       "match_54": { home: 0, away: 0, status: "Completed", result: "DRAW" },
       "match_55": { home: 3, away: 1, status: "Completed", result: "HOME_WIN" },
       "match_56": { home: 3, away: 3, status: "Completed", result: "DRAW" },
-      "match_57": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" }
+      "match_57": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_58": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_59": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_60": { home: 1, away: 1, homePen: 3, awayPen: 4, status: "Completed", result: "AWAY_WIN" },
+      "match_61": { home: 1, away: 1, homePen: 2, awayPen: 3, status: "Completed", result: "AWAY_WIN" }
     };
 
     function resolveMatchStatesAndOutputs() {
@@ -1235,7 +1291,12 @@
           match.status = "Completed";
           const fallback = realWorldScoresFallback[match.id];
           if (fallback) {
-            match.actualScore = { home: fallback.home, away: fallback.away };
+            match.actualScore = { 
+              home: fallback.home, 
+              away: fallback.away,
+              homePen: fallback.homePen || undefined,
+              awayPen: fallback.awayPen || undefined
+            };
             match.result = fallback.result;
           }
           return;
@@ -1253,8 +1314,14 @@
         } else if (now >= kickoff && now < playCompletedTime) {
           match.status = "Live";
           if (realWorldScoresFallback[match.id]) {
-            match.actualScore = { home: realWorldScoresFallback[match.id].home, away: realWorldScoresFallback[match.id].away };
-            match.result = realWorldScoresFallback[match.id].result;
+            const fallback = realWorldScoresFallback[match.id];
+            match.actualScore = { 
+              home: fallback.home, 
+              away: fallback.away,
+              homePen: fallback.homePen || undefined,
+              awayPen: fallback.awayPen || undefined
+            };
+            match.result = fallback.result;
           } else if (!match.actualScore) {
             match.actualScore = { home: 0, away: 0 };
             match.result = "DRAW";
@@ -1262,8 +1329,14 @@
         } else {
           match.status = "Completed";
           if (realWorldScoresFallback[match.id]) {
-            match.actualScore = { home: realWorldScoresFallback[match.id].home, away: realWorldScoresFallback[match.id].away };
-            match.result = realWorldScoresFallback[match.id].result;
+            const fallback = realWorldScoresFallback[match.id];
+            match.actualScore = { 
+              home: fallback.home, 
+              away: fallback.away,
+              homePen: fallback.homePen || undefined,
+              awayPen: fallback.awayPen || undefined
+            };
+            match.result = fallback.result;
           } else if (!match.actualScore) {
             match.actualScore = { home: 1, away: 1 };
             match.result = "DRAW";
@@ -1290,13 +1363,15 @@
       const promptText = `
         Search using Google Search grounding on the official webpage: 
         https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=BD&wtw-filter=ALL
-        Find the true results, live scores, and statuses for matches from June 24 to June 28, 2026.
+        Find the true results, live scores, and statuses for matches from June 28 to June 30, 2026.
         Return a simple JSON array structure matching the following key parameters:
         [
           {
-            "id": "match_42",
+            "id": "match_60",
             "homeScore": 1,
-            "awayScore": 3,
+            "awayScore": 1,
+            "homePen": 3,
+            "awayPen": 4,
             "status": "Completed",
             "result": "AWAY_WIN"
           }
@@ -1322,6 +1397,8 @@
                   status: { type: "STRING" },
                   homeScore: { type: "INTEGER" },
                   awayScore: { type: "INTEGER" },
+                  homePen: { type: "INTEGER" },
+                  awayPen: { type: "INTEGER" },
                   result: { type: "STRING" }
                 },
                 required: ["id", "status", "homeScore", "awayScore", "result"]
@@ -1351,13 +1428,20 @@
               const localMatch = matchesDatabase.find(m => m.id === syncMatch.id);
               if (localMatch) {
                 if (syncMatch.homeScore !== null && syncMatch.awayScore !== null) {
-                  localMatch.actualScore = { home: syncMatch.homeScore, away: syncMatch.awayScore };
+                  localMatch.actualScore = { 
+                    home: syncMatch.homeScore, 
+                    away: syncMatch.awayScore,
+                    homePen: syncMatch.homePen || undefined,
+                    awayPen: syncMatch.awayPen || undefined
+                  };
                   localMatch.status = syncMatch.status;
                   localMatch.result = syncMatch.result;
                   
                   realWorldScoresFallback[localMatch.id] = {
                     home: syncMatch.homeScore,
                     away: syncMatch.awayScore,
+                    homePen: syncMatch.homePen || undefined,
+                    awayPen: syncMatch.awayPen || undefined,
                     status: syncMatch.status,
                     result: syncMatch.result
                   };
@@ -1499,7 +1583,9 @@
         listenToGlobalLeaderboard();
         
         await syncWithFifaOfficialURL();
-        showNotification(`Welcome back, ${currentNickname || 'Champion'}! Live score sync completed.`, "success");
+        
+        // Trigger the once-off Knockout Stage rules announcement popup
+        checkAndShowKnockoutAnnouncement(user.uid);
       } else {
         currentUser = null;
         currentNickname = "";
@@ -1513,6 +1599,30 @@
         leaderboardUsers = [];
       }
     });
+
+    // Elegant announcement modal trigger function (once per user profile via localStorage)
+    function checkAndShowKnockoutAnnouncement(uid) {
+      const storageKey = `seen_knockout_rules_announcement_${uid}`;
+      if (!localStorage.getItem(storageKey)) {
+        setTimeout(() => {
+          const announcementModal = document.getElementById("knockout-announcement-modal");
+          if (announcementModal) {
+            announcementModal.classList.remove("hidden");
+          }
+        }, 1200);
+      }
+    }
+
+    window.closeKnockoutAnnouncement = function() {
+      const announcementModal = document.getElementById("knockout-announcement-modal");
+      if (announcementModal) {
+        announcementModal.classList.add("hidden");
+      }
+      if (currentUser) {
+        const storageKey = `seen_knockout_rules_announcement_${currentUser.uid}`;
+        localStorage.setItem(storageKey, "true");
+      }
+    };
 
     window.saveNickname = async function() {
       if (!currentUser) {
@@ -1557,12 +1667,24 @@
         if (match.status === "Completed") {
           const prediction = localPredictions[match.id];
           if (prediction) {
-            if (prediction === match.result) {
-              scoreCalculated += 3;
-              successCount++;
-            } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
-              scoreCalculated += 1;
-              successCount++; 
+            const isKnockout = !match.stage.startsWith("Group");
+            
+            if (isKnockout) {
+              // Knockout rules: Correct outcome pays out 8 points! Ties are not possible in Knockout choices.
+              if (prediction === match.result) {
+                scoreCalculated += 8;
+                successCount++;
+              }
+            } else {
+              // Group stage rules: Correct outcome pays out 3 points
+              if (prediction === match.result) {
+                scoreCalculated += 3;
+                successCount++;
+              } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
+                // Correct outcome direction but draw tiebreaker fallback
+                scoreCalculated += 1;
+                successCount++; 
+              }
             }
           }
         }
@@ -1633,6 +1755,8 @@
                   realWorldScoresFallback[localMatch.id] = {
                     home: dbMatch.actualScore.home,
                     away: dbMatch.actualScore.away,
+                    homePen: dbMatch.actualScore.homePen || undefined,
+                    awayPen: dbMatch.actualScore.awayPen || undefined,
                     status: dbMatch.status,
                     result: dbMatch.result
                   };
@@ -1665,6 +1789,7 @@
       });
     }
 
+    // Dynamic points scorer supporting dual mode calculations for leaderboards safely
     function getDynamicPoints(userItem) {
       const legacyPoints = typeof userItem.points === 'number' ? userItem.points : 0;
       if (userItem.predictions && typeof userItem.predictions === 'object' && Object.keys(userItem.predictions).length > 0) {
@@ -1673,10 +1798,17 @@
           if (match.status === "Completed") {
             const prediction = userItem.predictions[match.id];
             if (prediction) {
-              if (prediction === match.result) {
-                calcPoints += 3;
-              } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
-                calcPoints += 1;
+              const isKnockout = !match.stage.startsWith("Group");
+              if (isKnockout) {
+                if (prediction === match.result) {
+                  calcPoints += 8;
+                }
+              } else {
+                if (prediction === match.result) {
+                  calcPoints += 3;
+                } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
+                  calcPoints += 1;
+                }
               }
             }
           }
@@ -1694,10 +1826,17 @@
           if (match.status === "Completed") {
             const prediction = userItem.predictions[match.id];
             if (prediction) {
-              if (prediction === match.result) {
-                calcSuccess++;
-              } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
-                calcSuccess++;
+              const isKnockout = !match.stage.startsWith("Group");
+              if (isKnockout) {
+                if (prediction === match.result) {
+                  calcSuccess++;
+                }
+              } else {
+                if (prediction === match.result) {
+                  calcSuccess++;
+                } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
+                  calcSuccess++;
+                }
               }
             }
           }
@@ -1822,6 +1961,7 @@
       sortedMatches.forEach((match) => {
         const userPrediction = localPredictions[match.id] || null;
         const isLocked = match.status === "Live" || match.status === "Completed";
+        const isKnockout = !match.stage.startsWith("Group");
         
         let badgeStyle = "";
         let statusIcon = "";
@@ -1856,6 +1996,123 @@
         const localFormattedTime = rawDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
         const localFormattedDate = rawDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
+        // Score formulation checking for penalty shootouts (image_13833d.png support)
+        let scoreDisplay = "";
+        if (match.actualScore) {
+          if (typeof match.actualScore.homePen === 'number' && typeof match.actualScore.awayPen === 'number') {
+            scoreDisplay = `
+              <div class="flex flex-col items-center">
+                <div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">
+                  ${match.actualScore.home}:${match.actualScore.away}
+                </div>
+                <div class="text-[9px] font-bold text-amber-400 font-sporty mt-1 uppercase tracking-wider">
+                  Pens: (${match.actualScore.homePen}-${match.actualScore.awayPen})
+                </div>
+              </div>
+            `;
+          } else {
+            scoreDisplay = `
+              <div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">
+                ${match.actualScore.home}:${match.actualScore.away}
+              </div>
+            `;
+          }
+        } else {
+          scoreDisplay = `<div class="text-xs font-bold font-sporty text-slate-500 uppercase tracking-widest">VS</div>`;
+        }
+
+        // Check rules logic for predictions interface (Ties are completely disabled for Knockout stages)
+        let predictionsSelectorHtml = "";
+        if (isKnockout) {
+          predictionsSelectorHtml = `
+            <div class="grid grid-cols-2 gap-1.5 xs:gap-2">
+              <button 
+                onclick="submitPrediction('${match.id}', 'HOME_WIN', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeHomeStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold truncate max-w-full px-1">Win ${match.homeTeam}</span>
+                <span class="text-[9px] opacity-75">Team 1</span>
+              </button>
+
+              <button 
+                onclick="submitPrediction('${match.id}', 'AWAY_WIN', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeAwayStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold truncate max-w-full px-1">Win ${match.awayTeam}</span>
+                <span class="text-[9px] opacity-75">Team 2</span>
+              </button>
+            </div>
+          `;
+        } else {
+          predictionsSelectorHtml = `
+            <div class="grid grid-cols-3 gap-1.5 xs:gap-2">
+              <button 
+                onclick="submitPrediction('${match.id}', 'HOME_WIN', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeHomeStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold truncate max-w-full px-1">Win ${match.homeTeam}</span>
+                <span class="text-[9px] opacity-75">Team 1</span>
+              </button>
+
+              <button 
+                onclick="submitPrediction('${match.id}', 'DRAW', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeDrawStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold">Tie</span>
+                <span class="text-[9px] opacity-75">Draw</span>
+              </button>
+
+              <button 
+                onclick="submitPrediction('${match.id}', 'AWAY_WIN', ${isLocked})" 
+                ${isLocked ? 'disabled' : ''} 
+                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeAwayStyle} ${isLocked ? 'opacity-80' : ''}">
+                <span class="font-bold truncate max-w-full px-1">Win ${match.awayTeam}</span>
+                <span class="text-[9px] opacity-75">Team 2</span>
+              </button>
+            </div>
+          `;
+        }
+
+        // Formulation of results message checking points allocation dynamic differences
+        let resultMsgHtml = "";
+        if (match.status === "Completed") {
+          let earnedPoints = "0 Pts";
+          let successLabel = "Incorrect";
+          let bgClass = "bg-slate-950/80 border border-slate-800 text-slate-400";
+          let iconClass = "fa-rectangle-xmark text-slate-500";
+
+          if (isKnockout) {
+            if (userPrediction === match.result) {
+              earnedPoints = "+8 Pts";
+              successLabel = "Correct Outcome!";
+              bgClass = "bg-sky-950/40 border border-sky-800 text-sky-400";
+              iconClass = "fa-square-check text-sky-400";
+            }
+          } else {
+            if (userPrediction === match.result) {
+              earnedPoints = "+3 Pts";
+              successLabel = "Correct Outcome!";
+              bgClass = "bg-emerald-950/40 border border-emerald-800 text-emerald-400";
+              iconClass = "fa-square-check text-emerald-400";
+            } else if ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') {
+              earnedPoints = "+1 Pt";
+              successLabel = "Win predicted, but ended in Tie";
+              bgClass = "bg-amber-950/40 border border-amber-800/80 text-amber-300";
+              iconClass = "fa-circle-half-stroke text-amber-300";
+            }
+          }
+
+          resultMsgHtml = `
+            <div class="mt-3 p-2 rounded-xl text-xs flex items-center justify-between font-sporty ${bgClass}">
+              <span class="flex items-center space-x-1">
+                <i class="fa-solid ${iconClass}"></i>
+                <span class="text-[10px] xs:text-xs">Result: ${successLabel}</span>
+              </span>
+              <span class="font-bold text-[10px] xs:text-xs">${earnedPoints}</span>
+            </div>
+          `;
+        }
+
         card.innerHTML = `
           <div class="flex justify-between items-center mb-4">
             <span class="text-[11px] font-bold font-sporty tracking-wider text-slate-400 uppercase bg-slate-950 px-2.5 py-1 rounded-full border border-slate-800/80">
@@ -1877,10 +2134,7 @@
             </div>
 
             <div class="col-span-1 flex flex-col justify-center items-center">
-              ${match.actualScore 
-                ? `<div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">${match.actualScore.home}:${match.actualScore.away}</div>`
-                : `<div class="text-xs font-bold font-sporty text-slate-500 uppercase tracking-widest">VS</div>`
-              }
+              ${scoreDisplay}
               <span class="text-[8px] xs:text-[9px] text-slate-400 mt-1 uppercase font-sporty text-center break-words leading-tight">
                 ${localFormattedDate}<br/>${localFormattedTime}
               </span>
@@ -1907,41 +2161,8 @@
               }
             </div>
 
-            <div class="grid grid-cols-3 gap-1.5 xs:gap-2">
-              <button 
-                onclick="submitPrediction('${match.id}', 'HOME_WIN', ${isLocked})" 
-                ${isLocked ? 'disabled' : ''} 
-                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeHomeStyle} ${isLocked ? 'opacity-80' : ''}">
-                <span class="font-bold truncate max-w-full px-1">Win ${match.homeTeam}</span>
-                <span class="text-[9px] opacity-75">Team 1</span>
-              </button>
-
-              <button 
-                onclick="submitPrediction('${match.id}', 'DRAW', ${isLocked})" 
-                ${isLocked ? 'disabled' : ''} 
-                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeDrawStyle} ${isLocked ? 'opacity-80' : ''}">
-                <span class="font-bold">Tie</span>
-                <span class="text-[9px] opacity-75">Draw</span>
-              </button>
-
-              <button 
-                onclick="submitPrediction('${match.id}', 'AWAY_WIN', ${isLocked})" 
-                ${isLocked ? 'disabled' : ''} 
-                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeAwayStyle} ${isLocked ? 'opacity-80' : ''}">
-                <span class="font-bold truncate max-w-full px-1">Win ${match.awayTeam}</span>
-                <span class="text-[9px] opacity-75">Team 2</span>
-              </button>
-            </div>
-
-            ${match.status === "Completed" ? `
-              <div class="mt-3 p-2 rounded-xl text-xs flex items-center justify-between font-sporty ${userPrediction === match.result ? 'bg-emerald-950/40 border border-emerald-800 text-emerald-400' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? 'bg-amber-950/40 border border-amber-800/80 text-amber-300' : 'bg-slate-950/80 border border-slate-800 text-slate-400'}">
-                <span class="flex items-center space-x-1">
-                  <i class="fa-solid ${userPrediction === match.result ? 'fa-square-check text-emerald-400' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? 'fa-circle-half-stroke text-amber-300' : 'fa-rectangle-xmark text-slate-500'}"></i>
-                  <span class="text-[10px] xs:text-xs">Result: ${userPrediction === match.result ? 'Correct Outcome!' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? 'Win predicted, but Ended in Tie' : 'Incorrect'}</span>
-                </span>
-                <span class="font-bold text-[10px] xs:text-xs">${userPrediction === match.result ? '+3 Pts' : ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') ? '+1 Pt' : '0 Pts'}</span>
-              </div>
-            ` : ''}
+            ${predictionsSelectorHtml}
+            ${resultMsgHtml}
 
             ${match.status === "Live" ? `
               <div class="mt-3 p-2 bg-amber-950/20 border border-amber-900/30 rounded-xl text-[11px] text-amber-400 text-center font-sporty animate-pulse">
@@ -2289,5 +2510,50 @@
       </div>
     </div>
   </div>
+
+  <!-- Knockout Rules Announcement Modal (Shown exactly once per user upon logging in) -->
+  <div id="knockout-announcement-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-md w-full p-6 shadow-2xl transform scale-100 transition-all border-t-4 border-t-sky-500 relative">
+      <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-sky-500 text-slate-950 p-2.5 rounded-full shadow-lg border border-slate-900">
+        <i class="fa-solid fa-circle-info text-xl"></i>
+      </div>
+      
+      <div class="text-center mt-4">
+        <h3 class="text-lg font-extrabold text-sky-400 font-sporty uppercase tracking-wider">Welcome to the Knockout Stage!</h3>
+        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+          The stakes are higher and the predictor mechanics have evolved! We have redesigned the engine for the **Round of 32 & onwards**.
+        </p>
+      </div>
+
+      <div class="my-5 p-3.5 bg-slate-950/80 rounded-xl border border-slate-800 space-y-3.5 text-xs">
+        <div class="flex items-start space-x-2.5">
+          <i class="fa-solid fa-award text-sky-400 text-base mt-0.5 flex-shrink-0"></i>
+          <div>
+            <p class="font-bold text-slate-200">8 Points Per Winner Prediction</p>
+            <p class="text-[11px] text-slate-400 leading-tight">Correct outcome prediction earns **8 points** (previously 3 points). Incorrect outcome gets 0 points.</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-2.5">
+          <i class="fa-solid fa-ban text-rose-400 text-base mt-0.5 flex-shrink-0"></i>
+          <div>
+            <p class="font-bold text-slate-200">No "Tie / Draw" Predictions</p>
+            <p class="text-[11px] text-slate-400 leading-tight">Draw selections have been completely removed. Match results resolve after extra time and penalty shootouts!</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-2.5">
+          <i class="fa-solid fa-clock-rotate-left text-emerald-400 text-base mt-0.5 flex-shrink-0"></i>
+          <div>
+            <p class="font-bold text-slate-200">Group Stage Standings Preserved</p>
+            <p class="text-[11px] text-slate-400 leading-tight">All scores, points, and standings from matches 1 to 57 remain safely frozen without changes.</p>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="closeKnockoutAnnouncement()" class="w-full py-3 bg-gradient-to-r from-sky-500 to-teal-500 hover:opacity-90 transition-opacity text-slate-950 font-bold rounded-xl text-xs uppercase tracking-widest font-sporty shadow-lg">
+        LET'S PREDICT!
+      </button>
+    </div>
+  </div>
+
 </body>
 </html>
