@@ -408,7 +408,7 @@
       "match_34", "match_35", "match_36", "match_37", "match_38", "match_39", "match_40", "match_41",
       "match_42", "match_43", "match_44", "match_45", "match_46", "match_47", "match_48", "match_49",
       "match_50", "match_51", "match_52", "match_53", "match_54", "match_55", "match_56", "match_57",
-      "match_58", "match_59", "match_60", "match_61"
+      "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64"
     ];
 
     const matchesDatabase = [
@@ -1154,8 +1154,8 @@
         awayFlag: "no",
         stage: "Round of 32",
         kickoffTime: "2026-06-30T23:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 2 },
+        result: "AWAY_WIN",
         date: "June 30, 2026"
       },
       {
@@ -1166,8 +1166,8 @@
         awayFlag: "se",
         stage: "Round of 32",
         kickoffTime: "2026-07-01T03:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 3, away: 0 },
+        result: "HOME_WIN",
         date: "July 1, 2026"
       },
       {
@@ -1178,8 +1178,9 @@
         awayFlag: "ec",
         stage: "Round of 32",
         kickoffTime: "2026-07-01T07:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 2, away: 0 },
+        result: "HOME_WIN",
+        awayRedCard: true,
         date: "July 1, 2026"
       },
       {
@@ -1217,6 +1218,54 @@
         actualScore: null,
         result: null,
         date: "July 2, 2026"
+      },
+      {
+        id: "match_68",
+        homeTeam: "Spain",
+        homeFlag: "es",
+        awayTeam: "Austria",
+        awayFlag: "at",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-03T01:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 3, 2026"
+      },
+      {
+        id: "match_69",
+        homeTeam: "Portugal",
+        homeFlag: "pt",
+        awayTeam: "Croatia",
+        awayFlag: "hr",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-03T05:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 3, 2026"
+      },
+      {
+        id: "match_70",
+        homeTeam: "Switzerland",
+        homeFlag: "ch",
+        awayTeam: "Algeria",
+        awayFlag: "dz",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-03T09:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 3, 2026"
+      },
+      {
+        id: "match_71",
+        homeTeam: "Australia",
+        homeFlag: "au",
+        awayTeam: "Egypt",
+        awayFlag: "eg",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-04T00:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 4, 2026"
       }
     ];
 
@@ -1281,7 +1330,10 @@
       "match_58": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
       "match_59": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
       "match_60": { home: 1, away: 1, homePen: 3, awayPen: 4, status: "Completed", result: "AWAY_WIN" },
-      "match_61": { home: 1, away: 1, homePen: 2, awayPen: 3, status: "Completed", result: "AWAY_WIN" }
+      "match_61": { home: 1, away: 1, homePen: 2, awayPen: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_62": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_63": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_64": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" }
     };
 
     function resolveMatchStatesAndOutputs() {
