@@ -259,7 +259,7 @@
             </div>
           </div>
 
-          <!-- Updated Scoring Matrix according to image_13e041.png and Knockout Rules -->
+          <!-- Score Guide in alignment with image_13e041.png -->
           <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3.5 md:max-w-md text-xs text-slate-400 space-y-2">
             <p class="font-semibold text-slate-200">Predictor Scoring System Matrix & Tiebreaker Rules:</p>
             <div class="space-y-1">
@@ -305,7 +305,7 @@
           <div class="flex items-center justify-between md:justify-end space-x-2 border-t border-slate-800/60 md:border-t-0 pt-3 md:pt-0">
             <span class="text-[10px] xs:text-xs text-slate-400 font-sporty uppercase tracking-wide">Filter Stages:</span>
             <select id="match-group-filter" onchange="renderMatches()" class="bg-slate-950 border border-slate-800 text-xs rounded-lg px-2.5 py-1.5 text-slate-300 outline-none focus:border-emerald-500 min-h-[35px]">
-              <option value="48HRS" selected>Upcoming (Next 48 Hours)</option>
+              <option value="48HRS" selected>Upcoming Matches</option>
               <option value="ALL">All Match Stages</option>
               <option value="Live">Live Only</option>
               <option value="Completed">Completed Only</option>
@@ -408,7 +408,8 @@
       "match_34", "match_35", "match_36", "match_37", "match_38", "match_39", "match_40", "match_41",
       "match_42", "match_43", "match_44", "match_45", "match_46", "match_47", "match_48", "match_49",
       "match_50", "match_51", "match_52", "match_53", "match_54", "match_55", "match_56", "match_57",
-      "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64"
+      "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64", "match_65",
+      "match_66", "match_67"
     ];
 
     const matchesDatabase = [
@@ -1191,8 +1192,8 @@
         awayFlag: "cd",
         stage: "Round of 32",
         kickoffTime: "2026-07-01T22:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 2, away: 1 },
+        result: "HOME_WIN",
         date: "July 1, 2026"
       },
       {
@@ -1203,8 +1204,8 @@
         awayFlag: "sn",
         stage: "Round of 32",
         kickoffTime: "2026-07-02T02:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 3, away: 2 },
+        result: "HOME_WIN",
         date: "July 2, 2026"
       },
       {
@@ -1215,8 +1216,9 @@
         awayFlag: "ba",
         stage: "Round of 32",
         kickoffTime: "2026-07-02T06:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 2, away: 0 },
+        result: "HOME_WIN",
+        homeRedCard: true,
         date: "July 2, 2026"
       },
       {
@@ -1266,6 +1268,54 @@
         actualScore: null,
         result: null,
         date: "July 4, 2026"
+      },
+      {
+        id: "match_72",
+        homeTeam: "Argentina",
+        homeFlag: "ar",
+        awayTeam: "Cabo Verde",
+        awayFlag: "cv",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-04T04:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 4, 2026"
+      },
+      {
+        id: "match_73",
+        homeTeam: "Colombia",
+        homeFlag: "co",
+        awayTeam: "Ghana",
+        awayFlag: "gh",
+        stage: "Round of 32",
+        kickoffTime: "2026-07-04T07:30:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 4, 2026"
+      },
+      {
+        id: "match_74",
+        homeTeam: "Canada",
+        homeFlag: "ca",
+        awayTeam: "Morocco",
+        awayFlag: "ma",
+        stage: "Round of 16",
+        kickoffTime: "2026-07-04T23:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 4, 2026"
+      },
+      {
+        id: "match_75",
+        homeTeam: "Paraguay",
+        homeFlag: "py",
+        awayTeam: "France",
+        awayFlag: "fr",
+        stage: "Round of 16",
+        kickoffTime: "2026-07-05T03:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 5, 2026"
       }
     ];
 
@@ -1333,7 +1383,10 @@
       "match_61": { home: 1, away: 1, homePen: 2, awayPen: 3, status: "Completed", result: "AWAY_WIN" },
       "match_62": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
       "match_63": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
-      "match_64": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" }
+      "match_64": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_65": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_66": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_67": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" }
     };
 
     function resolveMatchStatesAndOutputs() {
@@ -1415,17 +1468,15 @@
       const promptText = `
         Search using Google Search grounding on the official webpage: 
         https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=BD&wtw-filter=ALL
-        Find the true results, live scores, and statuses for matches from June 28 to June 30, 2026.
+        Find the true results, live scores, and statuses for matches from June 28 to July 2, 2026.
         Return a simple JSON array structure matching the following key parameters:
         [
           {
-            "id": "match_60",
-            "homeScore": 1,
-            "awayScore": 1,
-            "homePen": 3,
-            "awayPen": 4,
+            "id": "match_66",
+            "homeScore": 3,
+            "awayScore": 2,
             "status": "Completed",
-            "result": "AWAY_WIN"
+            "result": "HOME_WIN"
           }
         ]
         Respond with ONLY the raw JSON string inside brackets, no extra explanations.
@@ -1636,7 +1687,7 @@
         
         await syncWithFifaOfficialURL();
         
-        // Trigger the once-off Knockout Stage rules announcement popup
+        // Trigger once-off announcement pop-up notification of new changes for logged-in users
         checkAndShowKnockoutAnnouncement(user.uid);
       } else {
         currentUser = null;
@@ -1652,7 +1703,6 @@
       }
     });
 
-    // Elegant announcement modal trigger function (once per user profile via localStorage)
     function checkAndShowKnockoutAnnouncement(uid) {
       const storageKey = `seen_knockout_rules_announcement_${uid}`;
       if (!localStorage.getItem(storageKey)) {
@@ -1722,7 +1772,7 @@
             const isKnockout = !match.stage.startsWith("Group");
             
             if (isKnockout) {
-              // Knockout rules: Correct outcome pays out 8 points! Ties are not possible in Knockout choices.
+              // Knockout stage rules: Correct outcome pays out 8 points! No ties available in Knockouts.
               if (prediction === match.result) {
                 scoreCalculated += 8;
                 successCount++;
@@ -1733,7 +1783,6 @@
                 scoreCalculated += 3;
                 successCount++;
               } else if ((prediction === "HOME_WIN" || prediction === "AWAY_WIN") && match.result === "DRAW") {
-                // Correct outcome direction but draw tiebreaker fallback
                 scoreCalculated += 1;
                 successCount++; 
               }
@@ -1974,7 +2023,6 @@
 
       let filteredMatches = [];
       if (filter === "48HRS") {
-        // Safe check to list all pending upcoming games including Spain vs. Cape Verde dynamically
         filteredMatches = matchesDatabase.filter(m => m.status === "Upcoming" || m.status === "Live");
       } else if (filter !== "ALL") {
         filteredMatches = matchesDatabase.filter(m => m.status === filter);
@@ -2125,7 +2173,6 @@
           `;
         }
 
-        // Formulation of results message checking points allocation dynamic differences
         let resultMsgHtml = "";
         if (match.status === "Completed") {
           let earnedPoints = "0 Pts";
