@@ -1710,6 +1710,8 @@
         
         checkAndShowKnockoutAnnouncement(user.uid);
         checkAndShowDailyQuizPopup(user.uid);
+        
+        startQuizCountdownTimer();
       } else {
         currentUser = null;
         currentNickname = "";
@@ -1724,6 +1726,41 @@
         leaderboardUsers = [];
       }
     });
+
+    function startQuizCountdownTimer() {
+      // Periodic clock evaluation
+      setInterval(() => {
+        const paraguayFranceMatch = matchesDatabase.find(m => m.id === "match_75");
+        if (!paraguayFranceMatch) return;
+        
+        const kickoff = new Date(paraguayFranceMatch.kickoffTime);
+        const now = new Date();
+        const timeDiff = kickoff.getTime() - now.getTime();
+        const timerElem = document.getElementById("quiz-lock-timer");
+        
+        const previousStatus = paraguayFranceMatch.status;
+        resolveMatchStatesAndOutputs();
+        
+        // Re-render UI only if status transitioned to "Live" or "Completed"
+        if (previousStatus !== paraguayFranceMatch.status) {
+          renderPointBoosterQuizzes();
+          renderMatches();
+          autoRecalculateAndSavePoints();
+        }
+
+        if (!timerElem) return;
+
+        if (timeDiff <= 0 || paraguayFranceMatch.status === "Live" || paraguayFranceMatch.status === "Completed") {
+          timerElem.innerHTML = `<span class="text-rose-500 font-bold flex items-center justify-end gap-1"><i class="fa-solid fa-lock"></i> Locked (Live)</span>`;
+        } else {
+          const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+          
+          timerElem.innerHTML = `<span class="text-amber-400 font-bold flex items-center justify-end gap-1"><i class="fa-solid fa-clock animate-pulse"></i> Locks in: ${hours}h ${minutes}m ${seconds}s</span>`;
+        }
+      }, 1000);
+    }
 
     function checkAndShowKnockoutAnnouncement(uid) {
       const storageKey = `seen_knockout_rules_announcement_${uid}`;
@@ -2176,7 +2213,9 @@
       historyContainer.innerHTML = "";
 
       // Today's Quiz checklist rendering (France scorers vs Paraguay)
-      const isQuizLocked = false; 
+      const paraguayFranceMatch = matchesDatabase.find(m => m.id === "match_75");
+      const isQuizLocked = paraguayFranceMatch ? (paraguayFranceMatch.status === "Live" || paraguayFranceMatch.status === "Completed") : false;
+      
       const currentSelection = localQuizAnswers["quiz_france_scorers"] || [];
       
       const activeCard = document.createElement("div");
@@ -2188,15 +2227,16 @@
         return `
           <label 
             id="lbl-${elementId}" 
-            class="flex items-center space-x-3 p-3 rounded-xl border cursor-pointer select-none transition-all ${isSelected ? 'border-amber-500 bg-amber-950/20' : 'border-slate-800 bg-slate-900/40 hover:bg-slate-900/70'}"
-            onclick="toggleFrancePlayerSelection('${player}')"
+            class="flex items-center space-x-3 p-3 rounded-xl border ${isQuizLocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'} select-none transition-all ${isSelected ? 'border-amber-500 bg-amber-950/20' : 'border-slate-800 bg-slate-900/40 hover:bg-slate-900/70'}"
+            ${!isQuizLocked ? `onclick="toggleFrancePlayerSelection('${player}')"` : ''}
           >
             <input 
               type="checkbox" 
               id="chk-${elementId}" 
               ${isSelected ? 'checked' : ''} 
+              ${isQuizLocked ? 'disabled' : ''}
               class="w-4 h-4 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900 focus:ring-2 accent-amber-500"
-              onclick="event.stopPropagation(); toggleFrancePlayerSelection('${player}')"
+              ${!isQuizLocked ? `onclick="event.stopPropagation(); toggleFrancePlayerSelection('${player}')"` : ''}
             >
             <span class="text-xs font-semibold text-slate-200">${player}</span>
           </label>
@@ -2212,10 +2252,11 @@
             </span>
             <p class="text-[11px] text-slate-500 mt-1">Select France players predicted to score tonight from the lineup. Multiple selections allowed!</p>
           </div>
-          <div class="text-right">
-            <span class="text-xs text-amber-400 font-bold font-sporty uppercase bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-900/50">
+          <div class="text-right flex flex-col items-end">
+            <span class="text-xs text-amber-400 font-bold font-sporty uppercase bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-900/50 block">
               Reward: +15 Points
             </span>
+            <span id="quiz-lock-timer" class="text-[10px] text-slate-400 font-sporty mt-1.5 block min-h-[15px]">Checking clock...</span>
           </div>
         </div>
 
