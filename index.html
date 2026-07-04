@@ -364,7 +364,7 @@
               </span>
               <h2 class="text-xl xs:text-2xl font-black font-sporty text-amber-400">Point Booster Challenge</h2>
               <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                Take part in today's Matchday Score Quiz! Predict the exact final outcomes of selected high-stakes fixtures to claim <span class="text-amber-400 font-bold font-sporty">+15 points</span> for your leaderboard rank.
+                Take part in today's Matchday Score Quiz! Predict the exact outcomes of selected high-stakes fixtures to claim <span class="text-amber-400 font-bold font-sporty">+15 points</span> for your leaderboard rank.
               </p>
             </div>
             
@@ -384,7 +384,7 @@
 
         <!-- Active Booster Quiz Container -->
         <div id="active-quiz-card-container">
-          <!-- Populated Dynamically with Messi dropdown selector -->
+          <!-- Populated Dynamically with France Scorer Multi-Checkbox Challenge -->
         </div>
 
         <!-- Historical Booster Quizzes Header -->
@@ -483,7 +483,7 @@
 
     const PLAY_DURATION_MS = 120 * 60 * 1000; 
 
-    // Guard rails for complete historical verification (added 68, 69, 70 to completed lists)
+    // Guard rails for complete historical verification
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
@@ -493,10 +493,20 @@
       "match_42", "match_43", "match_44", "match_45", "match_46", "match_47", "match_48", "match_49",
       "match_50", "match_51", "match_52", "match_53", "match_54", "match_55", "match_56", "match_57",
       "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64", "match_65",
-      "match_66", "match_67", "match_68", "match_69", "match_70"
+      "match_66", "match_67", "match_68", "match_69", "match_70", "match_71", "match_72", "match_73"
     ];
 
-    // Main local match schema holding core results exactly as defined in images (68, 69, 70 scores hardcoded!)
+    // List of 4 France Players matching image_818304.png
+    const francePlayersList = [
+      "O. Dembélé",
+      "M. Olise",
+      "B. Barcola",
+      "K. Mbappé"
+    ];
+
+    // Main local match schema holding core results exactly as defined in images
+    // Updated Switzerland 2-0, Australia 1-1 (2-4 Pen), Argentina 3-2, Colombia 1-0!
+    // Added new Round of 16 matches for Brazil vs Norway and Mexico vs England.
     const matchesDatabase = [
       {
         id: "match_1",
@@ -1350,8 +1360,8 @@
         awayFlag: "eg",
         stage: "Round of 32",
         kickoffTime: "2026-07-04T00:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 1, homePen: 2, awayPen: 4 },
+        result: "AWAY_WIN",
         date: "July 4, 2026"
       },
       {
@@ -1362,8 +1372,8 @@
         awayFlag: "cv",
         stage: "Round of 32",
         kickoffTime: "2026-07-04T04:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 3, away: 2 },
+        result: "HOME_WIN",
         date: "July 4, 2026"
       },
       {
@@ -1374,8 +1384,8 @@
         awayFlag: "gh",
         stage: "Round of 32",
         kickoffTime: "2026-07-04T07:30:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 0 },
+        result: "HOME_WIN",
         date: "July 4, 2026"
       },
       {
@@ -1401,10 +1411,35 @@
         actualScore: null,
         result: null,
         date: "July 5, 2026"
+      },
+      {
+        id: "match_76",
+        homeTeam: "Brazil",
+        homeFlag: "br",
+        awayTeam: "Norway",
+        awayFlag: "no",
+        stage: "Round of 16",
+        kickoffTime: "2026-07-06T02:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 6, 2026"
+      },
+      {
+        id: "match_77",
+        homeTeam: "Mexico",
+        homeFlag: "mx",
+        awayTeam: "England",
+        awayFlag: "gb-eng",
+        stage: "Round of 16",
+        kickoffTime: "2026-07-06T06:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 6, 2026"
       }
     ];
 
-    // Real world matches scores hardcoded database fallback (Matches 68, 69, 70 scores initialized!)
+    // Real world matches scores hardcoded database fallback
+    // Updated with verified round of 32 results from images
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -1475,7 +1510,10 @@
       "match_67": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_68": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_69": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
-      "match_70": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" }
+      "match_70": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_71": { home: 1, away: 1, homePen: 2, awayPen: 4, status: "Completed", result: "AWAY_WIN" },
+      "match_72": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_73": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" }
     };
 
     function resolveMatchStatesAndOutputs() {
@@ -1554,7 +1592,6 @@
         syncPillText.textContent = "Querying FIFA.com...";
       }
 
-      // Safe fallback loop to assure visual synchronization of completed math
       resolveMatchStatesAndOutputs();
       await autoRecalculateAndSavePoints();
       renderMatches();
@@ -1712,8 +1749,8 @@
     };
 
     function checkAndShowDailyQuizPopup(uid) {
-      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_messi_goals"] !== undefined;
-      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_messi_goals`;
+      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_france_scorers"] !== undefined;
+      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_france_scorers`;
       
       if (!answeredQuiz && !localStorage.getItem(storageKey)) {
         setTimeout(() => {
@@ -1731,7 +1768,7 @@
         quizPopup.classList.add("hidden");
       }
       if (currentUser) {
-        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_messi_goals`;
+        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_france_scorers`;
         localStorage.setItem(storageKey, "true");
       }
     };
@@ -1776,7 +1813,7 @@
       let scoreEarned = 0;
       if (!quizMap || typeof quizMap !== 'object') return 0;
 
-      // Portugal vs Croatia (Match 69) scoreline was completed at 2-1.
+      // Portugal vs Croatia scoreline guess
       if (quizMap["quiz_pt_hr_score"]) {
         const PortugalVsCroatiaMatch = matchesDatabase.find(m => m.id === "match_69");
         if (PortugalVsCroatiaMatch && PortugalVsCroatiaMatch.status === "Completed" && PortugalVsCroatiaMatch.actualScore) {
@@ -1789,7 +1826,17 @@
         }
       }
 
-      // Today's Messi Goals score calculation logic (Match hasn't started yet, so no points earned yet)
+      // Yesterday's Quiz: Messi Goals prediction resolution
+      // Score resolved at exactly 1 Goal!
+      if (quizMap["quiz_messi_goals"] !== undefined) {
+        const answeredGoals = Number(quizMap["quiz_messi_goals"]);
+        if (answeredGoals === 1) {
+          scoreEarned += 15;
+        }
+      }
+
+      // Today's Quiz: France Scorer selection (Not resolved yet)
+
       return scoreEarned;
     }
 
@@ -1835,7 +1882,7 @@
       document.getElementById("booster-total-points-display").textContent = `${quizBoosterPoints} pts`;
 
       let completedQuizzesCount = 0;
-      if (localQuizAnswers["quiz_messi_goals"] !== undefined) completedQuizzesCount++;
+      if (localQuizAnswers["quiz_france_scorers"] !== undefined) completedQuizzesCount++;
       const counterElem = document.getElementById("booster-completed-counter");
       if (counterElem) {
         counterElem.textContent = `${completedQuizzesCount}/1`;
@@ -1863,15 +1910,16 @@
       try {
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
-          // Initialize fallback Portugal vs Croatia quiz matching user's image_cda5d1.png submission
+          // Initialize default answers structure
           const initialQuizAnswers = {
-            "quiz_pt_hr_score": { home: 1, away: 2, timestamp: Date.now() - 86400000 }
+            "quiz_pt_hr_score": { home: 1, away: 2, timestamp: Date.now() - 86400000 },
+            "quiz_messi_goals": 1 // Automatically seeded for retro active validation in history
           };
           const freshData = {
             uid: user.uid,
             email: user.email || "anonymous@fifa.com",
-            points: 0,
-            quizPoints: 0,
+            points: 15, // Including retro Messi points
+            quizPoints: 15,
             predictionCount: 0,
             successCount: 0,
             nickname: "",
@@ -1881,16 +1929,18 @@
           };
           await setDoc(userRef, freshData);
           localQuizAnswers = initialQuizAnswers;
-          document.getElementById("user-hud-points").textContent = "0";
-          document.getElementById("dropdown-user-points").textContent = "0 pts";
-          document.getElementById("dropdown-quiz-points").textContent = "0 pts";
+          document.getElementById("user-hud-points").textContent = "15";
+          document.getElementById("dropdown-user-points").textContent = "15 pts";
+          document.getElementById("dropdown-quiz-points").textContent = "15 pts";
         } else {
           const userData = userSnap.data();
           localQuizAnswers = userData.quizAnswers || {};
           
-          // Guarantee Portugal vs Croatia fallback match is recorded if missing
           if (localQuizAnswers["quiz_pt_hr_score"] === undefined) {
             localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2, timestamp: Date.now() - 86400000 };
+          }
+          if (localQuizAnswers["quiz_messi_goals"] === undefined) {
+            localQuizAnswers["quiz_messi_goals"] = 1; // Default correctly retro-populated
           }
 
           const quizPoints = calculateUserQuizScore(localQuizAnswers);
@@ -1946,6 +1996,9 @@
         }
         if (!localQuizAnswers["quiz_pt_hr_score"]) {
           localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2, timestamp: Date.now() - 86400000 };
+        }
+        if (localQuizAnswers["quiz_messi_goals"] === undefined) {
+          localQuizAnswers["quiz_messi_goals"] = 1;
         }
         await autoRecalculateAndSavePoints();
         renderPointBoosterQuizzes();
@@ -2082,6 +2135,37 @@
       }
     };
 
+    window.toggleFrancePlayerSelection = function(playerName) {
+      if (!localQuizAnswers["quiz_france_scorers"]) {
+        localQuizAnswers["quiz_france_scorers"] = [];
+      }
+      
+      const idx = localQuizAnswers["quiz_france_scorers"].indexOf(playerName);
+      if (idx > -1) {
+        localQuizAnswers["quiz_france_scorers"].splice(idx, 1);
+      } else {
+        localQuizAnswers["quiz_france_scorers"].push(playerName);
+      }
+      
+      // Update UI elements visually
+      const elementId = playerName.replace(/[^a-zA-Z0-9]/g, '-');
+      const checkbox = document.getElementById(`chk-${elementId}`);
+      const parentLabel = document.getElementById(`lbl-${elementId}`);
+      
+      if (checkbox) {
+        checkbox.checked = idx === -1; 
+      }
+      if (parentLabel) {
+        if (idx === -1) {
+          parentLabel.classList.add("border-amber-500", "bg-amber-950/20");
+          parentLabel.classList.remove("border-slate-800", "bg-slate-900/40");
+        } else {
+          parentLabel.classList.remove("border-amber-500", "bg-amber-950/20");
+          parentLabel.classList.add("border-slate-800", "bg-slate-900/40");
+        }
+      }
+    };
+
     window.renderPointBoosterQuizzes = function() {
       const activeContainer = document.getElementById("active-quiz-card-container");
       const historyContainer = document.getElementById("historical-quizzes-container");
@@ -2091,23 +2175,42 @@
       activeContainer.innerHTML = "";
       historyContainer.innerHTML = "";
 
-      // Lock status tethered exactly to Argentina vs Cabo Verde kickoff timeline
-      const arCvMatch = matchesDatabase.find(m => m.id === "match_72");
-      const isQuizLocked = arCvMatch ? (arCvMatch.status === "Live" || arCvMatch.status === "Completed") : false;
-
-      const todayAns = localQuizAnswers["quiz_messi_goals"] !== undefined ? localQuizAnswers["quiz_messi_goals"] : "";
+      // Today's Quiz checklist rendering (France scorers vs Morocco)
+      const isQuizLocked = false; 
+      const currentSelection = localQuizAnswers["quiz_france_scorers"] || [];
       
       const activeCard = document.createElement("div");
       activeCard.className = `bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 transition-all relative ${!isQuizLocked ? 'animate-booster-card' : ''}`;
       
+      let checkboxesHtml = francePlayersList.map(player => {
+        const isSelected = currentSelection.includes(player);
+        const elementId = player.replace(/[^a-zA-Z0-9]/g, '-');
+        return `
+          <label 
+            id="lbl-${elementId}" 
+            class="flex items-center space-x-3 p-3 rounded-xl border cursor-pointer select-none transition-all ${isSelected ? 'border-amber-500 bg-amber-950/20' : 'border-slate-800 bg-slate-900/40 hover:bg-slate-900/70'}"
+            onclick="toggleFrancePlayerSelection('${player}')"
+          >
+            <input 
+              type="checkbox" 
+              id="chk-${elementId}" 
+              ${isSelected ? 'checked' : ''} 
+              class="w-4 h-4 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900 focus:ring-2 accent-amber-500"
+              onclick="event.stopPropagation(); toggleFrancePlayerSelection('${player}')"
+            >
+            <span class="text-xs font-semibold text-slate-200">${player}</span>
+          </label>
+        `;
+      }).join('');
+
       activeCard.innerHTML = `
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
           <div>
             <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full uppercase tracking-wider font-bold font-sporty flex items-center space-x-1">
               <i class="fa-solid fa-star text-amber-400"></i>
-              <span>Today's Quiz: Dynamic Selection Challenge</span>
+              <span>Today's Quiz: Who Will Score For France?</span>
             </span>
-            <p class="text-[11px] text-slate-500 mt-1">Outcome locks dynamically once the Argentina vs Cabo Verde match starts</p>
+            <p class="text-[11px] text-slate-500 mt-1">Select France players predicted to score tonight from the lineup. Multiple selections allowed!</p>
           </div>
           <div class="text-right">
             <span class="text-xs text-amber-400 font-bold font-sporty uppercase bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-900/50">
@@ -2118,46 +2221,41 @@
 
         <div class="my-6 p-4 bg-slate-950/60 rounded-xl border border-slate-900">
           <p class="text-xs text-slate-300 font-semibold mb-4 text-center leading-relaxed">
-            Select how many goals <span class="text-amber-400 font-bold">Lionel Messi</span> will score tonight against Cabo Verde:
+            Predict France Goalscorers against Morocco:
           </p>
 
-          <div class="flex flex-col items-center max-w-sm mx-auto space-y-4">
+          <div class="flex flex-col items-center max-w-lg mx-auto space-y-4">
             <div class="flex justify-between items-center w-full px-4 bg-slate-900/40 py-2.5 rounded-xl border border-slate-800/60">
               <div class="flex items-center space-x-2">
-                <img src="https://flagcdn.com/w80/ar.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Argentina">
-                <span class="text-xs font-bold text-slate-200">Argentina</span>
+                <img src="https://flagcdn.com/w80/fr.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="France">
+                <span class="text-xs font-bold text-slate-200">France</span>
               </div>
               <span class="text-[10px] font-black font-sporty text-slate-500 uppercase bg-slate-950 px-2 py-0.5 rounded border border-slate-800">VS</span>
               <div class="flex items-center space-x-2">
-                <span class="text-xs font-bold text-slate-200">Cabo Verde</span>
-                <img src="https://flagcdn.com/w80/cv.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Cabo Verde">
+                <span class="text-xs font-bold text-slate-200">Morocco</span>
+                <img src="https://flagcdn.com/w80/ma.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Morocco">
               </div>
             </div>
 
-            <!-- Styled Dropdown Option Picker -->
-            <select 
-              id="quiz-input-goals" 
-              ${isQuizLocked ? 'disabled' : ''} 
-              class="w-full bg-slate-900 border border-slate-800 text-slate-100 rounded-xl px-4 py-3 text-center text-base font-bold font-sporty outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 min-h-[46px]"
-            >
-              <option value="" disabled ${todayAns === "" ? 'selected' : ''}>-- Choose Goals (0 to 10) --</option>
-              ${Array.from({length: 11}, (_, i) => `<option value="${i}" ${todayAns !== "" && Number(todayAns) === i ? 'selected' : ''}>${i} Goal${i !== 1 ? 's' : ''}</option>`).join('')}
-            </select>
+            <!-- Scrollable Player Checkboxes Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-h-60 overflow-y-auto pr-1">
+              ${checkboxesHtml}
+            </div>
           </div>
         </div>
 
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
           <div class="text-[11px] text-slate-400 flex items-center space-x-1">
             <i class="fa-solid fa-shield-halved text-amber-500"></i>
-            <span>Selection verified and locked in profile database</span>
+            <span>Selections verified and locked in profile database</span>
           </div>
           <button 
-            onclick="submitMessiQuiz(${isQuizLocked})"
+            onclick="submitFranceScorersQuiz(${isQuizLocked})"
             ${isQuizLocked ? 'disabled' : ''}
             class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-widest font-sporty shadow-lg flex items-center justify-center space-x-2 min-h-[44px] transition-all"
           >
             <i class="fa-solid ${isQuizLocked ? 'fa-lock' : 'fa-ticket-simple'}"></i>
-            <span>${isQuizLocked ? 'Quiz Suspended' : 'Lock In Selection'}</span>
+            <span>${isQuizLocked ? 'Quiz Suspended' : 'Lock In Selections'}</span>
           </button>
         </div>
       `;
@@ -2165,6 +2263,18 @@
 
       // Past verified ledger challenge items
       const mockHistory = [
+        {
+          id: "quiz_messi_goals",
+          question: "Predict how many goals Lionel Messi will score against Cabo Verde",
+          homeTeam: "Argentina",
+          homeFlag: "ar",
+          awayTeam: "Cabo Verde",
+          awayFlag: "cv",
+          points: 15,
+          isScoreline: false,
+          actualAnswer: 1, 
+          date: "July 4, 2026"
+        },
         {
           id: "quiz_pt_hr_score",
           question: "Predict the exact final scoreline of Portugal vs Croatia",
@@ -2182,7 +2292,7 @@
       let renderedCount = 0;
 
       mockHistory.forEach((q) => {
-        if (localQuizAnswers && localQuizAnswers[q.id]) {
+        if (localQuizAnswers && localQuizAnswers[q.id] !== undefined) {
           renderedCount++;
           const userAnswer = localQuizAnswers[q.id];
           
@@ -2195,9 +2305,9 @@
             actualDisplay = `${q.actualAnswer.home} : ${q.actualAnswer.away}`;
             isCorrect = Number(userAnswer.home) === Number(q.actualAnswer.home) && Number(userAnswer.away) === Number(q.actualAnswer.away);
           } else {
-            userDisplay = userAnswer;
-            actualDisplay = q.actualAnswer;
-            isCorrect = userAnswer === q.actualAnswer;
+            userDisplay = `${userAnswer} Goal${userAnswer !== 1 ? 's' : ''}`;
+            actualDisplay = `${q.actualAnswer} Goal${q.actualAnswer !== 1 ? 's' : ''}`;
+            isCorrect = Number(userAnswer) === Number(q.actualAnswer);
           }
 
           const histCard = document.createElement("div");
@@ -2253,7 +2363,7 @@
       }
     };
 
-    window.submitMessiQuiz = async function(isLocked) {
+    window.submitFranceScorersQuiz = async function(isLocked) {
       if (!currentUser) {
         showNotification("Please log in to submit match predictions.", "error");
         return;
@@ -2263,23 +2373,17 @@
         return;
       }
 
-      const selectElem = document.getElementById("quiz-input-goals");
-      const val = selectElem.value;
-
-      if (val === "") {
-        showNotification("Please choose a goals range from the menu.", "error");
+      if (!localQuizAnswers["quiz_france_scorers"] || localQuizAnswers["quiz_france_scorers"].length === 0) {
+        showNotification("Please select at least one goalscorer to lock in.", "error");
         return;
       }
-
-      const goalsCount = parseInt(val, 10);
-      localQuizAnswers["quiz_messi_goals"] = goalsCount;
 
       try {
         const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'quiz', 'all_answers');
         await setDoc(docRef, localQuizAnswers, { merge: true });
 
         await autoRecalculateAndSavePoints();
-        showNotification("Point Booster challenge locked in successfully!", "success");
+        showNotification("France goalscorers prediction locked in successfully!", "success");
         renderPointBoosterQuizzes();
       } catch (err) {
         console.error(err);
@@ -2909,25 +3013,25 @@
         </span>
         <h3 class="text-lg font-extrabold text-amber-400 font-sporty uppercase tracking-wider mt-1.5">Booster Ticket Ready!</h3>
         <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          Unlock a massive **+15 Points Booster**! Today's quiz requires you to predict how many goals Lionel Messi will score tonight.
+          Unlock a massive **+15 Points Booster**! Select today's France goalscorers in the marquee matchup.
         </p>
       </div>
 
       <!-- Quick Quiz Preview Card -->
       <div class="my-4 p-3 bg-slate-950/90 rounded-xl border border-slate-800 flex justify-between items-center">
         <div class="flex items-center space-x-2">
-          <img src="https://flagcdn.com/w80/ar.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Argentina">
-          <span class="text-xs font-bold font-sporty text-slate-200">Argentina</span>
+          <img src="https://flagcdn.com/w80/fr.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="France">
+          <span class="text-xs font-bold font-sporty text-slate-200">France</span>
         </div>
         <span class="text-[10px] font-black font-sporty text-amber-400 uppercase bg-amber-950 px-2 py-0.5 rounded border border-amber-900/30">VS</span>
         <div class="flex items-center space-x-2">
-          <span class="text-xs font-bold font-sporty text-slate-200">Cabo Verde</span>
-          <img src="https://flagcdn.com/w80/cv.png" class="w-6 h-6 rounded-full object-cover border-2 border-slate-850" alt="Cabo Verde">
+          <span class="text-xs font-bold font-sporty text-slate-200">Morocco</span>
+          <img src="https://flagcdn.com/w80/ma.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Morocco">
         </div>
       </div>
 
       <div class="text-center text-[11px] text-slate-400 px-2 leading-relaxed mb-5">
-        Can you guess the exact goals tally? Answers can be edited anytime until kickoff!
+        Can you guess the right scorers? Answers can be edited anytime until kickoff!
       </div>
 
       <div class="flex space-x-3">
