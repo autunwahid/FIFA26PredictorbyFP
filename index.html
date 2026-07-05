@@ -364,7 +364,7 @@
               </span>
               <h2 class="text-xl xs:text-2xl font-black font-sporty text-amber-400">Point Booster Challenge</h2>
               <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                Take part in today's Matchday Score Quiz! Predict the exact outcomes of selected high-stakes fixtures to claim <span class="text-amber-400 font-bold font-sporty">+15 points</span> for your leaderboard rank.
+                Take part in today's Matchday Score Quiz! Predict the parameters of high-stakes fixtures to claim <span class="text-amber-400 font-bold font-sporty">+15 points</span> for your leaderboard rank.
               </p>
             </div>
             
@@ -384,7 +384,7 @@
 
         <!-- Active Booster Quiz Container -->
         <div id="active-quiz-card-container">
-          <!-- Populated Dynamically with France Scorer Multi-Checkbox Challenge -->
+          <!-- Populated Dynamically with Neymar playtime single selection challenge -->
         </div>
 
         <!-- Historical Booster Quizzes Header -->
@@ -493,20 +493,22 @@
       "match_42", "match_43", "match_44", "match_45", "match_46", "match_47", "match_48", "match_49",
       "match_50", "match_51", "match_52", "match_53", "match_54", "match_55", "match_56", "match_57",
       "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64", "match_65",
-      "match_66", "match_67", "match_68", "match_69", "match_70", "match_71", "match_72", "match_73"
+      "match_66", "match_67", "match_68", "match_69", "match_70", "match_71", "match_72", "match_73",
+      "match_74", "match_75"
     ];
 
-    // List of 4 France Players matching image_818304.png
-    const francePlayersList = [
-      "O. Dembélé",
-      "M. Olise",
-      "B. Barcola",
-      "K. Mbappé"
+    const neymarTimeOptionsList = [
+      "0 minutes",
+      "1-20 minutes",
+      "21-30 minutes",
+      "31-45 minutes",
+      "46-60 minutes",
+      "61-80 minutes",
+      "81 to above minutes"
     ];
 
     // Main local match schema holding core results exactly as defined in images
-    // Updated Switzerland 2-0, Australia 1-1 (2-4 Pen), Argentina 3-2, Colombia 1-0!
-    // Added new Round of 16 matches for Brazil vs Norway and Mexico vs England.
+    // Updated with Round of 16 matches for July 7, July 8 matching image_0fa973.png
     const matchesDatabase = [
       {
         id: "match_1",
@@ -1396,8 +1398,8 @@
         awayFlag: "ma",
         stage: "Round of 16",
         kickoffTime: "2026-07-04T23:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 3 },
+        result: "AWAY_WIN",
         date: "July 4, 2026"
       },
       {
@@ -1408,8 +1410,8 @@
         awayFlag: "fr",
         stage: "Round of 16",
         kickoffTime: "2026-07-05T03:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 0, away: 1 },
+        result: "AWAY_WIN",
         date: "July 5, 2026"
       },
       {
@@ -1435,11 +1437,59 @@
         actualScore: null,
         result: null,
         date: "July 6, 2026"
+      },
+      {
+        id: "match_78",
+        homeTeam: "Portugal",
+        homeFlag: "pt",
+        awayTeam: "Spain",
+        awayFlag: "es",
+        stage: "Round of 16",
+        kickoffTime: "2026-07-07T01:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 7, 2026"
+      },
+      {
+        id: "match_79",
+        homeTeam: "USA",
+        homeFlag: "us",
+        awayTeam: "Belgium",
+        awayFlag: "be",
+        stage: "Round of 16",
+        kickoffTime: "2026-07-07T06:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 7, 2026"
+      },
+      {
+        id: "match_80",
+        homeTeam: "Argentina",
+        homeFlag: "ar",
+        awayTeam: "Egypt",
+        awayFlag: "eg",
+        stage: "Round of 16",
+        kickoffTime: "2026-07-07T22:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 7, 2026"
+      },
+      {
+        id: "match_81",
+        homeTeam: "Switzerland",
+        homeFlag: "ch",
+        awayTeam: "Colombia",
+        awayFlag: "co",
+        stage: "Round of 16",
+        kickoffTime: "2026-07-08T02:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 8, 2026"
       }
     ];
 
     // Real world matches scores hardcoded database fallback
-    // Updated with verified round of 32 results from images
+    // Updated with verified Canada vs Morocco 0-3 and Paraguay vs France 0-1
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -1513,7 +1563,9 @@
       "match_70": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_71": { home: 1, away: 1, homePen: 2, awayPen: 4, status: "Completed", result: "AWAY_WIN" },
       "match_72": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
-      "match_73": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" }
+      "match_73": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_74": { home: 0, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_75": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" }
     };
 
     function resolveMatchStatesAndOutputs() {
@@ -1728,21 +1780,19 @@
     });
 
     function startQuizCountdownTimer() {
-      // Periodic clock evaluation
       setInterval(() => {
-        const paraguayFranceMatch = matchesDatabase.find(m => m.id === "match_75");
-        if (!paraguayFranceMatch) return;
+        const brazilNorwayMatch = matchesDatabase.find(m => m.id === "match_76");
+        if (!brazilNorwayMatch) return;
         
-        const kickoff = new Date(paraguayFranceMatch.kickoffTime);
+        const kickoff = new Date(brazilNorwayMatch.kickoffTime);
         const now = new Date();
         const timeDiff = kickoff.getTime() - now.getTime();
         const timerElem = document.getElementById("quiz-lock-timer");
         
-        const previousStatus = paraguayFranceMatch.status;
+        const previousStatus = brazilNorwayMatch.status;
         resolveMatchStatesAndOutputs();
         
-        // Re-render UI only if status transitioned to "Live" or "Completed"
-        if (previousStatus !== paraguayFranceMatch.status) {
+        if (previousStatus !== brazilNorwayMatch.status) {
           renderPointBoosterQuizzes();
           renderMatches();
           autoRecalculateAndSavePoints();
@@ -1750,7 +1800,7 @@
 
         if (!timerElem) return;
 
-        if (timeDiff <= 0 || paraguayFranceMatch.status === "Live" || paraguayFranceMatch.status === "Completed") {
+        if (timeDiff <= 0 || brazilNorwayMatch.status === "Live" || brazilNorwayMatch.status === "Completed") {
           timerElem.innerHTML = `<span class="text-rose-500 font-bold flex items-center justify-end gap-1"><i class="fa-solid fa-lock"></i> Locked (Live)</span>`;
         } else {
           const hours = Math.floor(timeDiff / (1000 * 60 * 60));
@@ -1786,8 +1836,8 @@
     };
 
     function checkAndShowDailyQuizPopup(uid) {
-      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_france_scorers"] !== undefined;
-      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_france_scorers`;
+      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_neymar_time"] !== undefined;
+      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_neymar_time`;
       
       if (!answeredQuiz && !localStorage.getItem(storageKey)) {
         setTimeout(() => {
@@ -1805,7 +1855,7 @@
         quizPopup.classList.add("hidden");
       }
       if (currentUser) {
-        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_france_scorers`;
+        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_neymar_time`;
         localStorage.setItem(storageKey, "true");
       }
     };
@@ -1863,8 +1913,7 @@
         }
       }
 
-      // Yesterday's Quiz: Messi Goals prediction resolution
-      // Score resolved at exactly 1 Goal!
+      // Yesterday's Quiz: Messi Goals prediction resolution (1 Goal)
       if (quizMap["quiz_messi_goals"] !== undefined) {
         const answeredGoals = Number(quizMap["quiz_messi_goals"]);
         if (answeredGoals === 1) {
@@ -1872,7 +1921,16 @@
         }
       }
 
-      // Today's Quiz: France Scorer selection (Not resolved yet)
+      // Yesterday's Quiz: France vs Paraguay scorers
+      // Answer: Only Mbappe scored tonight's match. So, only who selected Mbappe only will get points.
+      if (quizMap["quiz_france_scorers"] !== undefined) {
+        const selection = quizMap["quiz_france_scorers"];
+        if (Array.isArray(selection) && selection.length === 1 && selection[0] === "K. Mbappé") {
+          scoreEarned += 15;
+        }
+      }
+
+      // Today's Quiz: Neymar playtime. (Not resolved yet)
 
       return scoreEarned;
     }
@@ -1919,7 +1977,7 @@
       document.getElementById("booster-total-points-display").textContent = `${quizBoosterPoints} pts`;
 
       let completedQuizzesCount = 0;
-      if (localQuizAnswers["quiz_france_scorers"] !== undefined) completedQuizzesCount++;
+      if (localQuizAnswers["quiz_neymar_time"] !== undefined) completedQuizzesCount++;
       const counterElem = document.getElementById("booster-completed-counter");
       if (counterElem) {
         counterElem.textContent = `${completedQuizzesCount}/1`;
@@ -1950,13 +2008,14 @@
           // Initialize default answers structure
           const initialQuizAnswers = {
             "quiz_pt_hr_score": { home: 1, away: 2, timestamp: Date.now() - 86400000 },
-            "quiz_messi_goals": 1 // Automatically seeded for retro active validation in history
+            "quiz_messi_goals": 1,
+            "quiz_france_scorers": ["K. Mbappé"] // Automatically seeded correct for historic verification
           };
           const freshData = {
             uid: user.uid,
             email: user.email || "anonymous@fifa.com",
-            points: 15, // Including retro Messi points
-            quizPoints: 15,
+            points: 30, // Retro Messi + Mbappe points
+            quizPoints: 30,
             predictionCount: 0,
             successCount: 0,
             nickname: "",
@@ -1966,9 +2025,9 @@
           };
           await setDoc(userRef, freshData);
           localQuizAnswers = initialQuizAnswers;
-          document.getElementById("user-hud-points").textContent = "15";
-          document.getElementById("dropdown-user-points").textContent = "15 pts";
-          document.getElementById("dropdown-quiz-points").textContent = "15 pts";
+          document.getElementById("user-hud-points").textContent = "30";
+          document.getElementById("dropdown-user-points").textContent = "30 pts";
+          document.getElementById("dropdown-quiz-points").textContent = "30 pts";
         } else {
           const userData = userSnap.data();
           localQuizAnswers = userData.quizAnswers || {};
@@ -1977,7 +2036,10 @@
             localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2, timestamp: Date.now() - 86400000 };
           }
           if (localQuizAnswers["quiz_messi_goals"] === undefined) {
-            localQuizAnswers["quiz_messi_goals"] = 1; // Default correctly retro-populated
+            localQuizAnswers["quiz_messi_goals"] = 1;
+          }
+          if (localQuizAnswers["quiz_france_scorers"] === undefined) {
+            localQuizAnswers["quiz_france_scorers"] = ["K. Mbappé"];
           }
 
           const quizPoints = calculateUserQuizScore(localQuizAnswers);
@@ -2036,6 +2098,9 @@
         }
         if (localQuizAnswers["quiz_messi_goals"] === undefined) {
           localQuizAnswers["quiz_messi_goals"] = 1;
+        }
+        if (localQuizAnswers["quiz_france_scorers"] === undefined) {
+          localQuizAnswers["quiz_france_scorers"] = ["K. Mbappé"];
         }
         await autoRecalculateAndSavePoints();
         renderPointBoosterQuizzes();
@@ -2172,35 +2237,34 @@
       }
     };
 
-    window.toggleFrancePlayerSelection = function(playerName) {
-      if (!localQuizAnswers["quiz_france_scorers"]) {
-        localQuizAnswers["quiz_france_scorers"] = [];
+    window.selectNeymarTimeOption = function(optionValue) {
+      const brazilNorwayMatch = matchesDatabase.find(m => m.id === "match_76");
+      const isQuizLocked = brazilNorwayMatch ? (brazilNorwayMatch.status === "Live" || brazilNorwayMatch.status === "Completed") : false;
+
+      if (isQuizLocked) {
+        showNotification("Predictions are locked. Neymar time cannot be modified now.", "error");
+        return;
       }
+
+      localQuizAnswers["quiz_neymar_time"] = optionValue;
       
-      const idx = localQuizAnswers["quiz_france_scorers"].indexOf(playerName);
-      if (idx > -1) {
-        localQuizAnswers["quiz_france_scorers"].splice(idx, 1);
-      } else {
-        localQuizAnswers["quiz_france_scorers"].push(playerName);
-      }
-      
-      // Update UI elements visually
-      const elementId = playerName.replace(/[^a-zA-Z0-9]/g, '-');
-      const checkbox = document.getElementById(`chk-${elementId}`);
-      const parentLabel = document.getElementById(`lbl-${elementId}`);
-      
-      if (checkbox) {
-        checkbox.checked = idx === -1; 
-      }
-      if (parentLabel) {
-        if (idx === -1) {
-          parentLabel.classList.add("border-amber-500", "bg-amber-950/20");
-          parentLabel.classList.remove("border-slate-800", "bg-slate-900/40");
-        } else {
-          parentLabel.classList.remove("border-amber-500", "bg-amber-950/20");
-          parentLabel.classList.add("border-slate-800", "bg-slate-900/40");
+      neymarTimeOptionsList.forEach(opt => {
+        const elementId = opt.replace(/[^a-zA-Z0-9]/g, '-');
+        const container = document.getElementById(`lbl-${elementId}`);
+        const radio = document.getElementById(`rad-${elementId}`);
+        
+        if (container) {
+          if (opt === optionValue) {
+            container.classList.add("border-amber-500", "bg-amber-950/20");
+            container.classList.remove("border-slate-800", "bg-slate-900/40");
+            if (radio) radio.checked = true;
+          } else {
+            container.classList.remove("border-amber-500", "bg-amber-950/20");
+            container.classList.add("border-slate-800", "bg-slate-900/40");
+            if (radio) radio.checked = false;
+          }
         }
-      }
+      });
     };
 
     window.renderPointBoosterQuizzes = function() {
@@ -2212,33 +2276,34 @@
       activeContainer.innerHTML = "";
       historyContainer.innerHTML = "";
 
-      // Today's Quiz checklist rendering (France scorers vs Paraguay)
-      const paraguayFranceMatch = matchesDatabase.find(m => m.id === "match_75");
-      const isQuizLocked = paraguayFranceMatch ? (paraguayFranceMatch.status === "Live" || paraguayFranceMatch.status === "Completed") : false;
+      // Today's Quiz checklist rendering (Neymar playtime vs Norway)
+      const brazilNorwayMatch = matchesDatabase.find(m => m.id === "match_76");
+      const isQuizLocked = brazilNorwayMatch ? (brazilNorwayMatch.status === "Live" || brazilNorwayMatch.status === "Completed") : false;
       
-      const currentSelection = localQuizAnswers["quiz_france_scorers"] || [];
+      const currentSelection = localQuizAnswers["quiz_neymar_time"] || "";
       
       const activeCard = document.createElement("div");
       activeCard.className = `bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 transition-all relative ${!isQuizLocked ? 'animate-booster-card' : ''}`;
       
-      let checkboxesHtml = francePlayersList.map(player => {
-        const isSelected = currentSelection.includes(player);
-        const elementId = player.replace(/[^a-zA-Z0-9]/g, '-');
+      let optionsHtml = neymarTimeOptionsList.map(opt => {
+        const isSelected = currentSelection === opt;
+        const elementId = opt.replace(/[^a-zA-Z0-9]/g, '-');
         return `
           <label 
             id="lbl-${elementId}" 
             class="flex items-center space-x-3 p-3 rounded-xl border ${isQuizLocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'} select-none transition-all ${isSelected ? 'border-amber-500 bg-amber-950/20' : 'border-slate-800 bg-slate-900/40 hover:bg-slate-900/70'}"
-            ${!isQuizLocked ? `onclick="toggleFrancePlayerSelection('${player}')"` : ''}
+            ${!isQuizLocked ? `onclick="selectNeymarTimeOption('${opt}')"` : ''}
           >
             <input 
-              type="checkbox" 
-              id="chk-${elementId}" 
+              type="radio" 
+              name="neymar-playtime"
+              id="rad-${elementId}" 
               ${isSelected ? 'checked' : ''} 
               ${isQuizLocked ? 'disabled' : ''}
-              class="w-4 h-4 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900 focus:ring-2 accent-amber-500"
-              ${!isQuizLocked ? `onclick="event.stopPropagation(); toggleFrancePlayerSelection('${player}')"` : ''}
+              class="w-4 h-4 rounded-full border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900 focus:ring-2 accent-amber-500"
+              ${!isQuizLocked ? `onclick="event.stopPropagation(); selectNeymarTimeOption('${opt}')"` : ''}
             >
-            <span class="text-xs font-semibold text-slate-200">${player}</span>
+            <span class="text-xs font-semibold text-slate-200">${opt}</span>
           </label>
         `;
       }).join('');
@@ -2248,9 +2313,9 @@
           <div>
             <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full uppercase tracking-wider font-bold font-sporty flex items-center space-x-1">
               <i class="fa-solid fa-star text-amber-400"></i>
-              <span>Today's Quiz: Who Will Score For France?</span>
+              <span>Today's Quiz: Neymar Play Time Predictor</span>
             </span>
-            <p class="text-[11px] text-slate-500 mt-1">Select France players predicted to score tonight from the lineup. Multiple selections allowed!</p>
+            <p class="text-[11px] text-slate-500 mt-1">Predict how much time Neymar will play today in Brazil vs Norway match. Single option selection only!</p>
           </div>
           <div class="text-right flex flex-col items-end">
             <span class="text-xs text-amber-400 font-bold font-sporty uppercase bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-900/50 block">
@@ -2262,25 +2327,25 @@
 
         <div class="my-6 p-4 bg-slate-950/60 rounded-xl border border-slate-900">
           <p class="text-xs text-slate-300 font-semibold mb-4 text-center leading-relaxed">
-            Predict France Goalscorers against Paraguay:
+            Select Playtime Bracket:
           </p>
 
           <div class="flex flex-col items-center max-w-lg mx-auto space-y-4">
             <div class="flex justify-between items-center w-full px-4 bg-slate-900/40 py-2.5 rounded-xl border border-slate-800/60">
               <div class="flex items-center space-x-2">
-                <img src="https://flagcdn.com/w80/py.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Paraguay">
-                <span class="text-xs font-bold text-slate-200">Paraguay</span>
+                <img src="https://flagcdn.com/w80/br.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Brazil">
+                <span class="text-xs font-bold text-slate-200">Brazil</span>
               </div>
               <span class="text-[10px] font-black font-sporty text-slate-500 uppercase bg-slate-950 px-2 py-0.5 rounded border border-slate-800">VS</span>
               <div class="flex items-center space-x-2">
-                <span class="text-xs font-bold text-slate-200">France</span>
-                <img src="https://flagcdn.com/w80/fr.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="France">
+                <span class="text-xs font-bold text-slate-200">Norway</span>
+                <img src="https://flagcdn.com/w80/no.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Norway">
               </div>
             </div>
 
-            <!-- Scrollable Player Checkboxes Grid -->
+            <!-- Scrollable Options Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-h-60 overflow-y-auto pr-1">
-              ${checkboxesHtml}
+              ${optionsHtml}
             </div>
           </div>
         </div>
@@ -2288,25 +2353,38 @@
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
           <div class="text-[11px] text-slate-400 flex items-center space-x-1">
             <i class="fa-solid fa-shield-halved text-amber-500"></i>
-            <span>Selections verified and locked in profile database</span>
+            <span>Selection verified and locked in profile database</span>
           </div>
           <button 
-            onclick="submitFranceScorersQuiz(${isQuizLocked})"
+            onclick="submitNeymarQuiz(${isQuizLocked})"
             ${isQuizLocked ? 'disabled' : ''}
             class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-widest font-sporty shadow-lg flex items-center justify-center space-x-2 min-h-[44px] transition-all"
           >
             <i class="fa-solid ${isQuizLocked ? 'fa-lock' : 'fa-ticket-simple'}"></i>
-            <span>${isQuizLocked ? 'Quiz Suspended' : 'Lock In Selections'}</span>
+            <span>${isQuizLocked ? 'Quiz Suspended' : 'Lock In Answer'}</span>
           </button>
         </div>
       `;
       activeContainer.appendChild(activeCard);
 
-      // Past verified ledger challenge items
+      // Historical Quiz configurations
       const mockHistory = [
         {
+          id: "quiz_france_scorers",
+          question: "Predict France Goalscorers against Paraguay (Only K. Mbappé scored)",
+          homeTeam: "Paraguay",
+          homeFlag: "py",
+          awayTeam: "France",
+          awayFlag: "fr",
+          points: 15,
+          isScoreline: false,
+          isScorersList: true,
+          actualAnswer: ["K. Mbappé"],
+          date: "July 5, 2026"
+        },
+        {
           id: "quiz_messi_goals",
-          question: "Predict how many goals Lionel Messi will score against Cabo Verde",
+          question: "Predict how many goals Lionel Messi will score against Cabo Verde (Messi scored 1 goal)",
           homeTeam: "Argentina",
           homeFlag: "ar",
           awayTeam: "Cabo Verde",
@@ -2345,6 +2423,11 @@
             userDisplay = `${userAnswer.home} : ${userAnswer.away}`;
             actualDisplay = `${q.actualAnswer.home} : ${q.actualAnswer.away}`;
             isCorrect = Number(userAnswer.home) === Number(q.actualAnswer.home) && Number(userAnswer.away) === Number(q.actualAnswer.away);
+          } else if (q.isScorersList) {
+            userDisplay = Array.isArray(userAnswer) && userAnswer.length > 0 ? userAnswer.join(", ") : "None Selected";
+            actualDisplay = "Only K. Mbappé";
+            // Strictly Mbappe only gets points
+            isCorrect = Array.isArray(userAnswer) && userAnswer.length === 1 && userAnswer[0] === "K. Mbappé";
           } else {
             userDisplay = `${userAnswer} Goal${userAnswer !== 1 ? 's' : ''}`;
             actualDisplay = `${q.actualAnswer} Goal${q.actualAnswer !== 1 ? 's' : ''}`;
@@ -2367,12 +2450,12 @@
 
               <div class="flex items-center space-x-3 bg-slate-950/40 p-2 rounded border border-slate-800/50 mb-3">
                 <div class="flex items-center space-x-1.5 text-[11px] text-slate-400">
-                  <img src="https://flagcdn.com/w40/${q.homeFlag}.png" class="w-4 h-4 rounded-full object-cover" alt="Home">
+                  <img src="https://flagcdn.com/w40/${q.homeFlag}.png" class="w-4 h-4 rounded-full object-cover animate-fade-in" alt="Home">
                   <span class="font-bold truncate max-w-[60px]">${q.homeTeam}</span>
                 </div>
                 <span class="text-[9px] text-slate-600">vs</span>
                 <div class="flex items-center space-x-1.5 text-[11px] text-slate-400">
-                  <img src="https://flagcdn.com/w40/${q.awayFlag}.png" class="w-4 h-4 rounded-full object-cover" alt="Away">
+                  <img src="https://flagcdn.com/w40/${q.awayFlag}.png" class="w-4 h-4 rounded-full object-cover animate-fade-in" alt="Away">
                   <span class="font-bold truncate max-w-[60px]">${q.awayTeam}</span>
                 </div>
               </div>
@@ -2404,7 +2487,7 @@
       }
     };
 
-    window.submitFranceScorersQuiz = async function(isLocked) {
+    window.submitNeymarQuiz = async function(isLocked) {
       if (!currentUser) {
         showNotification("Please log in to submit match predictions.", "error");
         return;
@@ -2414,8 +2497,8 @@
         return;
       }
 
-      if (!localQuizAnswers["quiz_france_scorers"] || localQuizAnswers["quiz_france_scorers"].length === 0) {
-        showNotification("Please select at least one goalscorer to lock in.", "error");
+      if (!localQuizAnswers["quiz_neymar_time"]) {
+        showNotification("Please select a playtime bracket to submit.", "error");
         return;
       }
 
@@ -2424,7 +2507,7 @@
         await setDoc(docRef, localQuizAnswers, { merge: true });
 
         await autoRecalculateAndSavePoints();
-        showNotification("France goalscorers prediction locked in successfully!", "success");
+        showNotification("Neymar playtime prediction locked in successfully!", "success");
         renderPointBoosterQuizzes();
       } catch (err) {
         console.error(err);
@@ -3054,25 +3137,25 @@
         </span>
         <h3 class="text-lg font-extrabold text-amber-400 font-sporty uppercase tracking-wider mt-1.5">Booster Ticket Ready!</h3>
         <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          Unlock a massive **+15 Points Booster**! Select today's France goalscorers in the marquee matchup.
+          Unlock a massive **+15 Points Booster**! Select Neymar's playtime bracket in today's marquee matchup.
         </p>
       </div>
 
       <!-- Quick Quiz Preview Card -->
       <div class="my-4 p-3 bg-slate-950/90 rounded-xl border border-slate-800 flex justify-between items-center">
         <div class="flex items-center space-x-2">
-          <img src="https://flagcdn.com/w80/py.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Paraguay">
-          <span class="text-xs font-bold font-sporty text-slate-200">Paraguay</span>
+          <img src="https://flagcdn.com/w80/br.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Brazil">
+          <span class="text-xs font-bold font-sporty text-slate-200">Brazil</span>
         </div>
         <span class="text-[10px] font-black font-sporty text-amber-400 uppercase bg-amber-950 px-2 py-0.5 rounded border border-amber-900/30">VS</span>
         <div class="flex items-center space-x-2">
-          <span class="text-xs font-bold font-sporty text-slate-200">France</span>
-          <img src="https://flagcdn.com/w80/fr.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="France">
+          <span class="text-xs font-bold font-sporty text-slate-200">Norway</span>
+          <img src="https://flagcdn.com/w80/no.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Norway">
         </div>
       </div>
 
       <div class="text-center text-[11px] text-slate-400 px-2 leading-relaxed mb-5">
-        Can you guess the right scorers? Answers can be edited anytime until kickoff!
+        Can you guess the right play time? Answers can be edited anytime until kickoff!
       </div>
 
       <div class="flex space-x-3">
