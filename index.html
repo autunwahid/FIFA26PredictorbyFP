@@ -494,7 +494,12 @@
       "match_50", "match_51", "match_52", "match_53", "match_54", "match_55", "match_56", "match_57",
       "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64", "match_65",
       "match_66", "match_67", "match_68", "match_69", "match_70", "match_71", "match_72", "match_73",
-      "match_74", "match_75"
+      "match_74", "match_75", "match_76", "match_77"
+    ];
+
+    const ronaldoOptionsList = [
+      "YES",
+      "NO"
     ];
 
     const neymarTimeOptionsList = [
@@ -1422,8 +1427,8 @@
         awayFlag: "no",
         stage: "Round of 16",
         kickoffTime: "2026-07-06T02:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 2 },
+        result: "AWAY_WIN",
         date: "July 6, 2026"
       },
       {
@@ -1434,8 +1439,9 @@
         awayFlag: "gb-eng",
         stage: "Round of 16",
         kickoffTime: "2026-07-06T06:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 2, away: 3 },
+        result: "AWAY_WIN",
+        awayRedCard: true,
         date: "July 6, 2026"
       },
       {
@@ -1489,7 +1495,7 @@
     ];
 
     // Real world matches scores hardcoded database fallback
-    // Updated with verified Canada vs Morocco 0-3 and Paraguay vs France 0-1
+    // Updated with verified Canada vs Morocco 0-3, Paraguay vs France 0-1, Brazil vs Norway 1-2, and Mexico vs England 2-3 (with red card for England)
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -1543,7 +1549,7 @@
       "match_50": { home: 1, away: 4, status: "Completed", result: "AWAY_WIN" },
       "match_51": { home: 5, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_52": { home: 0, away: 2, status: "Completed", result: "AWAY_WIN" },
-      "match_53": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_53": { home: 2, py: 1, status: "Completed", result: "HOME_WIN" },
       "match_54": { home: 0, away: 0, status: "Completed", result: "DRAW" },
       "match_55": { home: 3, away: 1, status: "Completed", result: "HOME_WIN" },
       "match_56": { home: 3, away: 3, status: "Completed", result: "DRAW" },
@@ -1565,7 +1571,9 @@
       "match_72": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
       "match_73": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_74": { home: 0, away: 3, status: "Completed", result: "AWAY_WIN" },
-      "match_75": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" }
+      "match_75": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_76": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_77": { home: 2, away: 3, status: "Completed", result: "AWAY_WIN" }
     };
 
     function resolveMatchStatesAndOutputs() {
@@ -1781,18 +1789,18 @@
 
     function startQuizCountdownTimer() {
       setInterval(() => {
-        const brazilNorwayMatch = matchesDatabase.find(m => m.id === "match_76");
-        if (!brazilNorwayMatch) return;
+        const portugalSpainMatch = matchesDatabase.find(m => m.id === "match_78");
+        if (!portugalSpainMatch) return;
         
-        const kickoff = new Date(brazilNorwayMatch.kickoffTime);
+        const kickoff = new Date(portugalSpainMatch.kickoffTime);
         const now = new Date();
         const timeDiff = kickoff.getTime() - now.getTime();
         const timerElem = document.getElementById("quiz-lock-timer");
         
-        const previousStatus = brazilNorwayMatch.status;
+        const previousStatus = portugalSpainMatch.status;
         resolveMatchStatesAndOutputs();
         
-        if (previousStatus !== brazilNorwayMatch.status) {
+        if (previousStatus !== portugalSpainMatch.status) {
           renderPointBoosterQuizzes();
           renderMatches();
           autoRecalculateAndSavePoints();
@@ -1800,7 +1808,7 @@
 
         if (!timerElem) return;
 
-        if (timeDiff <= 0 || brazilNorwayMatch.status === "Live" || brazilNorwayMatch.status === "Completed") {
+        if (timeDiff <= 0 || portugalSpainMatch.status === "Live" || portugalSpainMatch.status === "Completed") {
           timerElem.innerHTML = `<span class="text-rose-500 font-bold flex items-center justify-end gap-1"><i class="fa-solid fa-lock"></i> Locked (Live)</span>`;
         } else {
           const hours = Math.floor(timeDiff / (1000 * 60 * 60));
@@ -1836,8 +1844,8 @@
     };
 
     function checkAndShowDailyQuizPopup(uid) {
-      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_neymar_time"] !== undefined;
-      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_neymar_time`;
+      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_ronaldo_penalty"] !== undefined;
+      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_ronaldo_penalty`;
       
       if (!answeredQuiz && !localStorage.getItem(storageKey)) {
         setTimeout(() => {
@@ -1855,7 +1863,7 @@
         quizPopup.classList.add("hidden");
       }
       if (currentUser) {
-        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_neymar_time`;
+        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_ronaldo_penalty`;
         localStorage.setItem(storageKey, "true");
       }
     };
@@ -1913,7 +1921,7 @@
         }
       }
 
-      // Yesterday's Quiz: Messi Goals prediction resolution (1 Goal)
+      // Messi Goals prediction resolution (1 Goal)
       if (quizMap["quiz_messi_goals"] !== undefined) {
         const answeredGoals = Number(quizMap["quiz_messi_goals"]);
         if (answeredGoals === 1) {
@@ -1921,8 +1929,7 @@
         }
       }
 
-      // Yesterday's Quiz: France vs Paraguay scorers
-      // Answer: Only Mbappe scored tonight's match. So, only who selected Mbappe only will get points.
+      // France vs Paraguay scorers (Mbappe only winner rule)
       if (quizMap["quiz_france_scorers"] !== undefined) {
         const selection = quizMap["quiz_france_scorers"];
         if (Array.isArray(selection) && selection.length === 1 && selection[0] === "K. Mbappé") {
@@ -1930,7 +1937,15 @@
         }
       }
 
-      // Today's Quiz: Neymar playtime. (Not resolved yet)
+      // Neymar playtime prediction resolution (21-30 minutes is the winner)
+      if (quizMap["quiz_neymar_time"] !== undefined) {
+        const selection = quizMap["quiz_neymar_time"];
+        if (selection === "21-30 minutes") {
+          scoreEarned += 15;
+        }
+      }
+
+      // Cristiano Ronaldo penalty prediction (Yet to occur tonight)
 
       return scoreEarned;
     }
@@ -1977,7 +1992,7 @@
       document.getElementById("booster-total-points-display").textContent = `${quizBoosterPoints} pts`;
 
       let completedQuizzesCount = 0;
-      if (localQuizAnswers["quiz_neymar_time"] !== undefined) completedQuizzesCount++;
+      if (localQuizAnswers["quiz_ronaldo_penalty"] !== undefined) completedQuizzesCount++;
       const counterElem = document.getElementById("booster-completed-counter");
       if (counterElem) {
         counterElem.textContent = `${completedQuizzesCount}/1`;
@@ -2005,17 +2020,18 @@
       try {
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
-          // Initialize default answers structure
+          // Initialize default answers structure with seeded historical choices for visual integrity
           const initialQuizAnswers = {
-            "quiz_pt_hr_score": { home: 1, away: 2, timestamp: Date.now() - 86400000 },
+            "quiz_pt_hr_score": { home: 1, away: 2, timestamp: Date.now() - 172800000 },
             "quiz_messi_goals": 1,
-            "quiz_france_scorers": ["K. Mbappé"] // Automatically seeded correct for historic verification
+            "quiz_france_scorers": ["K. Mbappé"],
+            "quiz_neymar_time": "21-30 minutes"
           };
           const freshData = {
             uid: user.uid,
             email: user.email || "anonymous@fifa.com",
-            points: 30, // Retro Messi + Mbappe points
-            quizPoints: 30,
+            points: 45, // Retro messi + mbappe + neymar playtime points
+            quizPoints: 45,
             predictionCount: 0,
             successCount: 0,
             nickname: "",
@@ -2025,21 +2041,24 @@
           };
           await setDoc(userRef, freshData);
           localQuizAnswers = initialQuizAnswers;
-          document.getElementById("user-hud-points").textContent = "30";
-          document.getElementById("dropdown-user-points").textContent = "30 pts";
-          document.getElementById("dropdown-quiz-points").textContent = "30 pts";
+          document.getElementById("user-hud-points").textContent = "45";
+          document.getElementById("dropdown-user-points").textContent = "45 pts";
+          document.getElementById("dropdown-quiz-points").textContent = "45 pts";
         } else {
           const userData = userSnap.data();
           localQuizAnswers = userData.quizAnswers || {};
           
           if (localQuizAnswers["quiz_pt_hr_score"] === undefined) {
-            localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2, timestamp: Date.now() - 86400000 };
+            localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2, timestamp: Date.now() - 172800000 };
           }
           if (localQuizAnswers["quiz_messi_goals"] === undefined) {
             localQuizAnswers["quiz_messi_goals"] = 1;
           }
           if (localQuizAnswers["quiz_france_scorers"] === undefined) {
             localQuizAnswers["quiz_france_scorers"] = ["K. Mbappé"];
+          }
+          if (localQuizAnswers["quiz_neymar_time"] === undefined) {
+            localQuizAnswers["quiz_neymar_time"] = "21-30 minutes";
           }
 
           const quizPoints = calculateUserQuizScore(localQuizAnswers);
@@ -2094,13 +2113,16 @@
           }
         }
         if (!localQuizAnswers["quiz_pt_hr_score"]) {
-          localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2, timestamp: Date.now() - 86400000 };
+          localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2, timestamp: Date.now() - 172800000 };
         }
         if (localQuizAnswers["quiz_messi_goals"] === undefined) {
           localQuizAnswers["quiz_messi_goals"] = 1;
         }
         if (localQuizAnswers["quiz_france_scorers"] === undefined) {
           localQuizAnswers["quiz_france_scorers"] = ["K. Mbappé"];
+        }
+        if (localQuizAnswers["quiz_neymar_time"] === undefined) {
+          localQuizAnswers["quiz_neymar_time"] = "21-30 minutes";
         }
         await autoRecalculateAndSavePoints();
         renderPointBoosterQuizzes();
@@ -2237,18 +2259,18 @@
       }
     };
 
-    window.selectNeymarTimeOption = function(optionValue) {
-      const brazilNorwayMatch = matchesDatabase.find(m => m.id === "match_76");
-      const isQuizLocked = brazilNorwayMatch ? (brazilNorwayMatch.status === "Live" || brazilNorwayMatch.status === "Completed") : false;
+    window.selectRonaldoOption = function(optionValue) {
+      const portugalSpainMatch = matchesDatabase.find(m => m.id === "match_78");
+      const isQuizLocked = portugalSpainMatch ? (portugalSpainMatch.status === "Live" || portugalSpainMatch.status === "Completed") : false;
 
       if (isQuizLocked) {
-        showNotification("Predictions are locked. Neymar time cannot be modified now.", "error");
+        showNotification("Predictions are locked. Ronaldo penalty response cannot be modified now.", "error");
         return;
       }
 
-      localQuizAnswers["quiz_neymar_time"] = optionValue;
+      localQuizAnswers["quiz_ronaldo_penalty"] = optionValue;
       
-      neymarTimeOptionsList.forEach(opt => {
+      ronaldoOptionsList.forEach(opt => {
         const elementId = opt.replace(/[^a-zA-Z0-9]/g, '-');
         const container = document.getElementById(`lbl-${elementId}`);
         const radio = document.getElementById(`rad-${elementId}`);
@@ -2276,32 +2298,32 @@
       activeContainer.innerHTML = "";
       historyContainer.innerHTML = "";
 
-      // Today's Quiz checklist rendering (Neymar playtime vs Norway)
-      const brazilNorwayMatch = matchesDatabase.find(m => m.id === "match_76");
-      const isQuizLocked = brazilNorwayMatch ? (brazilNorwayMatch.status === "Live" || brazilNorwayMatch.status === "Completed") : false;
+      // Today's Quiz checklist rendering (Ronaldo score penalty vs Spain)
+      const portugalSpainMatch = matchesDatabase.find(m => m.id === "match_78");
+      const isQuizLocked = portugalSpainMatch ? (portugalSpainMatch.status === "Live" || portugalSpainMatch.status === "Completed") : false;
       
-      const currentSelection = localQuizAnswers["quiz_neymar_time"] || "";
+      const currentSelection = localQuizAnswers["quiz_ronaldo_penalty"] || "";
       
       const activeCard = document.createElement("div");
       activeCard.className = `bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 transition-all relative ${!isQuizLocked ? 'animate-booster-card' : ''}`;
       
-      let optionsHtml = neymarTimeOptionsList.map(opt => {
+      let optionsHtml = ronaldoOptionsList.map(opt => {
         const isSelected = currentSelection === opt;
         const elementId = opt.replace(/[^a-zA-Z0-9]/g, '-');
         return `
           <label 
             id="lbl-${elementId}" 
             class="flex items-center space-x-3 p-3 rounded-xl border ${isQuizLocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'} select-none transition-all ${isSelected ? 'border-amber-500 bg-amber-950/20' : 'border-slate-800 bg-slate-900/40 hover:bg-slate-900/70'}"
-            ${!isQuizLocked ? `onclick="selectNeymarTimeOption('${opt}')"` : ''}
+            ${!isQuizLocked ? `onclick="selectRonaldoOption('${opt}')"` : ''}
           >
             <input 
               type="radio" 
-              name="neymar-playtime"
+              name="ronaldo-penalty"
               id="rad-${elementId}" 
               ${isSelected ? 'checked' : ''} 
               ${isQuizLocked ? 'disabled' : ''}
               class="w-4 h-4 rounded-full border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900 focus:ring-2 accent-amber-500"
-              ${!isQuizLocked ? `onclick="event.stopPropagation(); selectNeymarTimeOption('${opt}')"` : ''}
+              ${!isQuizLocked ? `onclick="event.stopPropagation(); selectRonaldoOption('${opt}')"` : ''}
             >
             <span class="text-xs font-semibold text-slate-200">${opt}</span>
           </label>
@@ -2313,9 +2335,9 @@
           <div>
             <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full uppercase tracking-wider font-bold font-sporty flex items-center space-x-1">
               <i class="fa-solid fa-star text-amber-400"></i>
-              <span>Today's Quiz: Neymar Play Time Predictor</span>
+              <span>Today's Quiz: Cristiano Ronaldo Penalty Predictor</span>
             </span>
-            <p class="text-[11px] text-slate-500 mt-1">Predict how much time Neymar will play today in Brazil vs Norway match. Single option selection only!</p>
+            <p class="text-[11px] text-slate-500 mt-1">Predict if Cristiano Ronaldo will score in Penalty tonight. Single option selection only!</p>
           </div>
           <div class="text-right flex flex-col items-end">
             <span class="text-xs text-amber-400 font-bold font-sporty uppercase bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-900/50 block">
@@ -2327,24 +2349,24 @@
 
         <div class="my-6 p-4 bg-slate-950/60 rounded-xl border border-slate-900">
           <p class="text-xs text-slate-300 font-semibold mb-4 text-center leading-relaxed">
-            Select Playtime Bracket:
+            Will Cristiano Ronaldo score in Penalty tonight? (Excluding penalty shootout in extra time)
           </p>
 
           <div class="flex flex-col items-center max-w-lg mx-auto space-y-4">
             <div class="flex justify-between items-center w-full px-4 bg-slate-900/40 py-2.5 rounded-xl border border-slate-800/60">
               <div class="flex items-center space-x-2">
-                <img src="https://flagcdn.com/w80/br.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Brazil">
-                <span class="text-xs font-bold text-slate-200">Brazil</span>
+                <img src="https://flagcdn.com/w80/pt.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Portugal">
+                <span class="text-xs font-bold text-slate-200">Portugal</span>
               </div>
               <span class="text-[10px] font-black font-sporty text-slate-500 uppercase bg-slate-950 px-2 py-0.5 rounded border border-slate-800">VS</span>
               <div class="flex items-center space-x-2">
-                <span class="text-xs font-bold text-slate-200">Norway</span>
-                <img src="https://flagcdn.com/w80/no.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Norway">
+                <span class="text-xs font-bold text-slate-200">Spain</span>
+                <img src="https://flagcdn.com/w80/es.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Spain">
               </div>
             </div>
 
-            <!-- Scrollable Options Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-h-60 overflow-y-auto pr-1">
+            <!-- Options Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full pr-1">
               ${optionsHtml}
             </div>
           </div>
@@ -2356,7 +2378,7 @@
             <span>Selection verified and locked in profile database</span>
           </div>
           <button 
-            onclick="submitNeymarQuiz(${isQuizLocked})"
+            onclick="submitRonaldoQuiz(${isQuizLocked})"
             ${isQuizLocked ? 'disabled' : ''}
             class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-widest font-sporty shadow-lg flex items-center justify-center space-x-2 min-h-[44px] transition-all"
           >
@@ -2368,7 +2390,20 @@
       activeContainer.appendChild(activeCard);
 
       // Historical Quiz configurations
+      // Added quiz_neymar_time historical resolution
       const mockHistory = [
+        {
+          id: "quiz_neymar_time",
+          question: "Predict how much time Neymar will play today in Brazil vs Norway match (23-24 mins)",
+          homeTeam: "Brazil",
+          homeFlag: "br",
+          awayTeam: "Norway",
+          awayFlag: "no",
+          points: 15,
+          isScoreline: false,
+          actualAnswer: "21-30 minutes",
+          date: "July 6, 2026"
+        },
         {
           id: "quiz_france_scorers",
           question: "Predict France Goalscorers against Paraguay (Only K. Mbappé scored)",
@@ -2426,12 +2461,11 @@
           } else if (q.isScorersList) {
             userDisplay = Array.isArray(userAnswer) && userAnswer.length > 0 ? userAnswer.join(", ") : "None Selected";
             actualDisplay = "Only K. Mbappé";
-            // Strictly Mbappe only gets points
             isCorrect = Array.isArray(userAnswer) && userAnswer.length === 1 && userAnswer[0] === "K. Mbappé";
           } else {
-            userDisplay = `${userAnswer} Goal${userAnswer !== 1 ? 's' : ''}`;
-            actualDisplay = `${q.actualAnswer} Goal${q.actualAnswer !== 1 ? 's' : ''}`;
-            isCorrect = Number(userAnswer) === Number(q.actualAnswer);
+            userDisplay = typeof userAnswer === 'string' ? userAnswer : `${userAnswer} Goal${userAnswer !== 1 ? 's' : ''}`;
+            actualDisplay = typeof q.actualAnswer === 'string' ? q.actualAnswer : `${q.actualAnswer} Goal${q.actualAnswer !== 1 ? 's' : ''}`;
+            isCorrect = userAnswer === q.actualAnswer;
           }
 
           const histCard = document.createElement("div");
@@ -2487,7 +2521,7 @@
       }
     };
 
-    window.submitNeymarQuiz = async function(isLocked) {
+    window.submitRonaldoQuiz = async function(isLocked) {
       if (!currentUser) {
         showNotification("Please log in to submit match predictions.", "error");
         return;
@@ -2497,8 +2531,8 @@
         return;
       }
 
-      if (!localQuizAnswers["quiz_neymar_time"]) {
-        showNotification("Please select a playtime bracket to submit.", "error");
+      if (!localQuizAnswers["quiz_ronaldo_penalty"]) {
+        showNotification("Please select YES or NO to submit.", "error");
         return;
       }
 
@@ -2507,7 +2541,7 @@
         await setDoc(docRef, localQuizAnswers, { merge: true });
 
         await autoRecalculateAndSavePoints();
-        showNotification("Neymar playtime prediction locked in successfully!", "success");
+        showNotification("Ronaldo penalty prediction locked in successfully!", "success");
         renderPointBoosterQuizzes();
       } catch (err) {
         console.error(err);
