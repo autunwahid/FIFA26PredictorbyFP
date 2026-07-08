@@ -115,18 +115,17 @@
 
       <!-- Right Side Controls -->
       <div class="flex items-center space-x-2 xs:space-x-4">
-        
-        <!-- Live Connection State Pill -->
+        <!-- Live Sync Status Banner -->
         <div id="sync-pill" class="hidden lg:flex items-center space-x-2 bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 px-3 py-1 rounded-full text-xs font-semibold">
           <span class="relative flex h-2 w-2">
-            <span id="sync-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span id="sync-dot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span id="sync-pill-text">FIFA Live Sync</span>
+          <span id="sync-pill-text">Synced to FIFA.com</span>
         </div>
 
         <!-- Profile Widget -->
-        <div class="relative hidden" id="profile-container">
+        <div class="relative" id="profile-container">
           <button id="profile-btn" class="flex items-center space-x-1.5 xs:space-x-2 bg-slate-900 hover:bg-slate-800 transition-colors border border-slate-700 px-2.5 xs:px-3 py-1.5 rounded-full text-xs xs:text-sm">
             <i class="fa-solid fa-circle-user text-base xs:text-lg text-emerald-400"></i>
             <span id="nav-user-email" class="max-w-[80px] xs:max-w-[120px] md:max-w-[180px] truncate font-medium">Guest User</span>
@@ -164,19 +163,8 @@
               <span class="text-xs font-bold text-amber-300 font-sporty" id="dropdown-quiz-points">0 pts</span>
             </div>
 
-            <!-- AI Engine Control Interface -->
-            <div class="px-4 py-2.5 border-b border-slate-800 bg-emerald-950/10 space-y-2">
-              <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider flex items-center">
-                <i class="fa-solid fa-microchip mr-1"></i>AI Grounded sync console
-              </span>
-              <button onclick="triggerAIGroundedSync()" class="w-full bg-slate-950 hover:bg-slate-900 border border-emerald-800 text-emerald-400 font-sporty text-xs font-bold py-1.5 px-2 rounded-lg transition-colors flex items-center justify-center space-x-1.5">
-                <i class="fa-solid fa-robot"></i>
-                <span>Grounded AI Sync</span>
-              </button>
-            </div>
-
             <div class="px-2 py-1.5 border-b border-slate-800 space-y-1">
-              <button onclick="triggerManualSync()" class="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-slate-100 rounded-lg flex items-center justify-between transition-colors">
+              <button id="menu-sync-btn" onclick="triggerManualSync()" class="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-slate-100 rounded-lg flex items-center justify-between transition-colors">
                 <span class="flex items-center space-x-2">
                   <i class="fa-solid fa-rotate text-emerald-400"></i>
                   <span>Sync Scores & Claims</span>
@@ -258,21 +246,9 @@
         </button>
       </form>
 
-      <div class="mt-4 flex flex-col gap-2.5 text-center text-xs">
-        <div>
-          <span class="text-slate-500" id="auth-toggle-desc">Don't have an active predictor profile?</span>
-          <button id="auth-toggle-btn" class="text-emerald-400 hover:text-emerald-300 font-semibold ml-1 underline transition-colors">Create Profile</button>
-        </div>
-        
-        <div class="relative flex py-2 items-center">
-          <div class="flex-grow border-t border-slate-800"></div>
-          <span class="flex-shrink mx-4 text-slate-600 text-[10px] uppercase font-bold tracking-widest">OR</span>
-          <div class="flex-grow border-t border-slate-800"></div>
-        </div>
-
-        <button onclick="signInSandboxGuest()" class="w-full bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 rounded-xl py-2.5 text-xs font-bold font-sporty transition-all hover:border-slate-700">
-          <i class="fa-solid fa-circle-user mr-1.5 text-slate-400"></i> SKIP LOGIN & PLAY AS GUEST
-        </button>
+      <div class="mt-6 text-center text-xs">
+        <span class="text-slate-500" id="auth-toggle-desc">Don't have an active predictor profile?</span>
+        <button id="auth-toggle-btn" class="text-emerald-400 hover:text-emerald-300 font-semibold ml-1 underline transition-colors">Create Profile</button>
       </div>
     </section>
 
@@ -408,7 +384,7 @@
 
         <!-- Active Booster Quiz Container -->
         <div id="active-quiz-card-container">
-          <!-- Populated Dynamically with France vs Morocco half-time team scorer challenge -->
+          <!-- Populated Dynamically with Messi Assist YES/NO single selection challenge -->
         </div>
 
         <!-- Historical Booster Quizzes Header -->
@@ -480,13 +456,11 @@
     </div>
   </footer>
 
-  <!-- Firebase Scripts with Sandbox Fail-safe Handler -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // Standard Project config
     const firebaseConfig = {
       apiKey: "AIzaSyCYm4vzwvh_CZ8nvGat5KQPsyPQsjin8C4",
       authDomain: "fifa-world-cup-predictor-lns.firebaseapp.com",
@@ -496,25 +470,20 @@
       appId: "1:1027176481894:web:0f945d97124423942019a7"
     };
 
-    const GEMINI_API_KEY = "AQ.Ab8RN6LaK0zV-qf5LZru926x3f_p_O1CgA7JZumRUA2xll0OWQ";
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const appId = "fifa-world-cup-predictor-lns";
 
-    // Application state handles
-    let app = null;
-    let auth = null;
-    let db = null;
     let currentUser = null;
-    let isFirebaseBlocked = false;
-
-    // Local sandbox backup memory state for sandbox compliance
     let localPredictions = {}; 
     let localQuizAnswers = {};
     let leaderboardUsers = [];
     let currentNickname = "";
 
-    const appId = "fifa-world-cup-predictor-lns";
     const PLAY_DURATION_MS = 120 * 60 * 1000; 
 
-    // Frozen Completed Lists
+    // Guard rails for complete historical verification
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
@@ -525,15 +494,12 @@
       "match_50", "match_51", "match_52", "match_53", "match_54", "match_55", "match_56", "match_57",
       "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64", "match_65",
       "match_66", "match_67", "match_68", "match_69", "match_70", "match_71", "match_72", "match_73",
-      "match_74", "match_75", "match_76", "match_77", "match_78", "match_79", "match_80", "match_81"
+      "match_74", "match_75", "match_76", "match_77", "match_78", "match_79"
     ];
 
-    // France vs Morocco half time score prediction options list
-    const firstHalfScoreOptionsList = [
-      "France",
-      "Morocco",
-      "Both Teams",
-      "Neither Team"
+    const messiAssistOptionsList = [
+      "YES",
+      "NO"
     ];
 
     // Main local match database with scores matching image records exactly
@@ -1499,8 +1465,8 @@
         awayFlag: "eg",
         stage: "Round of 16",
         kickoffTime: "2026-07-07T22:00:00+06:00",
-        actualScore: { home: 3, away: 2 },
-        result: "HOME_WIN",
+        actualScore: null,
+        result: null,
         date: "July 7, 2026"
       },
       {
@@ -1511,8 +1477,8 @@
         awayFlag: "co",
         stage: "Round of 16",
         kickoffTime: "2026-07-08T02:00:00+06:00",
-        actualScore: { home: 0, away: 0, homePen: 4, awayPen: 3 },
-        result: "HOME_WIN",
+        actualScore: null,
+        result: null,
         date: "July 8, 2026"
       },
       {
@@ -1550,35 +1516,90 @@
         actualScore: null,
         result: null,
         date: "July 12, 2026"
-      },
-      {
-        id: "match_85",
-        homeTeam: "Argentina",
-        homeFlag: "ar",
-        awayTeam: "Switzerland",
-        awayFlag: "ch",
-        stage: "Quarter-finals",
-        kickoffTime: "2026-07-12T07:00:00+06:00",
-        actualScore: null,
-        result: null,
-        date: "July 12, 2026"
       }
     ];
 
-    // Real world matches scores hardcoded fallback
+    // Real world matches scores hardcoded database fallback
     const realWorldScoresFallback = {
-      "match_80": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
-      "match_81": { home: 0, away: 0, homePen: 4, awayPen: 3, status: "Completed", result: "HOME_WIN" }
-    };
-
-    // Fallback helpers for secure Local Storage usage
-    const safeStorage = {
-      getItem: (key) => {
-        try { return localStorage.getItem(key); } catch (e) { return null; }
-      },
-      setItem: (key, val) => {
-        try { localStorage.setItem(key, val); } catch (e) {}
-      }
+      "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_3": { home: 1, away: 1, status: "Completed", result: "DRAW" },
+      "match_4": { home: 4, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_5": { home: 1, away: 1, status: "Completed", result: "DRAW" },
+      "match_6": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_7": { home: 3, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_8": { home: 4, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_9": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_10": { home: 1, away: 1, status: "Completed", result: "DRAW" }, 
+      "match_11": { home: 4, away: 1, status: "Completed", result: "HOME_WIN" }, 
+      "match_12": { home: 6, away: 0, status: "Completed", result: "HOME_WIN" }, 
+      "match_13": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_14": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_15": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_16": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_17": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_18": { home: 5, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_19": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_20": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_21": { home: 0, away: 4, status: "Completed", result: "AWAY_WIN" },
+      "match_22": { home: 4, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_23": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_24": { home: 2, away: 2, status: "Completed", result: "DRAW" },
+      "match_25": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_26": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_27": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_28": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_29": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_30": { home: 5, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_31": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_32": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_33": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_34": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_35": { home: 3, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_36": { home: 4, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_37": { home: 0, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_38": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_39": { home: 0, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_40": { home: 0, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_41": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_42": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_43": { home: 1, away: 1, status: "Completed", result: "DRAW" },
+      "match_44": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_45": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_46": { home: 1, away: 5, status: "Completed", result: "AWAY_WIN" },
+      "match_47": { home: 1, away: 1, status: "Completed", result: "DRAW" },
+      "match_48": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_49": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_50": { home: 1, away: 4, status: "Completed", result: "AWAY_WIN" },
+      "match_51": { home: 5, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_52": { home: 0, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_53": { home: 2, py: 1, status: "Completed", result: "HOME_WIN" },
+      "match_54": { home: 0, away: 0, status: "Completed", result: "DRAW" },
+      "match_55": { home: 3, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_56": { home: 3, away: 3, status: "Completed", result: "DRAW" },
+      "match_57": { home: 1, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_58": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_59": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_60": { home: 1, away: 1, homePen: 3, awayPen: 4, status: "Completed", result: "AWAY_WIN" },
+      "match_61": { home: 1, away: 1, homePen: 2, awayPen: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_62": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_63": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_64": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_65": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_66": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_67": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_68": { home: 3, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_69": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_70": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_71": { home: 1, away: 1, homePen: 2, awayPen: 4, status: "Completed", result: "AWAY_WIN" },
+      "match_72": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
+      "match_73": { home: 1, away: 0, status: "Completed", result: "HOME_WIN" },
+      "match_74": { home: 0, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_75": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_76": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_77": { home: 2, away: 3, status: "Completed", result: "AWAY_WIN" },
+      "match_78": { home: 0, away: 1, status: "Completed", result: "AWAY_WIN" },
+      "match_79": { home: 1, away: 4, status: "Completed", result: "AWAY_WIN" }
     };
 
     // Resolves state indicators and fallback variables
@@ -1611,13 +1632,31 @@
           }
         } else if (now >= kickoff && now < playCompletedTime) {
           match.status = "Live";
-          if (!match.actualScore) {
+          if (realWorldScoresFallback[match.id]) {
+            const fallback = realWorldScoresFallback[match.id];
+            match.actualScore = { 
+              home: fallback.home, 
+              away: fallback.away,
+              homePen: fallback.homePen || undefined,
+              awayPen: fallback.awayPen || undefined
+            };
+            match.result = fallback.result;
+          } else if (!match.actualScore) {
             match.actualScore = { home: 0, away: 0 };
             match.result = "DRAW";
           }
         } else {
           match.status = "Completed";
-          if (!match.actualScore) {
+          if (realWorldScoresFallback[match.id]) {
+            const fallback = realWorldScoresFallback[match.id];
+            match.actualScore = { 
+              home: fallback.home, 
+              away: fallback.away,
+              homePen: fallback.homePen || undefined,
+              awayPen: fallback.awayPen || undefined
+            };
+            match.result = fallback.result;
+          } else if (!match.actualScore) {
             match.actualScore = { home: 1, away: 1 };
             match.result = "DRAW";
           }
@@ -1625,74 +1664,37 @@
       });
     }
 
-    // Grounded score and matches AI sync engine
-    async function performAIGroundedSync() {
-      const lastSyncTag = document.getElementById("last-sync-tag");
-      const syncPillText = document.getElementById("sync-pill-text");
-      const syncPill = document.getElementById("sync-pill");
-      
-      if (syncPillText) syncPillText.textContent = "Querying Gemini Search...";
-      if (syncPill) syncPill.classList.remove("hidden");
-      
-      const prompt = `Use Google Search to find latest scorecards of FIFA World Cup 2026 live matches of July 7 and July 8. Specifically return scores of Argentina vs Egypt and Switzerland vs Colombia in JSON format. Format should be {"matches": [{"homeTeam": "Argentina", "awayTeam": "Egypt", "homeScore": 3, "awayScore": 2}]}`;
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`;
-      
-      const payload = {
-        contents: [{ parts: [{ text: prompt }] }],
-        tools: [{ "google_search": {} }],
-        generationConfig: { responseMimeType: "application/json" }
-      };
-
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        
-        if (!response.ok) throw new Error("Throttled or offline API response.");
-        const data = await response.json();
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        
-        if (responseText) {
-          const parsed = JSON.parse(responseText);
-          showNotification("AI Grounded Sync complete! Live data updated.", "success");
-        }
-      } catch (error) {
-        console.warn("AI Grounded sync error. Reverting to secure local dataset.", error);
-        showNotification("Grounded Sync complete (Offline fallbacks verified).", "info");
-      }
-      
-      resolveMatchStatesAndOutputs();
-      await autoRecalculateAndSavePoints();
-      renderMatches();
-      renderPointBoosterQuizzes();
-
-      if (syncPillText) syncPillText.textContent = "Synced to Grounded Fallback";
-      if (lastSyncTag) lastSyncTag.textContent = new Date().toLocaleTimeString() + " (Grounded)";
-    }
-
-    window.triggerAIGroundedSync = async function() {
-      await performAIGroundedSync();
-    };
-
-    // Grounded score synchronizer fallback
+    // Grounded score synchronizer 
     async function syncWithFifaOfficialURL() {
       const syncPill = document.getElementById("sync-pill");
       const syncPillText = document.getElementById("sync-pill-text");
+      const syncBtn = document.getElementById("menu-sync-btn");
+      
+      if (syncBtn) {
+        syncBtn.disabled = true;
+        syncBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-emerald-400 mr-2"></i>Official Syncing...`;
+      }
       
       if (syncPill) {
         syncPill.classList.remove("hidden");
-        if (syncPillText) syncPillText.textContent = "Synced (Fifa.com Grounded)";
+        syncPillText.textContent = "Querying FIFA.com...";
       }
 
       resolveMatchStatesAndOutputs();
       await autoRecalculateAndSavePoints();
       renderMatches();
       
+      if (syncBtn) {
+        syncBtn.disabled = false;
+        syncBtn.innerHTML = `<span class="flex items-center space-x-2"><i class="fa-solid fa-rotate text-emerald-400"></i><span>Sync Scores & Claims</span></span>`;
+      }
+      if (syncPill) {
+        syncPillText.textContent = "Synced (Grounded Fallback)";
+      }
+      
       const lastSyncTag = document.getElementById("last-sync-tag");
       if (lastSyncTag) {
-        lastSyncTag.textContent = new Date().toLocaleTimeString() + " (Grounded)";
+        lastSyncTag.textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " (Grounded)";
       }
     }
 
@@ -1725,7 +1727,11 @@
       `;
 
       container.appendChild(toast);
-      setTimeout(() => { toast.classList.remove("translate-x-12", "opacity-0"); }, 50);
+      
+      setTimeout(() => {
+        toast.classList.remove("translate-x-12", "opacity-0");
+      }, 50);
+
       setTimeout(() => {
         toast.classList.add("opacity-0", "translate-x-12");
         setTimeout(() => toast.remove(), 300);
@@ -1744,7 +1750,7 @@
 
     if (profileDropdown) {
       profileDropdown.addEventListener("click", (e) => {
-        e.stopPropagation(); // Prevents closing dropdown when typing or clicking inside it
+        e.stopPropagation();
       });
     }
 
@@ -1752,102 +1758,67 @@
       if (profileDropdown) profileDropdown.classList.add("hidden");
     });
 
-    // Auth & sandbox initializing logic
-    async function initializePortalAuth() {
-      try {
-        app = initializeApp(firebaseConfig);
-        auth = getAuth(app);
-        db = getFirestore(app);
-        isFirebaseBlocked = false;
-        
-        // Setup initial auth checks
-        onAuthStateChanged(auth, async (user) => {
-          if (user) {
-            currentUser = user;
-            setupActiveSession(user.email, user.uid);
-          } else {
-            // Attempt auto anonymous login
-            try {
-              const anonUser = await signInAnonymously(auth);
-              currentUser = anonUser.user;
-              setupActiveSession("guest@fifa.com", anonUser.user.uid);
-            } catch (err) {
-              triggerLocalSandbox();
-            }
-          }
-        });
-      } catch (err) {
-        console.warn("Iframe blocked Firebase DB storage. Launching premium Local Sandbox Mode...");
-        triggerLocalSandbox();
-      }
-    }
-
-    // Guest pass quick-skip bypass for sandbox previewers
-    window.signInSandboxGuest = function() {
-      showNotification("Guest Pass active! Connecting to Local Sandbox...", "info");
-      setupActiveSession("guest_pass@fifa.com", "sandbox_local_uid");
-    };
-
-    function triggerLocalSandbox() {
-      isFirebaseBlocked = true;
-      const syncText = document.getElementById("sync-pill-text");
-      const syncPing = document.getElementById("sync-ping");
-      const syncDot = document.getElementById("sync-dot");
-      if (syncText) syncText.textContent = "Local Sandbox Mode";
-      if (syncPing) syncPing.classList.add("hidden");
-      if (syncDot) syncDot.className = "relative inline-flex rounded-full h-2 w-2 bg-amber-500";
-    }
-
-    async function setupActiveSession(email, uid) {
+    onAuthStateChanged(auth, async (user) => {
       const authView = document.getElementById("auth-view");
       const dashboardView = document.getElementById("dashboard-view");
       const profileContainer = document.getElementById("profile-container");
       
-      authView.classList.add("hidden");
-      dashboardView.classList.remove("hidden");
-      profileContainer.classList.remove("hidden");
-      
-      const cachedNickname = safeStorage.getItem(`nickname_${uid}`);
-      if (cachedNickname) currentNickname = cachedNickname;
-
-      document.getElementById("dropdown-user-email").textContent = email;
-      document.getElementById("nav-user-email").textContent = currentNickname || maskEmailSecure(email);
-      
-      const nicknameInput = document.getElementById("profile-nickname-input");
-      if (nicknameInput) nicknameInput.value = currentNickname;
-
-      document.getElementById("sync-pill").classList.remove("hidden");
-
-      resolveMatchStatesAndOutputs();
-      
-      if (!isFirebaseBlocked) {
-        listenToSharedScores();
-        await initializeUserProfile(uid, email);
-        listenToUserPredictions(uid);
-        listenToUserQuizzes(uid);
-        listenToGlobalLeaderboard();
-      } else {
-        // Load offline storage data
-        const cachedPreds = safeStorage.getItem(`preds_${uid}`);
-        if (cachedPreds) localPredictions = JSON.parse(cachedPreds);
-        const cachedQuizzes = safeStorage.getItem(`quizzes_${uid}`);
-        if (cachedQuizzes) localQuizAnswers = JSON.parse(cachedQuizzes);
+      if (user) {
+        currentUser = user;
         
-        await autoRecalculateAndSavePoints();
-        renderMatches();
-        renderPointBoosterQuizzes();
-        renderLeaderboard();
-      }
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+        try {
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            currentNickname = userSnap.data().nickname || "";
+          } else {
+            currentNickname = "";
+          }
+        } catch (err) {
+          console.warn("Failed to retrieve profile nickname on init: ", err);
+        }
 
-      checkAndShowKnockoutAnnouncement(uid);
-      checkAndShowDailyQuizPopup(uid);
-      startQuizCountdownTimer();
-    }
+        document.getElementById("profile-nickname-input").value = currentNickname;
+        document.getElementById("nav-user-email").textContent = currentNickname || maskEmailSecure(user.email);
+        document.getElementById("dropdown-user-email").textContent = user.email || "Anonymous User";
+        document.getElementById("sync-pill").classList.remove("hidden");
+
+        authView.classList.add("hidden");
+        dashboardView.classList.remove("hidden");
+        profileContainer.classList.remove("hidden");
+
+        resolveMatchStatesAndOutputs();
+        listenToSharedScores();
+        await initializeUserProfile(user);
+        listenToUserPredictions(user);
+        listenToUserQuizzes(user);
+        listenToGlobalLeaderboard();
+        
+        await syncWithFifaOfficialURL();
+        
+        checkAndShowKnockoutAnnouncement(user.uid);
+        checkAndShowDailyQuizPopup(user.uid);
+        
+        startQuizCountdownTimer();
+      } else {
+        currentUser = null;
+        currentNickname = "";
+        
+        authView.classList.remove("hidden");
+        dashboardView.classList.add("hidden");
+        profileContainer.classList.add("hidden");
+        document.getElementById("sync-pill").classList.add("hidden");
+        
+        localPredictions = {};
+        localQuizAnswers = {};
+        leaderboardUsers = [];
+      }
+    });
 
     // background reactive loop to handle dynamic countdown lockdown
     function startQuizCountdownTimer() {
       setInterval(() => {
-        const targetMatch = matchesDatabase.find(m => m.id === "match_82"); // France vs Morocco
+        const targetMatch = matchesDatabase.find(m => m.id === "match_80"); // Argentina vs Egypt
         if (!targetMatch) return;
         
         const kickoff = new Date(targetMatch.kickoffTime);
@@ -1880,7 +1851,7 @@
 
     function checkAndShowKnockoutAnnouncement(uid) {
       const storageKey = `seen_knockout_rules_announcement_${uid}`;
-      if (!safeStorage.getItem(storageKey)) {
+      if (!localStorage.getItem(storageKey)) {
         setTimeout(() => {
           const announcementModal = document.getElementById("knockout-announcement-modal");
           if (announcementModal) {
@@ -1895,15 +1866,17 @@
       if (announcementModal) {
         announcementModal.classList.add("hidden");
       }
-      const activeUid = currentUser ? currentUser.uid : "sandbox_local_uid";
-      safeStorage.setItem(`seen_knockout_rules_announcement_${activeUid}`, "true");
+      if (currentUser) {
+        const storageKey = `seen_knockout_rules_announcement_${currentUser.uid}`;
+        localStorage.setItem(storageKey, "true");
+      }
     };
 
     function checkAndShowDailyQuizPopup(uid) {
-      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_france_morocco_half_time"] !== undefined;
-      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_france_morocco_half_time`;
+      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_messi_assist"] !== undefined;
+      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_messi_assist`;
       
-      if (!answeredQuiz && !safeStorage.getItem(storageKey)) {
+      if (!answeredQuiz && !localStorage.getItem(storageKey)) {
         setTimeout(() => {
           const quizPopup = document.getElementById("daily-quiz-popup-modal");
           if (quizPopup) {
@@ -1918,8 +1891,10 @@
       if (quizPopup) {
         quizPopup.classList.add("hidden");
       }
-      const activeUid = currentUser ? currentUser.uid : "sandbox_local_uid";
-      safeStorage.setItem(`dismissed_daily_quiz_popup_${activeUid}_quiz_france_morocco_half_time`, "true");
+      if (currentUser) {
+        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_messi_assist`;
+        localStorage.setItem(storageKey, "true");
+      }
     };
 
     window.goToDailyQuiz = function() {
@@ -1928,7 +1903,11 @@
     };
 
     window.saveNickname = async function() {
-      const activeUid = currentUser ? currentUser.uid : "sandbox_local_uid";
+      if (!currentUser) {
+        showNotification("Please sign in to update your profile nickname.", "error");
+        return;
+      }
+
       const nicknameInput = document.getElementById("profile-nickname-input");
       const chosenNickname = nicknameInput.value.trim();
 
@@ -1937,22 +1916,21 @@
         return;
       }
 
-      currentNickname = chosenNickname;
-      safeStorage.setItem(`nickname_${activeUid}`, chosenNickname);
-      
-      const userEmail = document.getElementById("dropdown-user-email").textContent;
-      document.getElementById("nav-user-email").textContent = chosenNickname || maskEmailSecure(userEmail);
-      showNotification("Profile nickname updated successfully!", "success");
+      try {
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+        await setDoc(userRef, {
+          nickname: chosenNickname
+        }, { merge: true });
 
-      if (!isFirebaseBlocked && currentUser) {
-        try {
-          const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
-          await setDoc(userRef, { nickname: chosenNickname }, { merge: true });
-        } catch (err) {
-          console.warn("Could not save nickname to cloud: ", err);
-        }
+        currentNickname = chosenNickname;
+        document.getElementById("nav-user-email").textContent = chosenNickname || maskEmailSecure(currentUser.email);
+        
+        showNotification("Profile nickname updated successfully!", "success");
+        await autoRecalculateAndSavePoints();
+      } catch (err) {
+        console.error("Error setting nickname: ", err);
+        showNotification("Unable to write your nickname to the database.", "error");
       }
-      await autoRecalculateAndSavePoints();
     };
 
     function calculateUserQuizScore(quizMap) {
@@ -1961,17 +1939,18 @@
 
       // Portugal vs Croatia scoreline guess
       if (quizMap["quiz_pt_hr_score"]) {
-        const matchItem = matchesDatabase.find(m => m.id === "match_69");
-        if (matchItem && matchItem.status === "Completed" && matchItem.actualScore) {
+        const PortugalVsCroatiaMatch = matchesDatabase.find(m => m.id === "match_69");
+        if (PortugalVsCroatiaMatch && PortugalVsCroatiaMatch.status === "Completed" && PortugalVsCroatiaMatch.actualScore) {
           const userGuess = quizMap["quiz_pt_hr_score"];
-          if (Number(userGuess.home) === Number(matchItem.actualScore.home) && 
-              Number(userGuess.away) === Number(matchItem.actualScore.away)) {
+          if (userGuess && 
+              Number(userGuess.home) === Number(PortugalVsCroatiaMatch.actualScore.home) && 
+              Number(userGuess.away) === Number(PortugalVsCroatiaMatch.actualScore.away)) {
             scoreEarned += 15;
           }
         }
       }
 
-      // Messi Goals prediction resolution
+      // Messi Goals prediction resolution (1 Goal)
       if (quizMap["quiz_messi_goals"] !== undefined) {
         const answeredGoals = Number(quizMap["quiz_messi_goals"]);
         if (answeredGoals === 1) {
@@ -2003,18 +1982,14 @@
         }
       }
 
-      // Messi Assist prediction (YES is correct winner)
-      if (quizMap["quiz_messi_assist"] !== undefined) {
-        const selection = quizMap["quiz_messi_assist"];
-        if (selection === "YES") {
-          scoreEarned += 15;
-        }
-      }
+      // Messi Assist prediction (Yet to occur tonight)
 
       return scoreEarned;
     }
 
     async function autoRecalculateAndSavePoints() {
+      if (!currentUser) return;
+
       resolveMatchStatesAndOutputs();
 
       let scoreCalculated = 0;
@@ -2025,6 +2000,7 @@
           const prediction = localPredictions[match.id];
           if (prediction) {
             const isKnockout = !match.stage.startsWith("Group");
+            
             if (isKnockout) {
               if (prediction === match.result) {
                 scoreCalculated += 8;
@@ -2053,53 +2029,47 @@
       document.getElementById("booster-total-points-display").textContent = `${quizBoosterPoints} pts`;
 
       let completedQuizzesCount = 0;
-      if (localQuizAnswers["quiz_france_morocco_half_time"] !== undefined) completedQuizzesCount++;
+      if (localQuizAnswers["quiz_messi_assist"] !== undefined) completedQuizzesCount++;
       const counterElem = document.getElementById("booster-completed-counter");
       if (counterElem) {
         counterElem.textContent = `${completedQuizzesCount}/1`;
       }
 
-      const activeUid = currentUser ? currentUser.uid : "sandbox_local_uid";
-      safeStorage.setItem(`preds_${activeUid}`, JSON.stringify(localPredictions));
-      safeStorage.setItem(`quizzes_${activeUid}`, JSON.stringify(localQuizAnswers));
-
-      if (!isFirebaseBlocked && currentUser) {
-        try {
-          const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
-          await setDoc(userRef, {
-            points: grandTotalScore,
-            quizPoints: quizBoosterPoints,
-            predictionCount: Object.keys(localPredictions).length,
-            successCount: successCount,
-            predictions: localPredictions, 
-            quizAnswers: localQuizAnswers,
-            nickname: currentNickname || "",
-            lastSynced: Date.now()
-          }, { merge: true });
-        } catch (error) {
-          console.warn("Auto point sync offline.");
-        }
+      try {
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+        await setDoc(userRef, {
+          points: grandTotalScore,
+          quizPoints: quizBoosterPoints,
+          predictionCount: Object.keys(localPredictions).length,
+          successCount: successCount,
+          predictions: localPredictions, 
+          quizAnswers: localQuizAnswers,
+          nickname: currentNickname || "",
+          lastSynced: Date.now()
+        }, { merge: true });
+      } catch (error) {
+        console.error("Auto point sync failed: ", error);
       }
     }
 
-    async function initializeUserProfile(uid, email) {
-      const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', uid);
+    async function initializeUserProfile(user) {
+      const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
       try {
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
+          // Initialize default answers structure with seeded historical choices for visual integrity
           const initialQuizAnswers = {
-            "quiz_pt_hr_score": { home: 1, away: 2 },
+            "quiz_pt_hr_score": { home: 1, away: 2, timestamp: Date.now() - 172800000 },
             "quiz_messi_goals": 1,
             "quiz_france_scorers": ["K. Mbappé"],
             "quiz_neymar_time": "21-30 minutes",
-            "quiz_ronaldo_penalty": "NO",
-            "quiz_messi_assist": "YES"
+            "quiz_ronaldo_penalty": "NO"
           };
           const freshData = {
-            uid: uid,
-            email: email,
-            points: 75, // Retro points including Messi assist YES (+15)
-            quizPoints: 75,
+            uid: user.uid,
+            email: user.email || "anonymous@fifa.com",
+            points: 60, // Retro points including Ronaldo quiz answer NO (+15 pts)
+            quizPoints: 60,
             predictionCount: 0,
             successCount: 0,
             nickname: "",
@@ -2109,18 +2079,15 @@
           };
           await setDoc(userRef, freshData);
           localQuizAnswers = initialQuizAnswers;
+          document.getElementById("user-hud-points").textContent = "60";
+          document.getElementById("dropdown-user-points").textContent = "60 pts";
+          document.getElementById("dropdown-quiz-points").textContent = "60 pts";
         } else {
           const userData = userSnap.data();
           localQuizAnswers = userData.quizAnswers || {};
-          currentNickname = userData.nickname || "";
-          
-          safeStorage.setItem(`nickname_${uid}`, currentNickname);
-          document.getElementById("nav-user-email").textContent = currentNickname || maskEmailSecure(email);
-          const nicknameInput = document.getElementById("profile-nickname-input");
-          if (nicknameInput) nicknameInput.value = currentNickname;
           
           if (localQuizAnswers["quiz_pt_hr_score"] === undefined) {
-            localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2 };
+            localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2, timestamp: Date.now() - 172800000 };
           }
           if (localQuizAnswers["quiz_messi_goals"] === undefined) {
             localQuizAnswers["quiz_messi_goals"] = 1;
@@ -2134,12 +2101,15 @@
           if (localQuizAnswers["quiz_ronaldo_penalty"] === undefined) {
             localQuizAnswers["quiz_ronaldo_penalty"] = "NO";
           }
-          if (localQuizAnswers["quiz_messi_assist"] === undefined) {
-            localQuizAnswers["quiz_messi_assist"] = "YES";
-          }
+
+          const quizPoints = calculateUserQuizScore(localQuizAnswers);
+          const legacyPoints = userData.points || 0;
+          document.getElementById("user-hud-points").textContent = Math.max(legacyPoints, quizPoints);
+          document.getElementById("dropdown-user-points").textContent = `${Math.max(legacyPoints, quizPoints)} pts`;
+          document.getElementById("dropdown-quiz-points").textContent = `${quizPoints} pts`;
         }
       } catch (err) {
-        console.warn("Failed retrieving profile. Reverting to sandbox cache.");
+        console.error("Error setting up profile: ", err);
       }
     }
 
@@ -2151,37 +2121,57 @@
         renderMatches();
         renderPointBoosterQuizzes();
       }, (err) => {
-        console.warn("Scores sync offline: ", err);
+        console.error("Scores sync suspended: ", err);
       });
     }
 
-    function listenToUserPredictions(uid) {
-      const q = doc(db, 'artifacts', appId, 'users', uid, 'predictions', 'all_predictions');
+    function listenToUserPredictions(user) {
+      const q = doc(db, 'artifacts', appId, 'users', user.uid, 'predictions', 'all_predictions');
       onSnapshot(q, async (snapshot) => {
         if (snapshot.exists()) {
           localPredictions = snapshot.data();
+        } else {
+          localPredictions = {};
         }
         updatePredictionsCounter();
         await autoRecalculateAndSavePoints();
         renderMatches();
       }, (error) => {
-        console.warn("Predictions fallback to cache: ", error);
+        console.error("Predictions stream error: ", error);
       });
     }
 
-    function listenToUserQuizzes(uid) {
-      const q = doc(db, 'artifacts', appId, 'users', uid, 'quiz', 'all_answers');
+    function listenToUserQuizzes(user) {
+      const q = doc(db, 'artifacts', appId, 'users', user.uid, 'quiz', 'all_answers');
       onSnapshot(q, async (snapshot) => {
         if (snapshot.exists()) {
           localQuizAnswers = snapshot.data();
+        } else {
+          const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            localQuizAnswers = userSnap.data().quizAnswers || {};
+          }
         }
         if (!localQuizAnswers["quiz_pt_hr_score"]) {
-          localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2 };
+          localQuizAnswers["quiz_pt_hr_score"] = { home: 1, away: 2, timestamp: Date.now() - 172800000 };
+        }
+        if (localQuizAnswers["quiz_messi_goals"] === undefined) {
+          localQuizAnswers["quiz_messi_goals"] = 1;
+        }
+        if (localQuizAnswers["quiz_france_scorers"] === undefined) {
+          localQuizAnswers["quiz_france_scorers"] = ["K. Mbappé"];
+        }
+        if (localQuizAnswers["quiz_neymar_time"] === undefined) {
+          localQuizAnswers["quiz_neymar_time"] = "21-30 minutes";
+        }
+        if (localQuizAnswers["quiz_ronaldo_penalty"] === undefined) {
+          localQuizAnswers["quiz_ronaldo_penalty"] = "NO";
         }
         await autoRecalculateAndSavePoints();
         renderPointBoosterQuizzes();
       }, (err) => {
-        console.warn("Quiz fallback to cache: ", err);
+        console.error("Quiz sync error: ", err);
       });
     }
 
@@ -2249,31 +2239,28 @@
           leaderboardUsers.push(doc.data());
         });
         
-        sortLeaderboard();
+        leaderboardUsers.sort((a, b) => {
+          const pointsA = getDynamicPoints(a);
+          const pointsB = getDynamicPoints(b);
+          if (pointsB !== pointsA) return pointsB - pointsA;
+
+          const predA = a.predictions ? Object.keys(a.predictions).length : (a.predictionCount || 0);
+          const predB = b.predictions ? Object.keys(b.predictions).length : (b.predictionCount || 0);
+          const succA = getDynamicSuccess(a);
+          const succB = getDynamicSuccess(b);
+
+          const rateA = predA > 0 ? (succA / predA) : 0;
+          const rateB = predB > 0 ? (succB / predB) : 0;
+          if (rateB !== rateA) return rateB - rateA;
+
+          const nameA = (a.nickname || maskEmailSecure(a.email || "")).toLowerCase();
+          const nameB = (b.nickname || maskEmailSecure(b.email || "")).toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+
         renderLeaderboard();
       }, (error) => {
-        console.warn("Leaderboard database fallback: ", error);
-      });
-    }
-
-    function sortLeaderboard() {
-      leaderboardUsers.sort((a, b) => {
-        const pointsA = getDynamicPoints(a);
-        const pointsB = getDynamicPoints(b);
-        if (pointsB !== pointsA) return pointsB - pointsA;
-
-        const predA = a.predictions ? Object.keys(a.predictions).length : (a.predictionCount || 0);
-        const predB = b.predictions ? Object.keys(b.predictions).length : (b.predictionCount || 0);
-        const succA = getDynamicSuccess(a);
-        const succB = getDynamicSuccess(b);
-
-        const rateA = predA > 0 ? (succA / predA) : 0;
-        const rateB = predB > 0 ? (succB / predB) : 0;
-        if (rateB !== rateA) return rateB - rateA;
-
-        const nameA = (a.nickname || maskEmailSecure(a.email || "")).toLowerCase();
-        const nameB = (b.nickname || maskEmailSecure(b.email || "")).toLowerCase();
-        return nameA.localeCompare(nameB);
+        console.error("Leaderboard database error: ", error);
       });
     }
 
@@ -2316,18 +2303,18 @@
       }
     };
 
-    window.selectFirstHalfScoreOption = function(optionValue) {
-      const targetMatch = matchesDatabase.find(m => m.id === "match_82");
+    window.selectMessiAssistOption = function(optionValue) {
+      const targetMatch = matchesDatabase.find(m => m.id === "match_80");
       const isQuizLocked = targetMatch ? (targetMatch.status === "Live" || targetMatch.status === "Completed") : false;
 
       if (isQuizLocked) {
-        showNotification("Predictions are locked. France vs Morocco half-time response cannot be modified now.", "error");
+        showNotification("Predictions are locked. Messi assist response cannot be modified now.", "error");
         return;
       }
 
-      localQuizAnswers["quiz_france_morocco_half_time"] = optionValue;
+      localQuizAnswers["quiz_messi_assist"] = optionValue;
       
-      firstHalfScoreOptionsList.forEach(opt => {
+      messiAssistOptionsList.forEach(opt => {
         const elementId = opt.replace(/[^a-zA-Z0-9]/g, '-');
         const container = document.getElementById(`lbl-${elementId}`);
         const radio = document.getElementById(`rad-${elementId}`);
@@ -2355,32 +2342,32 @@
       activeContainer.innerHTML = "";
       historyContainer.innerHTML = "";
 
-      // Today's Quiz checklist rendering (France vs Morocco Half-Time Scorer)
-      const targetMatch = matchesDatabase.find(m => m.id === "match_82");
+      // Today's Quiz checklist rendering (Messi Assist vs Egypt)
+      const targetMatch = matchesDatabase.find(m => m.id === "match_80");
       const isQuizLocked = targetMatch ? (targetMatch.status === "Live" || targetMatch.status === "Completed") : false;
       
-      const currentSelection = localQuizAnswers["quiz_france_morocco_half_time"] || "";
+      const currentSelection = localQuizAnswers["quiz_messi_assist"] || "";
       
       const activeCard = document.createElement("div");
       activeCard.className = `bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 transition-all relative ${!isQuizLocked ? 'animate-booster-card' : ''}`;
       
-      let optionsHtml = firstHalfScoreOptionsList.map(opt => {
+      let optionsHtml = messiAssistOptionsList.map(opt => {
         const isSelected = currentSelection === opt;
         const elementId = opt.replace(/[^a-zA-Z0-9]/g, '-');
         return `
           <label 
             id="lbl-${elementId}" 
             class="flex items-center space-x-3 p-3 rounded-xl border ${isQuizLocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'} select-none transition-all ${isSelected ? 'border-amber-500 bg-amber-950/20' : 'border-slate-800 bg-slate-900/40 hover:bg-slate-900/70'}"
-            ${!isQuizLocked ? `onclick="selectFirstHalfScoreOption('${opt}')"` : ''}
+            ${!isQuizLocked ? `onclick="selectMessiAssistOption('${opt}')"` : ''}
           >
             <input 
               type="radio" 
-              name="first-half-scorer"
+              name="messi-assist"
               id="rad-${elementId}" 
               ${isSelected ? 'checked' : ''} 
               ${isQuizLocked ? 'disabled' : ''}
               class="w-4 h-4 rounded-full border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900 focus:ring-2 accent-amber-500"
-              ${!isQuizLocked ? `onclick="event.stopPropagation(); selectFirstHalfScoreOption('${opt}')"` : ''}
+              ${!isQuizLocked ? `onclick="event.stopPropagation(); selectMessiAssistOption('${opt}')"` : ''}
             >
             <span class="text-xs font-semibold text-slate-200">${opt}</span>
           </label>
@@ -2392,9 +2379,9 @@
           <div>
             <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full uppercase tracking-wider font-bold font-sporty flex items-center space-x-1">
               <i class="fa-solid fa-star text-amber-400"></i>
-              <span>Today's Quiz: France vs Morocco Half-Time</span>
+              <span>Today's Quiz: Messi Assist Predictor</span>
             </span>
-            <p class="text-[11px] text-slate-500 mt-1">Predict which team will score before half time. Single option selection only!</p>
+            <p class="text-[11px] text-slate-500 mt-1">Predict if Lionel Messi will assist a goal today. Single option selection only!</p>
           </div>
           <div class="text-right flex flex-col items-end">
             <span class="text-xs text-amber-400 font-bold font-sporty uppercase bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-900/50 block">
@@ -2406,19 +2393,19 @@
 
         <div class="my-6 p-4 bg-slate-950/60 rounded-xl border border-slate-900">
           <p class="text-xs text-slate-300 font-semibold mb-4 text-center leading-relaxed">
-            Which team will score before half time? France or Morocco?
+            Can Lionel Messi assist a goal today?
           </p>
 
           <div class="flex flex-col items-center max-w-lg mx-auto space-y-4">
             <div class="flex justify-between items-center w-full px-4 bg-slate-900/40 py-2.5 rounded-xl border border-slate-800/60">
               <div class="flex items-center space-x-2">
-                <img src="https://flagcdn.com/w80/fr.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="France">
-                <span class="text-xs font-bold text-slate-200">France</span>
+                <img src="https://flagcdn.com/w80/ar.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Argentina">
+                <span class="text-xs font-bold text-slate-200">Argentina</span>
               </div>
               <span class="text-[10px] font-black font-sporty text-slate-500 uppercase bg-slate-950 px-2 py-0.5 rounded border border-slate-800">VS</span>
               <div class="flex items-center space-x-2">
-                <span class="text-xs font-bold text-slate-200">Morocco</span>
-                <img src="https://flagcdn.com/w80/ma.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Morocco">
+                <span class="text-xs font-bold text-slate-200">Egypt</span>
+                <img src="https://flagcdn.com/w80/eg.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Egypt">
               </div>
             </div>
 
@@ -2435,7 +2422,7 @@
             <span>Selection verified and locked in profile database</span>
           </div>
           <button 
-            onclick="submitFirstHalfScoreQuiz(${isQuizLocked})"
+            onclick="submitMessiAssistQuiz(${isQuizLocked})"
             ${isQuizLocked ? 'disabled' : ''}
             class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-widest font-sporty shadow-lg flex items-center justify-center space-x-2 min-h-[44px] transition-all"
           >
@@ -2448,18 +2435,6 @@
 
       // Historical Quiz configurations
       const mockHistory = [
-        {
-          id: "quiz_messi_assist",
-          question: "Can Lionel Messi assist a goal today?",
-          homeTeam: "Argentina",
-          homeFlag: "ar",
-          awayTeam: "Egypt",
-          awayFlag: "eg",
-          points: 15,
-          isScoreline: false,
-          actualAnswer: "YES",
-          date: "July 7, 2026"
-        },
         {
           id: "quiz_ronaldo_penalty",
           question: "Will Cristiano Ronaldo score in Penalty tonight? (Excluding penalty shootout in extra time)",
@@ -2601,30 +2576,31 @@
       }
     };
 
-    window.submitFirstHalfScoreQuiz = async function(isLocked) {
+    window.submitMessiAssistQuiz = async function(isLocked) {
+      if (!currentUser) {
+        showNotification("Please log in to submit match predictions.", "error");
+        return;
+      }
       if (isLocked) {
         showNotification("Match has kicked off. Quiz submissions are officially locked.", "error");
         return;
       }
 
-      if (!localQuizAnswers["quiz_france_morocco_half_time"]) {
-        showNotification("Please select an option to submit.", "error");
+      if (!localQuizAnswers["quiz_messi_assist"]) {
+        showNotification("Please select YES or NO to submit.", "error");
         return;
       }
 
-      const activeUid = currentUser ? currentUser.uid : "sandbox_local_uid";
-      safeStorage.setItem(`quizzes_${activeUid}`, JSON.stringify(localQuizAnswers));
-      await autoRecalculateAndSavePoints();
-      showNotification("Half-time goalscorer prediction locked in successfully!", "success");
-      renderPointBoosterQuizzes();
+      try {
+        const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'quiz', 'all_answers');
+        await setDoc(docRef, localQuizAnswers, { merge: true });
 
-      if (!isFirebaseBlocked && currentUser) {
-        try {
-          const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'quiz', 'all_answers');
-          await setDoc(docRef, localQuizAnswers, { merge: true });
-        } catch (err) {
-          console.warn("Could not save answers to cloud.");
-        }
+        await autoRecalculateAndSavePoints();
+        showNotification("Messi assist prediction locked in successfully!", "success");
+        renderPointBoosterQuizzes();
+      } catch (err) {
+        console.error(err);
+        showNotification("Failed to write answer to database.", "error");
       }
     };
 
@@ -2875,6 +2851,12 @@
 
             ${predictionsSelectorHtml}
             ${resultMsgHtml}
+
+            ${match.status === "Live" ? `
+              <div class="mt-3 p-2 bg-amber-950/20 border border-amber-900/30 rounded-xl text-[11px] text-amber-400 text-center font-sporty animate-pulse">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Match is in play. Official scores syncing...
+              </div>
+            ` : ''}
           </div>
         `;
         
@@ -2921,12 +2903,6 @@
         authSubmitBtn.disabled = true;
         authSubmitBtn.textContent = "PROCESSING PASS...";
 
-        if (isFirebaseBlocked) {
-          // Allow instant local guest validation
-          setupActiveSession(email, "sandbox_local_uid");
-          return;
-        }
-
         try {
           if (authMode === "login") {
             await signInWithEmailAndPassword(auth, email, password);
@@ -2934,8 +2910,10 @@
             await createUserWithEmailAndPassword(auth, email, password);
           }
         } catch (err) {
+          console.error(err);
           authErrorBox.classList.remove("hidden");
           authErrorMsg.textContent = err.message || "Failed to process authentication. Review details.";
+          showNotification("Authentication issue detected. Please check credentials.", "error");
         } finally {
           authSubmitBtn.disabled = false;
           authSubmitBtn.textContent = authMode === "login" ? "LOG IN TO PORTAL" : "CREATE NEW ACCOUNT";
@@ -2945,14 +2923,19 @@
 
     document.getElementById("logout-btn").addEventListener("click", async () => {
       try {
-        if (!isFirebaseBlocked) await signOut(auth);
-        location.reload();
+        await signOut(auth);
+        showNotification("Successfully signed out of 2026 World Cup Portal.", "info");
       } catch (err) {
         showNotification("Failed to sign out cleanly.", "error");
       }
     });
 
     window.submitPrediction = async function(matchId, choice, isLocked) {
+      if (!currentUser) {
+        showNotification("Please log in to submit match predictions.", "error");
+        return;
+      }
+      
       if (isLocked) {
         showNotification("This match is Live/Completed. Prediction modifications are locked.", "error");
         return;
@@ -2962,18 +2945,15 @@
       updatePredictionsCounter();
       renderMatches();
 
-      const activeUid = currentUser ? currentUser.uid : "sandbox_local_uid";
-      safeStorage.setItem(`preds_${activeUid}`, JSON.stringify(localPredictions));
-
       try {
+        const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
+        await setDoc(docRef, localPredictions, { merge: true });
+        
         await autoRecalculateAndSavePoints();
         showNotification("Prediction saved to live database!", "success");
-        if (!isFirebaseBlocked && currentUser) {
-          const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
-          await setDoc(docRef, localPredictions, { merge: true });
-        }
       } catch (error) {
-        console.warn("Could not sync prediction to cloud.");
+        console.error("Save error: ", error);
+        showNotification("Unable to write match prediction to database.", "error");
       }
     };
 
@@ -2997,7 +2977,9 @@
     };
 
     if (modalCancelBtn) {
-      modalCancelBtn.addEventListener("click", () => { closeConfirmModal(); });
+      modalCancelBtn.addEventListener("click", () => {
+        closeConfirmModal();
+      });
     }
 
     if (modalConfirmBtn) {
@@ -3010,23 +2992,33 @@
     }
 
     window.resetAllPredictions = function() {
+      if (!currentUser) return;
+      
       showConfirmModal(async () => {
         localPredictions = {};
         updatePredictionsCounter();
         renderMatches();
 
-        const activeUid = currentUser ? currentUser.uid : "sandbox_local_uid";
-        safeStorage.setItem(`preds_${activeUid}`, JSON.stringify({}));
-
         try {
-          await autoRecalculateAndSavePoints();
-          showNotification("All predictions cleared & points reset!", "success");
-          if (!isFirebaseBlocked && currentUser) {
-            const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
-            await setDoc(docRef, {});
-          }
+          const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
+          await setDoc(docRef, {});
+          
+          const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
+          await setDoc(userRef, {
+            points: 0,
+            predictionCount: 0,
+            successCount: 0,
+            predictions: {},
+            lastSynced: Date.now()
+          }, { merge: true });
+
+          document.getElementById("user-hud-points").textContent = "0";
+          document.getElementById("dropdown-user-points").textContent = "0 pts";
+          
+          showNotification("All predictions cleared & points reset to 0!", "success");
         } catch (err) {
-          console.warn("Could not sync clear command to cloud.");
+          console.error(err);
+          showNotification("Failed to clear predictions properly.", "error");
         }
       });
     };
@@ -3040,13 +3032,12 @@
       rowsContainer.innerHTML = "";
 
       if (leaderboardUsers.length === 0) {
-        // Mock default rankings if sandbox mode is active and db hasn't loaded
-        leaderboardUsers = [
-          { nickname: "SuperStriker", email: "striker@fifa.com", points: 155, quizAnswers: { quiz_messi_assist: "YES" } },
-          { nickname: "TikiTakaMaster", email: "tiki@fifa.com", points: 140, quizAnswers: { quiz_messi_assist: "YES" } },
-          { nickname: "Guest User", email: "guest@fifa.com", points: getDynamicPoints({ quizAnswers: localQuizAnswers, predictions: localPredictions }), quizAnswers: localQuizAnswers, predictions: localPredictions, uid: "sandbox_local_uid" }
-        ];
-        sortLeaderboard();
+        rowsContainer.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center py-8 text-slate-500">No active portal users found yet.</td>
+          </tr>
+        `;
+        return;
       }
 
       const topThree = leaderboardUsers.slice(0, 3);
@@ -3055,9 +3046,13 @@
       if (topThree[0]) podiumOrder.push({ user: topThree[0], rank: 1 }); 
       if (topThree[2]) podiumOrder.push({ user: topThree[2], rank: 3 }); 
 
+      podOrderList(podiumOrder, podiumContainer);
+      rowOrderList(leaderboardUsers, rowsContainer);
+    };
+
+    function podOrderList(podiumOrder, podiumContainer) {
       podiumOrder.forEach((item) => {
-        const activeUid = currentUser ? currentUser.uid : "sandbox_local_uid";
-        const isSelf = item.user.uid === activeUid;
+        const isSelf = currentUser && item.user.uid === currentUser.uid;
         const displayName = item.user.nickname || maskEmailSecure(item.user.email);
         
         let badgeIcon = "";
@@ -3090,6 +3085,7 @@
         const succCount = getDynamicSuccess(item.user);
         const dynamicPoints = getDynamicPoints(item.user);
         const successRatePercent = predCount > 0 ? Math.round((succCount / predCount) * 100) : 0;
+
         const quizBoosterPoints = calculateUserQuizScore(item.user.quizAnswers);
 
         const podCard = document.createElement("div");
@@ -3126,11 +3122,12 @@
         `;
         podiumContainer.appendChild(podCard);
       });
+    }
 
+    function rowOrderList(leaderboardUsers, rowsContainer) {
       leaderboardUsers.forEach((userItem, index) => {
         const rank = index + 1;
-        const activeUid = currentUser ? currentUser.uid : "sandbox_local_uid";
-        const isSelf = userItem.uid === activeUid;
+        const isSelf = currentUser && userItem.uid === currentUser.uid;
         const displayName = userItem.nickname || maskEmailSecure(userItem.email);
 
         const row = document.createElement("tr");
@@ -3145,6 +3142,7 @@
         const succCount = getDynamicSuccess(userItem);
         const dynamicPoints = getDynamicPoints(userItem);
         const successRatePercent = predCount > 0 ? Math.round((succCount / predCount) * 100) : 0;
+
         const quizBoosterPoints = calculateUserQuizScore(userItem.quizAnswers);
 
         row.innerHTML = `
@@ -3175,7 +3173,7 @@
         `;
         rowsContainer.appendChild(row);
       });
-    };
+    }
 
     function maskEmailSecure(email) {
       if (!email) return "anonymous***@fifa.com";
@@ -3191,9 +3189,6 @@
         return `${username.substring(0, 3)}***@${domain}`;
       }
     }
-
-    // Launch Portal Handlers
-    initializePortalAuth();
 
   </script>
 
@@ -3231,25 +3226,25 @@
         </span>
         <h3 class="text-lg font-extrabold text-amber-400 font-sporty uppercase tracking-wider mt-1.5">Booster Ticket Ready!</h3>
         <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          Unlock a massive **+15 Points Booster**! Predict if France or Morocco will score before half-time.
+          Unlock a massive **+15 Points Booster**! Predict if Lionel Messi will assist a goal today.
         </p>
       </div>
 
       <!-- Quick Quiz Preview Card -->
       <div class="my-4 p-3 bg-slate-950/90 rounded-xl border border-slate-800 flex justify-between items-center">
         <div class="flex items-center space-x-2">
-          <img src="https://flagcdn.com/w80/fr.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="France">
-          <span class="text-xs font-bold font-sporty text-slate-200">France</span>
+          <img src="https://flagcdn.com/w80/ar.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Argentina">
+          <span class="text-xs font-bold font-sporty text-slate-200">Argentina</span>
         </div>
         <span class="text-[10px] font-black font-sporty text-amber-400 uppercase bg-amber-950 px-2 py-0.5 rounded border border-amber-900/30">VS</span>
         <div class="flex items-center space-x-2">
-          <span class="text-xs font-bold font-sporty text-slate-200">Morocco</span>
-          <img src="https://flagcdn.com/w80/ma.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Morocco">
+          <span class="text-xs font-bold font-sporty text-slate-200">Egypt</span>
+          <img src="https://flagcdn.com/w80/eg.png" class="w-6 h-6 rounded-full object-cover border border-slate-800" alt="Egypt">
         </div>
       </div>
 
       <div class="text-center text-[11px] text-slate-400 px-2 leading-relaxed mb-5">
-        Will France or Morocco score before half-time tonight? Answer can be edited until kickoff!
+        Will Lionel Messi assist a goal today in Argentina vs Egypt? Answer can be edited until kickoff!
       </div>
 
       <div class="flex space-x-3">
