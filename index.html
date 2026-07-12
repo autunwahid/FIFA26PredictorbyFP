@@ -292,7 +292,7 @@
             <div class="space-y-1">
               <p><span class="text-emerald-400 font-bold font-sporty">• 3 points (Group Stage)</span>: Correct outcome (Win/Loss prediction matches actual, or Correct Tie prediction).</p>
               <p><span class="text-amber-400 font-bold font-sporty">• 1 point (Group Stage)</span>: Predicted Win outcome (Team 1 or 2), but result ended in a Draw.</p>
-              <p><span class="text-sky-400 font-bold font-sporty">• 8 points (Knockout Stage)</span>: Correct Win/Loss outcome (No ties available. Resolved after extra time & penalties!).</p>
+              <p><span class="text-sky-400 font-bold font-sporty">• 8 points (Knockout/Semi/Finals)</span>: Correct Win/Loss outcome (No ties available. Resolved after extra time & penalties!).</p>
               <p><span class="text-amber-500 font-bold font-sporty">• 15 points (Point Booster Daily Quiz)</span>: Correctly answer daily dynamic booster quiz challenges!</p>
             </div>
             <p class="pt-1.5 text-[11px] text-slate-300 border-t border-slate-800"><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i> Leaderboard Tiebreakers: Highest Points &rarr; Prediction Success Rate % &rarr; Alphabetical order (Nicknames).</p>
@@ -425,7 +425,7 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
           <div class="p-4 border-b border-slate-800 flex justify-between items-center">
             <h3 class="text-xs xs:text-sm font-bold font-sporty tracking-wider text-slate-300 uppercase">World Standings Table</h3>
-            <span class="text-[10px] text-slate-500 font-sporty">Live tiebreaker checks & standings validation</span>
+            <span class="text-[10px] text-slate-500 font-sporty">Live standings verification</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -514,17 +514,17 @@
       "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64", "match_65",
       "match_66", "match_67", "match_68", "match_69", "match_70", "match_71", "match_72", "match_73",
       "match_74", "match_75", "match_76", "match_77", "match_78", "match_79", "match_80", "match_81",
-      "match_82", "match_83"
+      "match_82", "match_83", "match_84", "match_85"
     ];
 
     const topScorerOptionsList = [
-      "Haaland",
-      "Messi",
-      "Same score for all",
+      "Mbappe",
+      "Yamal",
+      "Both will score",
       "None will score"
     ];
 
-    // Main local match database with scores verified verbatim from screens (e.g. image_c0ebdd.png)
+    // Main local match database with scores verified verbatim from screen captures
     const matchesDatabase = [
       {
         id: "match_1",
@@ -1535,8 +1535,8 @@
         awayFlag: "gb-eng",
         stage: "Quarter-finals",
         kickoffTime: "2026-07-12T03:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 2 },
+        result: "AWAY_WIN",
         date: "July 12, 2026"
       },
       {
@@ -1547,13 +1547,38 @@
         awayFlag: "ch",
         stage: "Quarter-finals",
         kickoffTime: "2026-07-12T07:00:00+06:00",
+        actualScore: { home: 3, away: 1 },
+        result: "HOME_WIN",
+        awayRedCard: true,
+        date: "July 12, 2026"
+      },
+      {
+        id: "match_86",
+        homeTeam: "France",
+        homeFlag: "fr",
+        awayTeam: "Spain",
+        awayFlag: "es",
+        stage: "Semi-finals",
+        kickoffTime: "2026-07-15T01:00:00+06:00",
         actualScore: null,
         result: null,
-        date: "July 12, 2026"
+        date: "July 15, 2026"
+      },
+      {
+        id: "match_87",
+        homeTeam: "England",
+        homeFlag: "gb-eng",
+        awayTeam: "Argentina",
+        awayFlag: "ar",
+        stage: "Semi-finals",
+        kickoffTime: "2026-07-16T01:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 16, 2026"
       }
     ];
 
-    // Real world matches scores hardcoded database fallback (Verified verbatim using image_c0ebdd.png)
+    // Real world matches scores hardcoded database fallback (Verified verbatim using screen images)
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -1637,7 +1662,9 @@
       "match_80": { home: 3, away: 2, status: "Completed", result: "HOME_WIN" },
       "match_81": { home: 0, away: 0, homePen: 4, awayPen: 3, status: "Completed", result: "HOME_WIN" },
       "match_82": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
-      "match_83": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" }
+      "match_83": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
+      "match_84": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_85": { home: 3, away: 1, status: "Completed", result: "HOME_WIN", awayRedCard: true }
     };
 
     function resolveMatchStatesAndOutputs() {
@@ -1654,6 +1681,8 @@
               awayPen: fallback.awayPen || undefined
             };
             match.result = fallback.result;
+            if (fallback.awayRedCard) match.awayRedCard = true;
+            if (fallback.homeRedCard) match.homeRedCard = true;
           }
           return;
         }
@@ -1901,7 +1930,7 @@
 
     function startQuizCountdownTimer() {
       setInterval(() => {
-        const targetMatch = matchesDatabase.find(m => m.id === "match_84"); // England vs Norway
+        const targetMatch = matchesDatabase.find(m => m.id === "match_86"); // Spain vs France
         if (!targetMatch) return;
         
         const kickoff = new Date(targetMatch.kickoffTime);
@@ -1956,8 +1985,8 @@
     };
 
     function checkAndShowDailyQuizPopup(uid) {
-      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_tonight_top_scorer"] !== undefined;
-      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_tonight_top_scorer`;
+      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_spain_france_scorer"] !== undefined;
+      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_spain_france_scorer`;
       
       if (!answeredQuiz && !localStorage.getItem(storageKey)) {
         setTimeout(() => {
@@ -1975,7 +2004,7 @@
         quizPopup.classList.add("hidden");
       }
       if (currentUser) {
-        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_tonight_top_scorer`;
+        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_spain_france_scorer`;
         localStorage.setItem(storageKey, "true");
       }
     };
@@ -2092,6 +2121,14 @@
         }
       }
 
+      // Goals King Challenge (None will score is correct!)
+      if (quizMap["quiz_tonight_top_scorer"] !== undefined) {
+        const selection = quizMap["quiz_tonight_top_scorer"];
+        if (selection === "None will score") {
+          scoreEarned += 15;
+        }
+      }
+
       return scoreEarned;
     }
 
@@ -2138,7 +2175,7 @@
       document.getElementById("booster-total-points-display").textContent = `${quizBoosterPoints} pts`;
 
       let completedQuizzesCount = 0;
-      if (localQuizAnswers["quiz_tonight_top_scorer"] !== undefined) completedQuizzesCount++;
+      if (localQuizAnswers["quiz_spain_france_scorer"] !== undefined) completedQuizzesCount++;
       const counterElem = document.getElementById("booster-completed-counter");
       if (counterElem) {
         counterElem.textContent = `${completedQuizzesCount}/1`;
@@ -2179,13 +2216,14 @@
             "quiz_ronaldo_penalty": "NO",
             "quiz_messi_assist": "YES",
             "quiz_france_morocco_half_time": "Neither Team",
-            "quiz_spain_belgium_first_scorer": "Spain"
+            "quiz_spain_belgium_first_scorer": "Spain",
+            "quiz_tonight_top_scorer": "None will score"
           };
           const freshData = {
             uid: user.uid,
             email: user.email || "anonymous@fifa.com",
-            points: 105, 
-            quizPoints: 105,
+            points: 135, 
+            quizPoints: 135,
             predictionCount: 0,
             successCount: 0,
             nickname: currentNickname || "",
@@ -2222,6 +2260,9 @@
           }
           if (localQuizAnswers["quiz_spain_belgium_first_scorer"] === undefined) {
             localQuizAnswers["quiz_spain_belgium_first_scorer"] = "Spain";
+          }
+          if (localQuizAnswers["quiz_tonight_top_scorer"] === undefined) {
+            localQuizAnswers["quiz_tonight_top_scorer"] = "None will score";
           }
 
           const quizPoints = calculateUserQuizScore(localQuizAnswers);
@@ -2318,6 +2359,9 @@
         }
         if (localQuizAnswers["quiz_spain_belgium_first_scorer"] === undefined) {
           localQuizAnswers["quiz_spain_belgium_first_scorer"] = "Spain";
+        }
+        if (localQuizAnswers["quiz_tonight_top_scorer"] === undefined) {
+          localQuizAnswers["quiz_tonight_top_scorer"] = "None will score";
         }
         await autoRecalculateAndSavePoints();
         renderPointBoosterQuizzes();
@@ -2452,7 +2496,7 @@
     };
 
     window.selectTopScorerOption = function(optionValue) {
-      const targetMatch = matchesDatabase.find(m => m.id === "match_84"); // Norway vs England
+      const targetMatch = matchesDatabase.find(m => m.id === "match_86"); // Spain vs France
       const isQuizLocked = targetMatch ? (targetMatch.status === "Live" || targetMatch.status === "Completed") : false;
 
       if (isQuizLocked) {
@@ -2460,7 +2504,7 @@
         return;
       }
 
-      localQuizAnswers["quiz_tonight_top_scorer"] = optionValue;
+      localQuizAnswers["quiz_spain_france_scorer"] = optionValue;
       if (fallbackMode) {
         localStorage.setItem('local_quiz_answers', JSON.stringify(localQuizAnswers));
       }
@@ -2493,9 +2537,9 @@
       activeContainer.innerHTML = "";
       historyContainer.innerHTML = "";
 
-      const targetMatch = matchesDatabase.find(m => m.id === "match_84"); // Norway vs England
+      const targetMatch = matchesDatabase.find(m => m.id === "match_86"); // Spain vs France
       const isQuizLocked = targetMatch ? (targetMatch.status === "Live" || targetMatch.status === "Completed") : false;
-      const currentSelection = localQuizAnswers["quiz_tonight_top_scorer"] || "";
+      const currentSelection = localQuizAnswers["quiz_spain_france_scorer"] || "";
       
       const activeCard = document.createElement("div");
       activeCard.className = `bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 transition-all relative ${!isQuizLocked ? 'animate-booster-card' : ''}`;
@@ -2528,9 +2572,9 @@
           <div>
             <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full uppercase tracking-wider font-bold font-sporty flex items-center space-x-1">
               <i class="fa-solid fa-star text-amber-400"></i>
-              <span>Today's Quiz: Golden Boot King</span>
+              <span>Today's Quiz: Spain vs France Scorer</span>
             </span>
-            <p class="text-[11px] text-slate-500 mt-1">Predict who will score more goals in tonight's Quarter-final clashes.</p>
+            <p class="text-[11px] text-slate-500 mt-1">Predict who will score in Spain vs France match? Mbappe or Yamal?</p>
           </div>
           <div class="text-right flex flex-col items-end">
             <span class="text-xs text-amber-400 font-bold font-sporty uppercase bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-900/50 block">
@@ -2542,21 +2586,10 @@
 
         <div class="my-6 p-4 bg-slate-950/60 rounded-xl border border-slate-900">
           <p class="text-xs text-slate-300 font-semibold mb-4 text-center leading-relaxed">
-            Who will score more goals in tonight's matches? (England vs Norway & Argentina vs Switzerland)
+            Who will score in the Spain vs France match? Mbappe or Yamal?
           </p>
 
           <div class="flex flex-col items-center max-w-lg mx-auto space-y-4">
-            <div class="grid grid-cols-2 gap-3 w-full">
-              <div class="flex justify-between items-center px-3 bg-slate-900/40 py-2 rounded-xl border border-slate-800/60">
-                <span class="text-[10px] font-bold text-slate-300">Norway vs England</span>
-                <span class="text-[8px] font-black font-sporty text-slate-500 bg-slate-950 px-1.5 py-0.5 rounded">QF</span>
-              </div>
-              <div class="flex justify-between items-center px-3 bg-slate-900/40 py-2 rounded-xl border border-slate-800/60">
-                <span class="text-[10px] font-bold text-slate-300">Argentina vs Switzerland</span>
-                <span class="text-[8px] font-black font-sporty text-slate-500 bg-slate-950 px-1.5 py-0.5 rounded">QF</span>
-              </div>
-            </div>
-
             <!-- Options Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full pr-1">
               ${optionsHtml}
@@ -2582,6 +2615,18 @@
       activeContainer.appendChild(activeCard);
 
       const mockHistory = [
+        {
+          id: "quiz_tonight_top_scorer",
+          question: "Who will score more goals in tonight's QF matches? (Eng vs Nor & Arg vs Swi) (None scored!)",
+          homeTeam: "Norway",
+          homeFlag: "no",
+          awayTeam: "England",
+          awayFlag: "gb-eng",
+          points: 15,
+          isScoreline: false,
+          actualAnswer: "None will score",
+          date: "July 12, 2026"
+        },
         {
           id: "quiz_spain_belgium_first_scorer",
           question: "Which team will score first tonight? Spain or Belgium? (Spain scored first)",
@@ -2769,7 +2814,7 @@
         return;
       }
 
-      if (!localQuizAnswers["quiz_tonight_top_scorer"]) {
+      if (!localQuizAnswers["quiz_spain_france_scorer"]) {
         showNotification("Please select an option to lock in.", "error");
         return;
       }
@@ -2889,9 +2934,13 @@
               </div>
             `;
           } else {
+            const aetText = (match.id === "match_84" || match.id === "match_85") ? `<div class="text-[9px] font-bold text-slate-400 mt-0.5 font-sporty">AET</div>` : "";
             scoreDisplay = `
-              <div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">
-                ${match.actualScore.home}:${match.actualScore.away}
+              <div class="flex flex-col items-center">
+                <div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">
+                  ${match.actualScore.home}:${match.actualScore.away}
+                </div>
+                ${aetText}
               </div>
             `;
           }
@@ -3416,7 +3465,7 @@
         </span>
         <h3 class="text-lg font-extrabold text-amber-400 font-sporty uppercase tracking-wider mt-1.5">Booster Ticket Ready!</h3>
         <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          Unlock a massive **+15 Points Booster**! Predict who will score more goals in tonight's Quarter-final clashes.
+          Unlock a massive **+15 Points Booster**! Predict who will score in Spain vs France match? Mbappe or Yamal?
         </p>
       </div>
 
@@ -3424,26 +3473,17 @@
       <div class="my-4 p-3 bg-slate-950/90 rounded-xl border border-slate-800 flex flex-col space-y-2">
         <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg">
           <span class="text-xs font-bold text-slate-200 flex items-center gap-1">
-            <img src="https://flagcdn.com/w40/no.png" class="w-4 h-4 rounded-full object-cover"> Norway
+            <img src="https://flagcdn.com/w40/fr.png" class="w-4 h-4 rounded-full object-cover"> France
           </span>
           <span class="text-[9px] font-black font-sporty text-amber-400 uppercase">VS</span>
           <span class="text-xs font-bold text-slate-200 flex items-center gap-1">
-            England <img src="https://flagcdn.com/w40/gb-eng.png" class="w-4 h-4 rounded-full object-cover">
-          </span>
-        </div>
-        <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg">
-          <span class="text-xs font-bold text-slate-200 flex items-center gap-1">
-            <img src="https://flagcdn.com/w40/ar.png" class="w-4 h-4 rounded-full object-cover"> Argentina
-          </span>
-          <span class="text-[9px] font-black font-sporty text-amber-400 uppercase">VS</span>
-          <span class="text-xs font-bold text-slate-200 flex items-center gap-1">
-            Switzerland <img src="https://flagcdn.com/w40/ch.png" class="w-4 h-4 rounded-full object-cover">
+            Spain <img src="https://flagcdn.com/w40/es.png" class="w-4 h-4 rounded-full object-cover">
           </span>
         </div>
       </div>
 
       <div class="text-center text-[11px] text-slate-400 px-2 leading-relaxed mb-5">
-        Will Haaland or Messi dominate? Option can be edited until kickoff!
+        Will Mbappe or Yamal score? Option can be edited until kickoff!
       </div>
 
       <div class="flex space-x-3">
