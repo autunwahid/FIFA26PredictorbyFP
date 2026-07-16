@@ -98,6 +98,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen selection:bg-emerald-500 selection:text-slate-900 overflow-x-hidden">
 
+  <!-- STREAMING_CHUNK: Setting up navigation and headers... -->
   <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-3 md:px-4 py-3">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       
@@ -182,10 +183,6 @@
 
             <!-- Status tag -->
             <div class="px-4 py-2 text-[10px] border-b border-slate-800 bg-slate-950/30">
-              <p class="font-bold text-emerald-400 uppercase tracking-wider font-sporty mb-1">
-                <i class="fa-solid fa-circle-check mr-1 text-emerald-400"></i>
-                Predictor Status Console
-              </p>
               <div class="text-slate-400 leading-tight">Last local sync check:</div>
               <div id="last-sync-tag" class="text-emerald-400 font-bold mt-1 font-sporty">Not checked yet</div>
             </div>
@@ -204,6 +201,7 @@
   <!-- Notification Banner Center Container -->
   <div id="toast-container" class="fixed top-20 right-4 left-4 sm:left-auto sm:right-4 z-50 flex flex-col space-y-2 max-w-sm pointer-events-none"></div>
 
+  <!-- STREAMING_CHUNK: Rendering primary dashboard view layouts... -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-3 xs:p-4 flex flex-col justify-center">
 
     <!-- AUTHENTICATION VIEW -->
@@ -290,12 +288,11 @@
           <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3.5 md:max-w-md text-xs text-slate-400 space-y-2">
             <p class="font-semibold text-slate-200">Predictor Scoring System Matrix & Tiebreaker Rules:</p>
             <div class="space-y-1">
-              <p><span class="text-emerald-400 font-bold font-sporty">• 3 points (Group Stage)</span>: Correct outcome (Win/Loss prediction matches actual, or Correct Tie prediction).</p>
-              <p><span class="text-amber-400 font-bold font-sporty">• 1 point (Group Stage)</span>: Predicted Win outcome (Team 1 or 2), but result ended in a Draw.</p>
-              <p><span class="text-sky-400 font-bold font-sporty">• 8 points (Knockout/Semi/Finals)</span>: Correct Win/Loss outcome (No ties available. Resolved after extra time & penalties!).</p>
-              <p><span class="text-amber-500 font-bold font-sporty">• 15 points (Point Booster Daily Quiz)</span>: Correctly answer daily dynamic booster quiz challenges!</p>
+              <p><span class="text-emerald-400 font-bold font-sporty">• 3 points (Group Stage)</span>: Correct outcome.</p>
+              <p><span class="text-amber-400 font-bold font-sporty">• 1 point (Group Stage)</span>: Outcome ended in a Draw.</p>
+              <p><span class="text-sky-400 font-bold font-sporty">• 8 points (Knockout/Semi/Finals)</span>: Correct Win/Loss outcome (Resolved after extra time & penalties!).</p>
+              <p><span class="text-amber-500 font-bold font-sporty">• 15 points (Point Booster Daily Quiz)</span>: Correctly answer dynamic booster quiz challenges!</p>
             </div>
-            <p class="pt-1.5 text-[11px] text-slate-300 border-t border-slate-800"><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i> Leaderboard Tiebreakers: Highest Points &rarr; Prediction Success Rate % &rarr; Alphabetical order (Nicknames).</p>
           </div>
         </div>
       </div>
@@ -359,6 +356,7 @@
 
       </div>
 
+      <!-- STREAMING_CHUNK: Setting up Points Booster layouts... -->
       <!-- Tab Area 2: Point Booster Tab Content -->
       <div id="tab-content-quiz" class="tab-content hidden space-y-6">
         
@@ -374,7 +372,7 @@
               </span>
               <h2 class="text-xl xs:text-2xl font-black font-sporty text-amber-400">Point Booster Challenge</h2>
               <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                Take part in today's Matchday Score Quiz! Predict correct live events to claim <span class="text-amber-400 font-bold font-sporty">+15 points</span> for your leaderboard rank.
+                Take part in the final tournament quiz challenge to claim <span class="text-amber-400 font-bold font-sporty">+15 points</span> for your leaderboard rank.
               </p>
             </div>
             
@@ -466,6 +464,7 @@
     </div>
   </footer>
 
+  <!-- STREAMING_CHUNK: Setting up Firebase and Core Javascript Modules... -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -514,13 +513,12 @@
       "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64", "match_65",
       "match_66", "match_67", "match_68", "match_69", "match_70", "match_71", "match_72", "match_73",
       "match_74", "match_75", "match_76", "match_77", "match_78", "match_79", "match_80", "match_81",
-      "match_82", "match_83", "match_84", "match_85", "match_86"
+      "match_82", "match_83", "match_84", "match_85", "match_86", "match_87"
     ];
 
     const topScorerOptionsList = [
-      "By 90 minutes",
-      "By 120 minutes",
-      "Tie-breaker penalty shootout"
+      "Mbappe",
+      "Messi"
     ];
 
     // Main local match database with scores verified verbatim from screen captures
@@ -1571,9 +1569,33 @@
         awayFlag: "ar",
         stage: "Semi-finals",
         kickoffTime: "2026-07-16T01:00:00+06:00",
+        actualScore: { home: 1, away: 2 },
+        result: "AWAY_WIN",
+        date: "July 16, 2026"
+      },
+      {
+        id: "match_88",
+        homeTeam: "France",
+        homeFlag: "fr",
+        awayTeam: "England",
+        awayFlag: "gb-eng",
+        stage: "Third place play-off",
+        kickoffTime: "2026-07-19T03:00:00+06:00",
         actualScore: null,
         result: null,
-        date: "July 16, 2026"
+        date: "July 19, 2026"
+      },
+      {
+        id: "match_89",
+        homeTeam: "Spain",
+        homeFlag: "es",
+        awayTeam: "Argentina",
+        awayFlag: "ar",
+        stage: "Final",
+        kickoffTime: "2026-07-20T01:00:00+06:00",
+        actualScore: null,
+        result: null,
+        date: "July 20, 2026"
       }
     ];
 
@@ -1664,9 +1686,11 @@
       "match_83": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
       "match_84": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
       "match_85": { home: 3, away: 1, status: "Completed", result: "HOME_WIN", awayRedCard: true },
-      "match_86": { home: 0, away: 2, status: "Completed", result: "AWAY_WIN" }
+      "match_86": { home: 0, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_87": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" }
     };
 
+    // STREAMING_CHUNK: Setting up core match calculations and synchronizations...
     function resolveMatchStatesAndOutputs() {
       const now = new Date();
       matchesDatabase.forEach((match) => {
@@ -1919,9 +1943,10 @@
       });
     }
 
+    // STREAMING_CHUNK: Managing local sandbox mode mechanisms...
     function engageLocalInMemoryPersistence() {
       localPredictions = JSON.parse(localStorage.getItem('local_match_predictions') || "{}");
-      localQuizAnswers = JSON.parse(localStorage.getItem('local_quiz_answers') || '{"quiz_messi_assist": "YES"}');
+      localQuizAnswers = JSON.parse(localStorage.getItem('local_quiz_answers') || "{}");
       updatePredictionsCounter();
       autoRecalculateAndSavePoints();
       renderMatches();
@@ -1930,7 +1955,7 @@
 
     function startQuizCountdownTimer() {
       setInterval(() => {
-        const targetMatch = matchesDatabase.find(m => m.id === "match_87"); // England vs Argentina
+        const targetMatch = matchesDatabase.find(m => m.id === "match_88"); // France vs England (3rd place play-off kickoff locks the quiz)
         if (!targetMatch) return;
         
         const kickoff = new Date(targetMatch.kickoffTime);
@@ -1985,8 +2010,8 @@
     };
 
     function checkAndShowDailyQuizPopup(uid) {
-      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_arg_eng_end"] !== undefined;
-      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_arg_eng_end`;
+      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_golden_boot"] !== undefined;
+      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_golden_boot`;
       
       if (!answeredQuiz && !localStorage.getItem(storageKey)) {
         setTimeout(() => {
@@ -2004,7 +2029,7 @@
         quizPopup.classList.add("hidden");
       }
       if (currentUser) {
-        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_spain_france_scorer`;
+        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_golden_boot`;
         localStorage.setItem(storageKey, "true");
       }
     };
@@ -2048,6 +2073,7 @@
       await autoRecalculateAndSavePoints();
     };
 
+    // STREAMING_CHUNK: Processing user quiz scores mathematically...
     function calculateUserQuizScore(quizMap) {
       let scoreEarned = 0;
       if (!quizMap || typeof quizMap !== 'object') return 0;
@@ -2138,6 +2164,14 @@
         }
       }
 
+      // Arg vs Eng match ending resolution ("By 90 minutes" is correct!)
+      if (quizMap["quiz_arg_eng_end"] !== undefined && quizMap["quiz_arg_eng_end"] !== null && quizMap["quiz_arg_eng_end"] !== "") {
+        const selection = quizMap["quiz_arg_eng_end"];
+        if (selection === "By 90 minutes") {
+          scoreEarned += 15;
+        }
+      }
+
       return scoreEarned;
     }
 
@@ -2184,7 +2218,7 @@
       document.getElementById("booster-total-points-display").textContent = `${quizBoosterPoints} pts`;
 
       let completedQuizzesCount = 0;
-      if (localQuizAnswers["quiz_arg_eng_end"] !== undefined) completedQuizzesCount++;
+      if (localQuizAnswers["quiz_golden_boot"] !== undefined) completedQuizzesCount++;
       const counterElem = document.getElementById("booster-completed-counter");
       if (counterElem) {
         counterElem.textContent = `${completedQuizzesCount}/1`;
@@ -2313,6 +2347,7 @@
       });
     }
 
+    // STREAMING_CHUNK: Generating dynamic scores for global rankings...
     function getDynamicPoints(userItem) {
       if (!userItem) return 0;
       let calcPoints = 0;
@@ -2438,8 +2473,9 @@
       }
     };
 
+    // STREAMING_CHUNK: Processing quiz option selections and submission pipelines...
     window.selectTopScorerOption = function(optionValue) {
-      const targetMatch = matchesDatabase.find(m => m.id === "match_87"); // England vs Argentina
+      const targetMatch = matchesDatabase.find(m => m.id === "match_88"); // France vs England (3rd place play-off kickoff locks the quiz)
       const isQuizLocked = targetMatch ? (targetMatch.status === "Live" || targetMatch.status === "Completed") : false;
 
       if (isQuizLocked) {
@@ -2447,7 +2483,7 @@
         return;
       }
 
-      localQuizAnswers["quiz_arg_eng_end"] = optionValue;
+      localQuizAnswers["quiz_golden_boot"] = optionValue;
       if (fallbackMode) {
         localStorage.setItem('local_quiz_answers', JSON.stringify(localQuizAnswers));
       }
@@ -2480,9 +2516,9 @@
       activeContainer.innerHTML = "";
       historyContainer.innerHTML = "";
 
-      const targetMatch = matchesDatabase.find(m => m.id === "match_87"); // England vs Argentina
+      const targetMatch = matchesDatabase.find(m => m.id === "match_88"); // France vs England (3rd place play-off kickoff locks the quiz)
       const isQuizLocked = targetMatch ? (targetMatch.status === "Live" || targetMatch.status === "Completed") : false;
-      const currentSelection = localQuizAnswers["quiz_arg_eng_end"] || "";
+      const currentSelection = localQuizAnswers["quiz_golden_boot"] || "";
       
       const activeCard = document.createElement("div");
       activeCard.className = `bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 transition-all relative ${!isQuizLocked ? 'animate-booster-card' : ''}`;
@@ -2515,9 +2551,9 @@
           <div>
             <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full uppercase tracking-wider font-bold font-sporty flex items-center space-x-1">
               <i class="fa-solid fa-star text-amber-400"></i>
-              <span>Today's Quiz: England vs Argentina Match Ending</span>
+              <span>Final Quiz: Who will win the golden boot?</span>
             </span>
-            <p class="text-[11px] text-slate-500 mt-1">Predict when tomorrow's semi-final match between England and Argentina could officially end.</p>
+            <p class="text-[11px] text-slate-500 mt-1">Predict the Golden Boot winner of the tournament.</p>
           </div>
           <div class="text-right flex flex-col items-end">
             <span class="text-xs text-amber-400 font-bold font-sporty uppercase bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-900/50 block">
@@ -2529,7 +2565,7 @@
 
         <div class="my-6 p-4 bg-slate-950/60 rounded-xl border border-slate-900">
           <p class="text-xs text-slate-300 font-semibold mb-4 text-center leading-relaxed">
-            When could the Arg vs Eng match officially end?
+            Who will win the golden boot? Mbappe or Messi?
           </p>
 
           <div class="flex flex-col items-center max-w-lg mx-auto space-y-4">
@@ -2542,7 +2578,7 @@
 
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
           <div class="text-[11px] text-slate-400 flex items-center space-x-1">
-            <i class="fa-solid fa-slate-shield-halved text-amber-500"></i>
+            <i class="fa-solid fa-shield-halved text-amber-500"></i>
             <span>Selection verified and locked in profile database</span>
           </div>
           <button 
@@ -2559,6 +2595,18 @@
 
       const mockHistory = [
         {
+          id: "quiz_arg_eng_end",
+          question: "When could the Arg vs Eng match officially end? (Ended in 90 minutes)",
+          homeTeam: "England",
+          homeFlag: "gb-eng",
+          awayTeam: "Argentina",
+          awayFlag: "ar",
+          points: 15,
+          isScoreline: false,
+          actualAnswer: "By 90 minutes",
+          date: "July 16, 2026"
+        },
+        {
           id: "quiz_spain_france_scorer",
           question: "Who will score in Spain vs France match? Mbappe or Yamal? (None scored!)",
           homeTeam: "France",
@@ -2572,7 +2620,7 @@
         },
         {
           id: "quiz_tonight_top_scorer",
-          question: "Who will score more goals in tonight's QF matches? (Eng vs Nor & Arg vs Swi) (None scored!)",
+          question: "Who will score more goals in tonight's QF matches? (None scored!)",
           homeTeam: "Norway",
           homeFlag: "no",
           awayTeam: "England",
@@ -2769,7 +2817,7 @@
         return;
       }
 
-      if (!localQuizAnswers["quiz_arg_eng_end"]) {
+      if (!localQuizAnswers["quiz_golden_boot"]) {
         showNotification("Please select an option to lock in.", "error");
         return;
       }
@@ -2792,6 +2840,7 @@
       }
     };
 
+    // STREAMING_CHUNK: Processing match graphics and fixtures templates...
     window.renderMatches = function() {
       const grid = document.getElementById("matches-grid");
       const filter = document.getElementById("match-group-filter").value;
@@ -3056,6 +3105,7 @@
       });
     };
 
+    // STREAMING_CHUNK: Managing authentication forms and states...
     const authForm = document.getElementById("auth-form");
     const authToggleBtn = document.getElementById("auth-toggle-btn");
     const authTitle = document.getElementById("auth-title");
@@ -3224,6 +3274,7 @@
       });
     };
 
+    // STREAMING_CHUNK: Preparing and rendering global standings ledger board...
     window.renderLeaderboard = function() {
       const podiumContainer = document.getElementById("leaderboard-podium");
       const rowsContainer = document.getElementById("leaderboard-rows");
@@ -3407,6 +3458,7 @@
     </div>
   </div>
 
+  <!-- STREAMING_CHUNK: Setting up final welcome popup modals... -->
   <!-- Daily Quiz Bonus Welcome Pop-up Modal -->
   <div id="daily-quiz-popup-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
     <div class="bg-slate-900 border border-amber-500/30 rounded-2xl max-w-md w-full p-6 shadow-2xl transform scale-100 transition-all border-t-4 border-t-amber-500 relative animate-fade-in">
@@ -3420,7 +3472,7 @@
         </span>
         <h3 class="text-lg font-extrabold text-amber-400 font-sporty uppercase tracking-wider mt-1.5">Booster Ticket Ready!</h3>
         <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          Unlock a massive **+15 Points Booster**! Predict when the high-stakes match between Argentina and England will end.
+          Unlock a massive **+15 Points Booster**! Predict the Golden Boot winner of the tournament.
         </p>
       </div>
 
@@ -3428,17 +3480,17 @@
       <div class="my-4 p-3 bg-slate-950/90 rounded-xl border border-slate-800 flex flex-col space-y-2">
         <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg">
           <span class="text-xs font-bold text-slate-200 flex items-center gap-1">
-            <img src="https://flagcdn.com/w40/ar.png" class="w-4 h-4 rounded-full object-cover"> Argentina
+            <img src="https://flagcdn.com/w40/fr.png" class="w-4 h-4 rounded-full object-cover"> Mbappe
           </span>
           <span class="text-[9px] font-black font-sporty text-amber-400 uppercase">VS</span>
           <span class="text-xs font-bold text-slate-200 flex items-center gap-1">
-            England <img src="https://flagcdn.com/w40/gb-eng.png" class="w-4 h-4 rounded-full object-cover">
+            Messi <img src="https://flagcdn.com/w40/ar.png" class="w-4 h-4 rounded-full object-cover">
           </span>
         </div>
       </div>
 
       <div class="text-center text-[11px] text-slate-400 px-2 leading-relaxed mb-5">
-        Will it end in 90 minutes, 120 minutes, or a penalty shootout? Options can be edited until kickoff!
+        Will it be Mbappe or Messi to claim the prestigious crown? Options lock at play-off kickoff!
       </div>
 
       <div class="flex space-x-3">
@@ -3460,9 +3512,9 @@
       </div>
       
       <div class="text-center mt-4">
-        <h3 class="text-lg font-extrabold text-sky-400 font-sporty uppercase tracking-wider">Welcome to the Knockout Stage!</h3>
+        <h3 class="text-lg font-extrabold text-sky-400 font-sporty uppercase tracking-wider">Welcome to the Final Stage!</h3>
         <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-          The stakes are higher and the predictor mechanics have evolved! We have redesigned the engine for the **Round of 32 & onwards**.
+          The stakes have reached their absolute peak! Predict outcomes for the play-offs and finals.
         </p>
       </div>
 
@@ -3471,21 +3523,14 @@
           <i class="fa-solid fa-award text-sky-400 text-base mt-0.5 flex-shrink-0"></i>
           <div>
             <p class="font-bold text-slate-200">8 Points Per Winner Prediction</p>
-            <p class="text-[11px] text-slate-400 leading-tight">Correct outcome prediction earns **8 points** (previously 3 points). Incorrect outcome gets 0 points.</p>
+            <p class="text-[11px] text-slate-400 leading-tight">Correct outcome prediction earns **8 points**.</p>
           </div>
         </div>
         <div class="flex items-start space-x-2.5">
           <i class="fa-solid fa-ban text-rose-400 text-base mt-0.5 flex-shrink-0"></i>
           <div>
             <p class="font-bold text-slate-200">No "Tie / Draw" Predictions</p>
-            <p class="text-[11px] text-slate-400 leading-tight">Draw selections have been completely removed. Match results resolve after extra time and penalty shootouts!</p>
-          </div>
-        </div>
-        <div class="flex items-start space-x-2.5">
-          <i class="fa-solid fa-clock-rotate-left text-emerald-400 text-base mt-0.5 flex-shrink-0"></i>
-          <div>
-            <p class="font-bold text-slate-200">Group Stage Standings Preserved</p>
-            <p class="text-[11px] text-slate-400 leading-tight">All scores, points, and standings from matches 1 to 57 remain safely frozen without changes.</p>
+            <p class="text-[11px] text-slate-400 leading-tight">Draw selections are disabled. Match results resolve after extra time and penalty shootouts!</p>
           </div>
         </div>
       </div>
