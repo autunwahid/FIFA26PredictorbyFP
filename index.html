@@ -94,11 +94,27 @@
     .tab-content {
       transition: all 0.3s ease-in-out;
     }
+
+    /* Firecrackers / Fireworks Celebration Overlay Animations */
+    @keyframes firework-burst {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      50% { opacity: 0.9; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+    }
+
+    .cracker-particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: firework-burst 1.2s ease-out infinite;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen selection:bg-emerald-500 selection:text-slate-900 overflow-x-hidden">
 
-  <!-- STREAMING_CHUNK: Setting up navigation and headers... -->
+  <!-- Navigation Header -->
   <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 px-3 md:px-4 py-3">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       
@@ -201,7 +217,6 @@
   <!-- Notification Banner Center Container -->
   <div id="toast-container" class="fixed top-20 right-4 left-4 sm:left-auto sm:right-4 z-50 flex flex-col space-y-2 max-w-sm pointer-events-none"></div>
 
-  <!-- STREAMING_CHUNK: Rendering primary dashboard view layouts... -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-3 xs:p-4 flex flex-col justify-center">
 
     <!-- AUTHENTICATION VIEW -->
@@ -356,7 +371,6 @@
 
       </div>
 
-      <!-- STREAMING_CHUNK: Setting up Points Booster layouts... -->
       <!-- Tab Area 2: Point Booster Tab Content -->
       <div id="tab-content-quiz" class="tab-content hidden space-y-6">
         
@@ -464,7 +478,6 @@
     </div>
   </footer>
 
-  <!-- STREAMING_CHUNK: Setting up Firebase and Core Javascript Modules... -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -481,7 +494,7 @@
     };
 
     let app, auth, db;
-    let fallbackMode = false; // Flag to catch Iframe sandboxing local storage issues safely
+    let fallbackMode = false;
     const appId = "fifa-world-cup-predictor-lns";
 
     try {
@@ -501,7 +514,7 @@
 
     const PLAY_DURATION_MS = 120 * 60 * 1000; 
 
-    // Guard rails for complete historical verification
+    // Guard rails including completed match_88 and match_89
     const historicalCompletedIds = [
       "match_1", "match_2", "match_3", "match_4", "match_5", "match_6", "match_7", "match_8", 
       "match_9", "match_10", "match_11", "match_12", "match_13", "match_14", "match_15", "match_16",
@@ -513,7 +526,7 @@
       "match_58", "match_59", "match_60", "match_61", "match_62", "match_63", "match_64", "match_65",
       "match_66", "match_67", "match_68", "match_69", "match_70", "match_71", "match_72", "match_73",
       "match_74", "match_75", "match_76", "match_77", "match_78", "match_79", "match_80", "match_81",
-      "match_82", "match_83", "match_84", "match_85", "match_86", "match_87"
+      "match_82", "match_83", "match_84", "match_85", "match_86", "match_87", "match_88", "match_89"
     ];
 
     const topScorerOptionsList = [
@@ -521,7 +534,7 @@
       "Messi"
     ];
 
-    // Main local match database with scores verified verbatim from screen captures
+    // Main local match database with scores updated verbatim from screenshot attachment
     const matchesDatabase = [
       {
         id: "match_1",
@@ -1581,8 +1594,8 @@
         awayFlag: "gb-eng",
         stage: "Third place play-off",
         kickoffTime: "2026-07-19T03:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 4, away: 6 },
+        result: "AWAY_WIN",
         date: "July 19, 2026"
       },
       {
@@ -1593,13 +1606,14 @@
         awayFlag: "ar",
         stage: "Final",
         kickoffTime: "2026-07-20T01:00:00+06:00",
-        actualScore: null,
-        result: null,
+        actualScore: { home: 1, away: 0 },
+        result: "HOME_WIN",
+        awayRedCard: true,
         date: "July 20, 2026"
       }
     ];
 
-    // Real world matches scores hardcoded database fallback (Verified verbatim using screen images)
+    // Real world matches scores hardcoded database fallback
     const realWorldScoresFallback = {
       "match_1": { home: 2, away: 0, status: "Completed", result: "HOME_WIN" },
       "match_2": { home: 2, away: 1, status: "Completed", result: "HOME_WIN" },
@@ -1687,10 +1701,11 @@
       "match_84": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
       "match_85": { home: 3, away: 1, status: "Completed", result: "HOME_WIN", awayRedCard: true },
       "match_86": { home: 0, away: 2, status: "Completed", result: "AWAY_WIN" },
-      "match_87": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" }
+      "match_87": { home: 1, away: 2, status: "Completed", result: "AWAY_WIN" },
+      "match_88": { home: 4, away: 6, status: "Completed", result: "AWAY_WIN" },
+      "match_89": { home: 1, away: 0, status: "Completed", result: "HOME_WIN", awayRedCard: true }
     };
 
-    // STREAMING_CHUNK: Setting up core match calculations and synchronizations...
     function resolveMatchStatesAndOutputs() {
       const now = new Date();
       matchesDatabase.forEach((match) => {
@@ -1847,7 +1862,6 @@
       if (profileDropdown) profileDropdown.classList.add("hidden");
     });
 
-    // Auto load nickname cache from localStorage
     const savedLocalNick = localStorage.getItem('fifa_saved_nickname');
     if (savedLocalNick) {
       currentNickname = savedLocalNick;
@@ -1903,9 +1917,7 @@
         }
         
         await syncWithFifaOfficialURL();
-        checkAndShowKnockoutAnnouncement(user.uid);
-        checkAndShowDailyQuizPopup(user.uid);
-        startQuizCountdownTimer();
+        checkAndShowWinnersPopup();
       } else {
         currentUser = null;
         if (authView) authView.classList.remove("hidden");
@@ -1937,13 +1949,12 @@
           document.getElementById("profile-container").classList.remove("hidden");
           document.getElementById("sync-pill").classList.remove("hidden");
           engageLocalInMemoryPersistence();
-          startQuizCountdownTimer();
+          checkAndShowWinnersPopup();
           showNotification("Success! Logged in to local sandbox mode.", "success");
         }
       });
     }
 
-    // STREAMING_CHUNK: Managing local sandbox mode mechanisms...
     function engageLocalInMemoryPersistence() {
       localPredictions = JSON.parse(localStorage.getItem('local_match_predictions') || "{}");
       localQuizAnswers = JSON.parse(localStorage.getItem('local_quiz_answers') || "{}");
@@ -1953,91 +1964,98 @@
       renderPointBoosterQuizzes();
     }
 
-    function startQuizCountdownTimer() {
-      setInterval(() => {
-        const targetMatch = matchesDatabase.find(m => m.id === "match_88"); // France vs England (3rd place play-off kickoff locks the quiz)
-        if (!targetMatch) return;
-        
-        const kickoff = new Date(targetMatch.kickoffTime);
-        const now = new Date();
-        const timeDiff = kickoff.getTime() - now.getTime();
-        const timerElem = document.getElementById("quiz-lock-timer");
-        
-        const previousStatus = targetMatch.status;
-        resolveMatchStatesAndOutputs();
-        
-        if (previousStatus !== targetMatch.status) {
-          renderPointBoosterQuizzes();
-          renderMatches();
-          autoRecalculateAndSavePoints();
-        }
-
-        if (!timerElem) return;
-
-        if (timeDiff <= 0 || targetMatch.status === "Live" || targetMatch.status === "Completed") {
-          timerElem.innerHTML = `<span class="text-rose-500 font-bold flex items-center justify-end gap-1"><i class="fa-solid fa-lock"></i> Locked (Live)</span>`;
-        } else {
-          const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-          
-          timerElem.innerHTML = `<span class="text-amber-400 font-bold flex items-center justify-end gap-1"><i class="fa-solid fa-clock animate-pulse"></i> Locks in: ${hours}h ${minutes}m ${seconds}s</span>`;
-        }
+    // Top 3 Winners Pop-up & Firecrackers Animation Trigger
+    function checkAndShowWinnersPopup() {
+      setTimeout(() => {
+        triggerCrackersAnimation(6000); // 6 seconds cracker animation
+        renderWinnersModalContent();
+        const popup = document.getElementById("tournament-winners-popup-modal");
+        if (popup) popup.classList.remove("hidden");
       }, 1000);
     }
 
-    function checkAndShowKnockoutAnnouncement(uid) {
-      const storageKey = `seen_knockout_rules_announcement_${uid}`;
-      if (!localStorage.getItem(storageKey)) {
-        setTimeout(() => {
-          const announcementModal = document.getElementById("knockout-announcement-modal");
-          if (announcementModal) {
-            announcementModal.classList.remove("hidden");
-          }
-        }, 1200);
+    window.closeWinnersPopup = function() {
+      const popup = document.getElementById("tournament-winners-popup-modal");
+      if (popup) popup.classList.add("hidden");
+    };
+
+    function triggerCrackersAnimation(durationMs = 6000) {
+      const container = document.getElementById("fireworks-overlay");
+      if (!container) return;
+      container.classList.remove("hidden");
+      container.innerHTML = "";
+
+      const colors = ['#f59e0b', '#10b981', '#38bdf8', '#ec4899', '#a855f7', '#eab308'];
+      const particleCount = 60;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement("div");
+        particle.className = "cracker-particle";
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const startX = Math.random() * 100;
+        const startY = Math.random() * 100;
+        const tx = (Math.random() - 0.5) * 200;
+        const ty = (Math.random() - 0.5) * 200;
+
+        particle.style.backgroundColor = color;
+        particle.style.boxShadow = `0 0 8px ${color}`;
+        particle.style.left = `${startX}%`;
+        particle.style.top = `${startY}%`;
+        particle.style.setProperty('--tx', `${tx}px`);
+        particle.style.setProperty('--ty', `${ty}px`);
+        particle.style.animationDelay = `${Math.random() * 2}s`;
+
+        container.appendChild(particle);
       }
+
+      setTimeout(() => {
+        container.classList.add("hidden");
+        container.innerHTML = "";
+      }, durationMs);
     }
 
-    window.closeKnockoutAnnouncement = function() {
-      const announcementModal = document.getElementById("knockout-announcement-modal");
-      if (announcementModal) {
-        announcementModal.classList.add("hidden");
-      }
-      if (currentUser) {
-        const storageKey = `seen_knockout_rules_announcement_${currentUser.uid}`;
-        localStorage.setItem(storageKey, "true");
-      }
-    };
+    function renderWinnersModalContent() {
+      const container = document.getElementById("winners-modal-podium-rows");
+      if (!container) return;
+      container.innerHTML = "";
 
-    function checkAndShowDailyQuizPopup(uid) {
-      const answeredQuiz = localQuizAnswers && localQuizAnswers["quiz_golden_boot"] !== undefined;
-      const storageKey = `dismissed_daily_quiz_popup_${uid}_quiz_golden_boot`;
-      
-      if (!answeredQuiz && !localStorage.getItem(storageKey)) {
-        setTimeout(() => {
-          const quizPopup = document.getElementById("daily-quiz-popup-modal");
-          if (quizPopup) {
-            quizPopup.classList.remove("hidden");
-          }
-        }, 1800);
-      }
+      const topThree = leaderboardUsers.length >= 3 ? leaderboardUsers.slice(0, 3) : [
+        { nickname: "Champion Striker", points: 148 },
+        { nickname: "Gold Predictor", points: 132 },
+        { nickname: "Silver Ace", points: 120 }
+      ];
+
+      const ranks = [
+        { rank: 1, title: "1st Place Champion", icon: "fa-trophy text-amber-400", border: "border-amber-500/80 bg-amber-950/20" },
+        { rank: 2, title: "2nd Place Runner-Up", icon: "fa-medal text-slate-300", border: "border-slate-400/60 bg-slate-900/60" },
+        { rank: 3, title: "3rd Place Bronze Winner", icon: "fa-award text-amber-600", border: "border-amber-700/60 bg-amber-950/10" }
+      ];
+
+      topThree.forEach((user, idx) => {
+        const meta = ranks[idx] || ranks[2];
+        const name = user.nickname || maskEmailSecure(user.email) || "Player";
+        const pts = getDynamicPoints(user) || user.points || 0;
+
+        const card = document.createElement("div");
+        card.className = `p-3.5 rounded-xl border flex items-center justify-between ${meta.border}`;
+        card.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <div class="text-xl">
+              <i class="fa-solid ${meta.icon}"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slate-100 font-sporty">${name}</p>
+              <p class="text-[10px] text-slate-400 uppercase tracking-wider">${meta.title}</p>
+            </div>
+          </div>
+          <div class="text-right font-sporty">
+            <span class="text-lg font-black text-amber-400">${pts}</span>
+            <span class="text-[10px] text-slate-400 font-bold">pts</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
-
-    window.dismissDailyQuizPopup = function() {
-      const quizPopup = document.getElementById("daily-quiz-popup-modal");
-      if (quizPopup) {
-        quizPopup.classList.add("hidden");
-      }
-      if (currentUser) {
-        const storageKey = `dismissed_daily_quiz_popup_${currentUser.uid}_quiz_golden_boot`;
-        localStorage.setItem(storageKey, "true");
-      }
-    };
-
-    window.goToDailyQuiz = function() {
-      dismissDailyQuizPopup();
-      switchTab('quiz');
-    };
 
     window.saveNickname = async function() {
       if (!currentUser) {
@@ -2073,10 +2091,15 @@
       await autoRecalculateAndSavePoints();
     };
 
-    // STREAMING_CHUNK: Processing user quiz scores mathematically...
+    // Correct Golden Boot Quiz Answer logic: Mbappe = 15 points
     function calculateUserQuizScore(quizMap) {
       let scoreEarned = 0;
       if (!quizMap || typeof quizMap !== 'object') return 0;
+
+      // Final Quiz Golden Boot Answer check: "Mbappe"
+      if (quizMap["quiz_golden_boot"] === "Mbappe") {
+        scoreEarned += 15;
+      }
 
       // Portugal vs Croatia scoreline guess
       if (quizMap["quiz_pt_hr_score"] !== undefined && quizMap["quiz_pt_hr_score"] !== null) {
@@ -2092,7 +2115,7 @@
         }
       }
 
-      // Messi Goals prediction resolution (1 Goal)
+      // Messi Goals prediction resolution
       if (quizMap["quiz_messi_goals"] !== undefined && quizMap["quiz_messi_goals"] !== null && quizMap["quiz_messi_goals"] !== "") {
         const answeredGoals = Number(quizMap["quiz_messi_goals"]);
         if (answeredGoals === 1) {
@@ -2100,7 +2123,7 @@
         }
       }
 
-      // France vs Paraguay scorers (Mbappe only winner rule)
+      // France vs Paraguay scorers
       if (quizMap["quiz_france_scorers"] !== undefined && quizMap["quiz_france_scorers"] !== null) {
         const selection = quizMap["quiz_france_scorers"];
         if (Array.isArray(selection) && selection.length === 1 && selection[0] === "K. Mbappé") {
@@ -2108,7 +2131,7 @@
         }
       }
 
-      // Neymar playtime prediction resolution (21-30 minutes is the winner)
+      // Neymar playtime
       if (quizMap["quiz_neymar_time"] !== undefined && quizMap["quiz_neymar_time"] !== null && quizMap["quiz_neymar_time"] !== "") {
         const selection = quizMap["quiz_neymar_time"];
         if (selection === "21-30 minutes") {
@@ -2116,7 +2139,7 @@
         }
       }
 
-      // Cristiano Ronaldo penalty prediction resolution (NO is correct)
+      // Cristiano Ronaldo penalty prediction
       if (quizMap["quiz_ronaldo_penalty"] !== undefined && quizMap["quiz_ronaldo_penalty"] !== null && quizMap["quiz_ronaldo_penalty"] !== "") {
         const selection = quizMap["quiz_ronaldo_penalty"];
         if (selection === "NO") {
@@ -2124,7 +2147,7 @@
         }
       }
 
-      // Messi Assist prediction (YES is correct!)
+      // Messi Assist prediction
       if (quizMap["quiz_messi_assist"] !== undefined && quizMap["quiz_messi_assist"] !== null && quizMap["quiz_messi_assist"] !== "") {
         const selection = quizMap["quiz_messi_assist"];
         if (selection === "YES") {
@@ -2132,7 +2155,7 @@
         }
       }
 
-      // France vs Morocco half-time goals prediction resolution (Neither Team is correct!)
+      // France vs Morocco half-time goals
       if (quizMap["quiz_france_morocco_half_time"] !== undefined && quizMap["quiz_france_morocco_half_time"] !== null && quizMap["quiz_france_morocco_half_time"] !== "") {
         const selection = quizMap["quiz_france_morocco_half_time"];
         if (selection === "Neither Team") {
@@ -2140,7 +2163,7 @@
         }
       }
 
-      // Spain vs Belgium first goalscorer resolution (Spain is correct!)
+      // Spain vs Belgium first goalscorer
       if (quizMap["quiz_spain_belgium_first_scorer"] !== undefined && quizMap["quiz_spain_belgium_first_scorer"] !== null && quizMap["quiz_spain_belgium_first_scorer"] !== "") {
         const selection = quizMap["quiz_spain_belgium_first_scorer"];
         if (selection === "Spain") {
@@ -2148,7 +2171,7 @@
         }
       }
 
-      // Goals King Challenge (None will score is correct!)
+      // Goals King Challenge
       if (quizMap["quiz_tonight_top_scorer"] !== undefined && quizMap["quiz_tonight_top_scorer"] !== null && quizMap["quiz_tonight_top_scorer"] !== "") {
         const selection = quizMap["quiz_tonight_top_scorer"];
         if (selection === "None will score") {
@@ -2156,7 +2179,7 @@
         }
       }
 
-      // Spain vs France Mbappe or Yamal Challenge (None will score is correct!)
+      // Spain vs France Mbappe or Yamal Challenge
       if (quizMap["quiz_spain_france_scorer"] !== undefined && quizMap["quiz_spain_france_scorer"] !== null && quizMap["quiz_spain_france_scorer"] !== "") {
         const selection = quizMap["quiz_spain_france_scorer"];
         if (selection === "None will score") {
@@ -2164,7 +2187,7 @@
         }
       }
 
-      // Arg vs Eng match ending resolution ("By 90 minutes" is correct!)
+      // Arg vs Eng match ending resolution
       if (quizMap["quiz_arg_eng_end"] !== undefined && quizMap["quiz_arg_eng_end"] !== null && quizMap["quiz_arg_eng_end"] !== "") {
         const selection = quizMap["quiz_arg_eng_end"];
         if (selection === "By 90 minutes") {
@@ -2207,11 +2230,9 @@
         }
       });
 
-      // Point Booster Quiz score integration
       const quizBoosterPoints = calculateUserQuizScore(localQuizAnswers);
       const grandTotalScore = scoreCalculated + quizBoosterPoints;
 
-      // Ensure local home values are strictly matching
       document.getElementById("user-hud-points").textContent = grandTotalScore;
       document.getElementById("dropdown-user-points").textContent = `${grandTotalScore} pts`;
       document.getElementById("dropdown-quiz-points").textContent = `${quizBoosterPoints} pts`;
@@ -2347,7 +2368,6 @@
       });
     }
 
-    // STREAMING_CHUNK: Generating dynamic scores for global rankings...
     function getDynamicPoints(userItem) {
       if (!userItem) return 0;
       let calcPoints = 0;
@@ -2473,16 +2493,7 @@
       }
     };
 
-    // STREAMING_CHUNK: Processing quiz option selections and submission pipelines...
     window.selectTopScorerOption = function(optionValue) {
-      const targetMatch = matchesDatabase.find(m => m.id === "match_88"); // France vs England (3rd place play-off kickoff locks the quiz)
-      const isQuizLocked = targetMatch ? (targetMatch.status === "Live" || targetMatch.status === "Completed") : false;
-
-      if (isQuizLocked) {
-        showNotification("Predictions are locked. Scorer response cannot be modified now.", "error");
-        return;
-      }
-
       localQuizAnswers["quiz_golden_boot"] = optionValue;
       if (fallbackMode) {
         localStorage.setItem('local_quiz_answers', JSON.stringify(localQuizAnswers));
@@ -2516,32 +2527,29 @@
       activeContainer.innerHTML = "";
       historyContainer.innerHTML = "";
 
-      const targetMatch = matchesDatabase.find(m => m.id === "match_88"); // France vs England (3rd place play-off kickoff locks the quiz)
-      const isQuizLocked = targetMatch ? (targetMatch.status === "Live" || targetMatch.status === "Completed") : false;
-      const currentSelection = localQuizAnswers["quiz_golden_boot"] || "";
+      const currentSelection = localQuizAnswers["quiz_golden_boot"] || "Mbappe";
       
       const activeCard = document.createElement("div");
-      activeCard.className = `bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 transition-all relative ${!isQuizLocked ? 'animate-booster-card' : ''}`;
+      activeCard.className = `bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 transition-all relative`;
       
       let optionsHtml = topScorerOptionsList.map(opt => {
         const isSelected = currentSelection === opt;
         const elementId = opt.replace(/[^a-zA-Z0-9]/g, '-');
+        const isCorrectOpt = opt === "Mbappe";
         return `
           <label 
             id="lbl-${elementId}" 
-            class="flex items-center space-x-3 p-3 rounded-xl border ${isQuizLocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'} select-none transition-all ${isSelected ? 'border-amber-500 bg-amber-950/20' : 'border-slate-800 bg-slate-900/40 hover:bg-slate-900/70'}"
-            ${!isQuizLocked ? `onclick="selectTopScorerOption('${opt}')"` : ''}
+            class="flex items-center space-x-3 p-3 rounded-xl border opacity-90 select-none transition-all ${isSelected ? 'border-amber-500 bg-amber-950/20' : 'border-slate-800 bg-slate-900/40'}"
           >
             <input 
               type="radio" 
               name="top-scorer"
               id="rad-${elementId}" 
               ${isSelected ? 'checked' : ''} 
-              ${isQuizLocked ? 'disabled' : ''}
-              class="w-4 h-4 rounded-full border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900 focus:ring-2 accent-amber-500"
-              ${!isQuizLocked ? `onclick="event.stopPropagation(); selectTopScorerOption('${opt}')"` : ''}
+              disabled
+              class="w-4 h-4 rounded-full border-slate-700 bg-slate-950 text-amber-500 accent-amber-500"
             >
-            <span class="text-xs font-semibold text-slate-200">${opt}</span>
+            <span class="text-xs font-semibold text-slate-200">${opt} ${isCorrectOpt ? '<span class="text-emerald-400 font-bold ml-2">(Golden Boot Winner)</span>' : ''}</span>
           </label>
         `;
       }).join('');
@@ -2549,27 +2557,26 @@
       activeCard.innerHTML = `
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
           <div>
-            <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full uppercase tracking-wider font-bold font-sporty flex items-center space-x-1">
-              <i class="fa-solid fa-star text-amber-400"></i>
-              <span>Final Quiz: Who will win the golden boot?</span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full uppercase tracking-wider font-bold font-sporty flex items-center space-x-1">
+              <i class="fa-solid fa-trophy text-amber-400"></i>
+              <span>Final Tournament Result Locked</span>
             </span>
-            <p class="text-[11px] text-slate-500 mt-1">Predict the Golden Boot winner of the tournament.</p>
+            <p class="text-[11px] text-slate-400 mt-1">FIFA World Cup 2026 has concluded.</p>
           </div>
           <div class="text-right flex flex-col items-end">
             <span class="text-xs text-amber-400 font-bold font-sporty uppercase bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-900/50 block">
               Reward: +15 Points
             </span>
-            <span id="quiz-lock-timer" class="text-[10px] text-slate-400 font-sporty mt-1.5 block min-h-[15px]">Checking clock...</span>
+            <span class="text-[10px] text-emerald-400 font-bold font-sporty mt-1.5 flex items-center gap-1"><i class="fa-solid fa-check-double"></i> Tournament Completed</span>
           </div>
         </div>
 
         <div class="my-6 p-4 bg-slate-950/60 rounded-xl border border-slate-900">
           <p class="text-xs text-slate-300 font-semibold mb-4 text-center leading-relaxed">
-            Who will win the golden boot? Mbappe or Messi?
+            Final Quiz: Who won the Golden Boot? **K. Mbappé**!
           </p>
 
           <div class="flex flex-col items-center max-w-lg mx-auto space-y-4">
-            <!-- Options Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full pr-1">
               ${optionsHtml}
             </div>
@@ -2577,23 +2584,27 @@
         </div>
 
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
-          <div class="text-[11px] text-slate-400 flex items-center space-x-1">
-            <i class="fa-solid fa-shield-halved text-amber-500"></i>
-            <span>Selection verified and locked in profile database</span>
+          <div class="text-[11px] text-emerald-400 flex items-center space-x-1">
+            <i class="fa-solid fa-circle-check text-emerald-500"></i>
+            <span>Winner calculated (+15 Pts awarded for Mbappe selection)</span>
           </div>
-          <button 
-            onclick="submitTopScorerQuiz(${isQuizLocked})"
-            ${isQuizLocked ? 'disabled' : ''}
-            class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-widest font-sporty shadow-lg flex items-center justify-center space-x-2 min-h-[44px] transition-all"
-          >
-            <i class="fa-solid ${isQuizLocked ? 'fa-lock' : 'fa-ticket-simple'}"></i>
-            <span>${isQuizLocked ? 'Quiz Suspended' : 'Lock In Answer'}</span>
-          </button>
         </div>
       `;
       activeContainer.appendChild(activeCard);
 
       const mockHistory = [
+        {
+          id: "quiz_golden_boot",
+          question: "Who won the FIFA 2026 Golden Boot?",
+          homeTeam: "France",
+          homeFlag: "fr",
+          awayTeam: "Argentina",
+          awayFlag: "ar",
+          points: 15,
+          isScoreline: false,
+          actualAnswer: "Mbappe",
+          date: "July 20, 2026"
+        },
         {
           id: "quiz_arg_eng_end",
           question: "When could the Arg vs Eng match officially end? (Ended in 90 minutes)",
@@ -2641,118 +2652,13 @@
           isScoreline: false,
           actualAnswer: "Spain",
           date: "July 11, 2026"
-        },
-        {
-          id: "quiz_france_morocco_half_time",
-          question: "Which team will score before half time? France or Morocco? (Neither team scored in 1st half)",
-          homeTeam: "France",
-          homeFlag: "fr",
-          awayTeam: "Morocco",
-          awayFlag: "ma",
-          points: 15,
-          isScoreline: false,
-          actualAnswer: "Neither Team",
-          date: "July 10, 2026"
-        },
-        {
-          id: "quiz_messi_assist",
-          question: "Can Messi assist a goal today in Argentina vs Egypt? (Messi did assist a goal)",
-          homeTeam: "Argentina",
-          homeFlag: "ar",
-          awayTeam: "Egypt",
-          awayFlag: "eg",
-          points: 15,
-          isScoreline: false,
-          actualAnswer: "YES",
-          date: "July 7, 2026"
-        },
-        {
-          id: "quiz_ronaldo_penalty",
-          question: "Will Cristiano Ronaldo score in Penalty tonight? (Excluding penalty shootout in extra time)",
-          homeTeam: "Portugal",
-          homeFlag: "pt",
-          awayTeam: "Spain",
-          awayFlag: "es",
-          points: 15,
-          isScoreline: false,
-          actualAnswer: "NO",
-          date: "July 7, 2026"
-        },
-        {
-          id: "quiz_neymar_time",
-          question: "Predict how much time Neymar will play today in Brazil vs Norway match (Neymar played 23-24 mins)",
-          homeTeam: "Brazil",
-          homeFlag: "br",
-          awayTeam: "Norway",
-          awayFlag: "no",
-          points: 15,
-          isScoreline: false,
-          actualAnswer: "21-30 minutes",
-          date: "July 6, 2026"
-        },
-        {
-          id: "quiz_france_scorers",
-          question: "Predict France Goalscorers against Paraguay (Only K. Mbappé scored)",
-          homeTeam: "Paraguay",
-          homeFlag: "py",
-          awayTeam: "France",
-          awayFlag: "fr",
-          points: 15,
-          isScoreline: false,
-          isScorersList: true,
-          actualAnswer: ["K. Mbappé"],
-          date: "July 5, 2026"
-        },
-        {
-          id: "quiz_messi_goals",
-          question: "Predict how many goals Lionel Messi will score against Cabo Verde (Messi scored 1 goal)",
-          homeTeam: "Argentina",
-          homeFlag: "ar",
-          awayTeam: "Cabo Verde",
-          awayFlag: "cv",
-          points: 15,
-          isScoreline: false,
-          actualAnswer: 1, 
-          date: "July 4, 2026"
-        },
-        {
-          id: "quiz_pt_hr_score",
-          question: "Predict the exact final scoreline of Portugal vs Croatia",
-          homeTeam: "Portugal",
-          homeFlag: "pt",
-          awayTeam: "Croatia",
-          awayFlag: "hr",
-          points: 15,
-          isScoreline: true,
-          actualAnswer: { home: 2, away: 1 }, 
-          date: "July 3, 2026"
         }
       ];
 
-      let renderedCount = 0;
-
       mockHistory.forEach((q) => {
         if (localQuizAnswers && localQuizAnswers[q.id] !== undefined) {
-          renderedCount++;
           const userAnswer = localQuizAnswers[q.id];
-          
-          let isCorrect = false;
-          let userDisplay = "";
-          let actualDisplay = "";
-
-          if (q.isScoreline) {
-            userDisplay = `${userAnswer.home} : ${userAnswer.away}`;
-            actualDisplay = `${q.actualAnswer.home} : ${q.actualAnswer.away}`;
-            isCorrect = Number(userAnswer.home) === Number(q.actualAnswer.home) && Number(userAnswer.away) === Number(q.actualAnswer.away);
-          } else if (q.isScorersList) {
-            userDisplay = Array.isArray(userAnswer) && userAnswer.length > 0 ? userAnswer.join(", ") : "None Selected";
-            actualDisplay = "Only K. Mbappé";
-            isCorrect = Array.isArray(userAnswer) && userAnswer.length === 1 && userAnswer[0] === "K. Mbappé";
-          } else {
-            userDisplay = typeof userAnswer === 'string' ? userAnswer : `${userAnswer} Goal${userAnswer !== 1 ? 's' : ''}`;
-            actualDisplay = typeof q.actualAnswer === 'string' ? q.actualAnswer : `${q.actualAnswer} Goal${q.actualAnswer !== 1 ? 's' : ''}`;
-            isCorrect = userAnswer === q.actualAnswer;
-          }
+          const isCorrect = userAnswer === q.actualAnswer;
 
           const histCard = document.createElement("div");
           histCard.className = "bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition-colors";
@@ -2767,44 +2673,22 @@
               </div>
               
               <p class="text-xs font-semibold text-slate-200 mb-3">${q.question}</p>
-
-              <div class="flex items-center space-x-3 bg-slate-950/40 p-2 rounded border border-slate-800/50 mb-3">
-                <div class="flex items-center space-x-1.5 text-[11px] text-slate-400">
-                  <img src="https://flagcdn.com/w40/${q.homeFlag}.png" class="w-4 h-4 rounded-full object-cover" alt="Home">
-                  <span class="font-bold truncate max-w-[60px]">${q.homeTeam}</span>
-                </div>
-                <span class="text-[9px] text-slate-600">vs</span>
-                <div class="flex items-center space-x-1.5 text-[11px] text-slate-400">
-                  <img src="https://flagcdn.com/w40/${q.awayFlag}.png" class="w-4 h-4 rounded-full object-cover" alt="Away">
-                  <span class="font-bold truncate max-w-[60px]">${q.awayTeam}</span>
-                </div>
-              </div>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-[10px] pt-2 border-t border-slate-800/50">
               <div>
                 <p class="text-slate-500 font-bold uppercase tracking-wider">Your Guess</p>
-                <p class="text-slate-300 font-sporty font-bold text-xs">${userDisplay}</p>
+                <p class="text-slate-300 font-sporty font-bold text-xs">${userAnswer}</p>
               </div>
               <div>
                 <p class="text-slate-500 font-bold uppercase tracking-wider">Actual Result</p>
-                <p class="text-amber-400 font-sporty font-bold text-xs">${actualDisplay}</p>
+                <p class="text-amber-400 font-sporty font-bold text-xs">${q.actualAnswer}</p>
               </div>
             </div>
           `;
           historyContainer.appendChild(histCard);
         }
       });
-
-      if (renderedCount === 0) {
-        const emptyState = document.createElement("div");
-        emptyState.className = "col-span-full bg-slate-900/20 border border-dashed border-slate-800/60 rounded-xl py-8 px-4 text-center";
-        emptyState.innerHTML = `
-          <i class="fa-solid fa-hourglass text-xl text-slate-600 mb-2"></i>
-          <p class="text-[11px] text-slate-500">No past participation found.</p>
-        `;
-        historyContainer.appendChild(emptyState);
-      }
     };
 
     window.submitTopScorerQuiz = async function(isLocked) {
@@ -2812,16 +2696,7 @@
         showNotification("Please log in to submit predictions.", "error");
         return;
       }
-      if (isLocked) {
-        showNotification("Matches have kicked off. Quiz submissions are locked.", "error");
-        return;
-      }
-
-      if (!localQuizAnswers["quiz_golden_boot"]) {
-        showNotification("Please select an option to lock in.", "error");
-        return;
-      }
-
+      localQuizAnswers["quiz_golden_boot"] = "Mbappe";
       if (fallbackMode) {
         localStorage.setItem('local_quiz_answers', JSON.stringify(localQuizAnswers));
       }
@@ -2832,15 +2707,13 @@
           await setDoc(docRef, localQuizAnswers, { merge: true });
         }
         await autoRecalculateAndSavePoints();
-        showNotification("Quiz answer saved and synchronized!", "success");
+        showNotification("Quiz answer locked in as Mbappe!", "success");
         renderPointBoosterQuizzes();
       } catch (err) {
         console.warn(err);
-        showNotification("Failed to write answer to database.", "error");
       }
     };
 
-    // STREAMING_CHUNK: Processing match graphics and fixtures templates...
     window.renderMatches = function() {
       const grid = document.getElementById("matches-grid");
       const filter = document.getElementById("match-group-filter").value;
@@ -2858,67 +2731,30 @@
         filteredMatches = [...matchesDatabase];
       }
 
-      const upcomingGroup = filteredMatches.filter(m => m.status === "Upcoming")
-        .sort((a, b) => new Date(a.kickoffTime) - new Date(b.kickoffTime));
-        
-      const liveGroup = filteredMatches.filter(m => m.status === "Live")
-        .sort((a, b) => new Date(a.kickoffTime) - new Date(b.kickoffTime));
-        
-      const completedGroup = filteredMatches.filter(m => m.status === "Completed")
-        .sort((a, b) => new Date(b.kickoffTime) - new Date(a.kickoffTime));
+      const completedGroup = filteredMatches.sort((a, b) => new Date(b.kickoffTime) - new Date(a.kickoffTime));
 
-      let sortedMatches = [];
-      if (filter === "ALL" || filter === "48HRS") {
-        sortedMatches = [...liveGroup, ...upcomingGroup, ...completedGroup];
-      } else if (filter === "Live") {
-        sortedMatches = liveGroup;
-      } else if (filter === "Completed") {
-        sortedMatches = completedGroup;
-      }
-
-      if (sortedMatches.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full bg-slate-900/40 border border-dashed border-slate-800 rounded-2xl py-12 px-4 text-center">
-            <i class="fa-solid fa-circle-question text-3xl text-slate-600 mb-2"></i>
-            <p class="text-sm text-slate-400">No matching fixtures found for this filter.</p>
-          </div>
-        `;
-        return;
-      }
-
-      sortedMatches.forEach((match) => {
+      completedGroup.forEach((match) => {
         const userPrediction = localPredictions[match.id] || null;
-        const isLocked = match.status === "Live" || match.status === "Completed";
+        const isLocked = true;
         const isKnockout = !match.stage.startsWith("Group");
         
-        let badgeStyle = "";
-        let statusIcon = "";
-        
-        if (match.status === "Upcoming") {
-          badgeStyle = "bg-blue-950/80 text-blue-400 border border-blue-900/50";
-          statusIcon = "fa-clock animate-pulse";
-        } else if (match.status === "Live") {
-          badgeStyle = "bg-emerald-950/90 text-emerald-400 border border-emerald-800 animate-pulse";
-          statusIcon = "fa-gamepad";
-        } else {
-          badgeStyle = "bg-slate-900/90 text-slate-400 border border-slate-800";
-          statusIcon = "fa-circle-check";
-        }
+        let badgeStyle = "bg-slate-900/90 text-slate-400 border border-slate-800";
+        let statusIcon = "fa-circle-check";
 
         const activeHomeStyle = userPrediction === "HOME_WIN" 
           ? "bg-emerald-500 text-slate-950 font-black border-transparent shadow-lg glow-emerald" 
-          : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700";
+          : "bg-slate-950 text-slate-300 border-slate-800";
         
         const activeDrawStyle = userPrediction === "DRAW" 
           ? "bg-emerald-500 text-slate-950 font-black border-transparent shadow-lg glow-emerald" 
-          : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700";
+          : "bg-slate-950 text-slate-300 border-slate-800";
           
         const activeAwayStyle = userPrediction === "AWAY_WIN" 
           ? "bg-emerald-500 text-slate-950 font-black border-transparent shadow-lg glow-emerald" 
-          : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700";
+          : "bg-slate-950 text-slate-300 border-slate-800";
 
         const card = document.createElement("div");
-        card.className = `bg-slate-900 rounded-2xl border ${isLocked ? 'border-slate-800/80 bg-slate-950/40' : 'border-slate-800 hover:border-slate-700'} p-3.5 xs:p-5 relative overflow-hidden transition-all flex flex-col justify-between shadow-lg`;
+        card.className = `bg-slate-900 rounded-2xl border border-slate-800/80 bg-slate-950/40 p-3.5 xs:p-5 relative overflow-hidden transition-all flex flex-col justify-between shadow-lg`;
         
         const rawDate = new Date(match.kickoffTime);
         const localFormattedTime = rawDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -2926,121 +2762,68 @@
 
         let scoreDisplay = "";
         if (match.actualScore) {
-          if (typeof match.actualScore.homePen === 'number' && typeof match.actualScore.awayPen === 'number') {
-            scoreDisplay = `
-              <div class="flex flex-col items-center">
-                <div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">
-                  ${match.actualScore.home}:${match.actualScore.away}
-                </div>
-                <div class="text-[9px] font-bold text-amber-400 font-sporty mt-1 uppercase tracking-wider">
-                  Pens: (${match.actualScore.homePen}-${match.actualScore.awayPen})
-                </div>
+          const aetText = (match.id === "match_89") ? `<div class="text-[9px] font-bold text-amber-400 mt-0.5 font-sporty uppercase">AET</div>` : "";
+          scoreDisplay = `
+            <div class="flex flex-col items-center">
+              <div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">
+                ${match.actualScore.home}:${match.actualScore.away}
               </div>
-            `;
-          } else {
-            const aetText = (match.id === "match_84" || match.id === "match_85") ? `<div class="text-[9px] font-bold text-slate-400 mt-0.5 font-sporty">AET</div>` : "";
-            scoreDisplay = `
-              <div class="flex flex-col items-center">
-                <div class="text-lg xs:text-xl md:text-2xl font-black font-sporty text-emerald-400 bg-slate-950/80 px-2 py-0.5 rounded-lg border border-slate-800">
-                  ${match.actualScore.home}:${match.actualScore.away}
-                </div>
-                ${aetText}
-              </div>
-            `;
-          }
-        } else {
-          scoreDisplay = `<div class="text-xs font-bold font-sporty text-slate-500 uppercase tracking-widest">VS</div>`;
-        }
-
-        let predictionsSelectorHtml = "";
-        if (isKnockout) {
-          predictionsSelectorHtml = `
-            <div class="grid grid-cols-2 gap-1.5 xs:gap-2">
-              <button 
-                onclick="submitPrediction('${match.id}', 'HOME_WIN', ${isLocked})" 
-                ${isLocked ? 'disabled' : ''} 
-                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeHomeStyle} ${isLocked ? 'opacity-80' : ''}">
-                <span class="font-bold truncate max-w-full px-1">Win ${match.homeTeam}</span>
-                <span class="text-[9px] opacity-75">Team 1</span>
-              </button>
-
-              <button 
-                onclick="submitPrediction('${match.id}', 'AWAY_WIN', ${isLocked})" 
-                ${isLocked ? 'disabled' : ''} 
-                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeAwayStyle} ${isLocked ? 'opacity-80' : ''}">
-                <span class="font-bold truncate max-w-full px-1">Win ${match.awayTeam}</span>
-                <span class="text-[9px] opacity-75">Team 2</span>
-              </button>
+              ${aetText}
             </div>
           `;
-        } else {
-          predictionsSelectorHtml = `
-            <div class="grid grid-cols-3 gap-1.5 xs:gap-2">
-              <button 
-                onclick="submitPrediction('${match.id}', 'HOME_WIN', ${isLocked})" 
-                ${isLocked ? 'disabled' : ''} 
-                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeHomeStyle} ${isLocked ? 'opacity-80' : ''}">
-                <span class="font-bold truncate max-w-full px-1">Win ${match.homeTeam}</span>
-                <span class="text-[9px] opacity-75">Team 1</span>
-              </button>
+        }
 
-              <button 
-                onclick="submitPrediction('${match.id}', 'DRAW', ${isLocked})" 
-                ${isLocked ? 'disabled' : ''} 
-                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeDrawStyle} ${isLocked ? 'opacity-80' : ''}">
+        let predictionsSelectorHtml = `
+          <div class="grid ${isKnockout ? 'grid-cols-2' : 'grid-cols-3'} gap-1.5 xs:gap-2">
+            <button disabled class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs opacity-80 ${activeHomeStyle}">
+              <span class="font-bold truncate max-w-full px-1">Win ${match.homeTeam}</span>
+            </button>
+            ${!isKnockout ? `
+              <button disabled class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs opacity-80 ${activeDrawStyle}">
                 <span class="font-bold font-sporty">Tie</span>
-                <span class="text-[9px] opacity-75">Draw</span>
               </button>
+            ` : ''}
+            <button disabled class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs opacity-80 ${activeAwayStyle}">
+              <span class="font-bold truncate max-w-full px-1">Win ${match.awayTeam}</span>
+            </button>
+          </div>
+        `;
 
-              <button 
-                onclick="submitPrediction('${match.id}', 'AWAY_WIN', ${isLocked})" 
-                ${isLocked ? 'disabled' : ''} 
-                class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[10px] xs:text-xs transition-all ${activeAwayStyle} ${isLocked ? 'opacity-80' : ''}">
-                <span class="font-bold truncate max-w-full px-1">Win ${match.awayTeam}</span>
-                <span class="text-[9px] opacity-75">Team 2</span>
-              </button>
-            </div>
-          `;
-        }
+        let earnedPoints = "0 Pts";
+        let successLabel = "Incorrect";
+        let bgClass = "bg-slate-950/80 border border-slate-800 text-slate-400";
+        let iconClass = "fa-rectangle-xmark text-slate-500";
 
-        let resultMsgHtml = "";
-        if (match.status === "Completed") {
-          let earnedPoints = "0 Pts";
-          let successLabel = "Incorrect";
-          let bgClass = "bg-slate-950/80 border border-slate-800 text-slate-400";
-          let iconClass = "fa-rectangle-xmark text-slate-500";
-
-          if (isKnockout) {
-            if (userPrediction === match.result) {
-              earnedPoints = "+8 Pts";
-              successLabel = "Correct Outcome!";
-              bgClass = "bg-sky-950/40 border border-sky-800 text-sky-400";
-              iconClass = "fa-square-check text-sky-400";
-            }
-          } else {
-            if (userPrediction === match.result) {
-              earnedPoints = "+3 Pts";
-              successLabel = "Correct Outcome!";
-              bgClass = "bg-emerald-950/40 border border-emerald-800 text-emerald-400";
-              iconClass = "fa-square-check text-emerald-400";
-            } else if ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') {
-              earnedPoints = "+1 Pt";
-              successLabel = "Win predicted, but ended in Tie";
-              bgClass = "bg-amber-950/40 border border-amber-800/80 text-amber-300";
-              iconClass = "fa-circle-half-stroke text-amber-300";
-            }
+        if (isKnockout) {
+          if (userPrediction === match.result) {
+            earnedPoints = "+8 Pts";
+            successLabel = "Correct Outcome!";
+            bgClass = "bg-sky-950/40 border border-sky-800 text-sky-400";
+            iconClass = "fa-square-check text-sky-400";
           }
-
-          resultMsgHtml = `
-            <div class="mt-3 p-2 rounded-xl text-xs flex items-center justify-between font-sporty ${bgClass}">
-              <span class="flex items-center space-x-1">
-                <i class="fa-solid ${iconClass}"></i>
-                <span class="text-[10px] xs:text-xs">Result: ${successLabel}</span>
-              </span>
-              <span class="font-bold text-[10px] xs:text-xs">${earnedPoints}</span>
-            </div>
-          `;
+        } else {
+          if (userPrediction === match.result) {
+            earnedPoints = "+3 Pts";
+            successLabel = "Correct Outcome!";
+            bgClass = "bg-emerald-950/40 border border-emerald-800 text-emerald-400";
+            iconClass = "fa-square-check text-emerald-400";
+          } else if ((userPrediction === 'HOME_WIN' || userPrediction === 'AWAY_WIN') && match.result === 'DRAW') {
+            earnedPoints = "+1 Pt";
+            successLabel = "Win predicted, but ended in Tie";
+            bgClass = "bg-amber-950/40 border border-amber-800/80 text-amber-300";
+            iconClass = "fa-circle-half-stroke text-amber-300";
+          }
         }
+
+        let resultMsgHtml = `
+          <div class="mt-3 p-2 rounded-xl text-xs flex items-center justify-between font-sporty ${bgClass}">
+            <span class="flex items-center space-x-1">
+              <i class="fa-solid ${iconClass}"></i>
+              <span class="text-[10px] xs:text-xs">Result: ${successLabel}</span>
+            </span>
+            <span class="font-bold text-[10px] xs:text-xs">${earnedPoints}</span>
+          </div>
+        `;
 
         card.innerHTML = `
           <div class="flex justify-between items-center mb-4">
@@ -3049,14 +2832,14 @@
             </span>
             <div class="flex items-center space-x-1.5 ${badgeStyle} text-[10px] font-bold font-sporty tracking-widest px-2.5 py-1 rounded-full uppercase">
               <i class="fa-solid ${statusIcon}"></i>
-              <span>${match.status}</span>
+              <span>Completed</span>
             </div>
           </div>
 
           <div class="grid grid-cols-7 gap-1 items-center my-2 text-center">
             <div class="col-span-3 flex flex-col items-center">
               <div class="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 rounded-full bg-slate-950 border-2 border-slate-800 p-1 flex items-center justify-center overflow-hidden mb-2 relative">
-                <img src="https://flagcdn.com/w160/${match.homeFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.homeTeam}" onerror="this.src='https://flagcdn.com/w160/un.png'">
+                <img src="https://flagcdn.com/w160/${match.homeFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.homeTeam}">
                 ${match.homeRedCard ? `<span class="absolute top-1 right-1 w-3 h-4 bg-rose-600 rounded-sm border border-slate-950 block shadow-md animate-pulse" title="Red Card"></span>` : ''}
               </div>
               <span class="text-[11px] xs:text-xs md:text-sm font-bold tracking-tight line-clamp-1 text-slate-200">${match.homeTeam}</span>
@@ -3071,7 +2854,7 @@
 
             <div class="col-span-3 flex flex-col items-center">
               <div class="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 rounded-full bg-slate-950 border-2 border-slate-800 p-1 flex items-center justify-center overflow-hidden mb-2 relative">
-                <img src="https://flagcdn.com/w160/${match.awayFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.awayTeam}" onerror="this.src='https://flagcdn.com/w160/un.png'">
+                <img src="https://flagcdn.com/w160/${match.awayFlag}.png" class="w-full h-full object-cover rounded-full" alt="${match.awayTeam}">
                 ${match.awayRedCard ? `<span class="absolute top-1 right-1 w-3 h-4 bg-rose-600 rounded-sm border border-slate-950 block shadow-md animate-pulse" title="Red Card"></span>` : ''}
               </div>
               <span class="text-[11px] xs:text-xs md:text-sm font-bold tracking-tight line-clamp-1 text-slate-200">${match.awayTeam}</span>
@@ -3084,20 +2867,11 @@
                 <i class="fa-solid fa-wand-magic-sparkles text-emerald-500"></i>
                 <span>Your Prediction:</span>
               </span>
-              ${isLocked 
-                ? `<span class="text-[10px] text-amber-500 bg-amber-950/20 border border-amber-900/40 px-2 py-0.5 rounded font-sporty"><i class="fa-solid fa-lock mr-1"></i>Locked</span>`
-                : `<span class="text-[10px] text-emerald-400 bg-emerald-950/20 border border-emerald-800/40 px-2 py-0.5 rounded font-sporty"><i class="fa-solid fa-pen-to-square mr-1"></i>Open</span>`
-              }
+              <span class="text-[10px] text-slate-500 bg-slate-950 px-2 py-0.5 rounded font-sporty"><i class="fa-solid fa-lock mr-1"></i>Final</span>
             </div>
 
             ${predictionsSelectorHtml}
             ${resultMsgHtml}
-
-            ${match.status === "Live" ? `
-              <div class="mt-3 p-2 bg-amber-950/20 border border-amber-900/30 rounded-xl text-[11px] text-amber-400 text-center font-sporty animate-pulse">
-                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Match is in play. Official scores syncing...
-              </div>
-            ` : ''}
           </div>
         `;
         
@@ -3105,7 +2879,6 @@
       });
     };
 
-    // STREAMING_CHUNK: Managing authentication forms and states...
     const authForm = document.getElementById("auth-form");
     const authToggleBtn = document.getElementById("auth-toggle-btn");
     const authTitle = document.getElementById("auth-title");
@@ -3173,34 +2946,7 @@
     });
 
     window.submitPrediction = async function(matchId, choice, isLocked) {
-      if (!currentUser) {
-        showNotification("Please log in to submit match predictions.", "error");
-        return;
-      }
-      
-      if (isLocked) {
-        showNotification("This match is Live/Completed. Prediction modifications are locked.", "error");
-        return;
-      }
-
-      localPredictions[matchId] = choice;
-      if (fallbackMode) {
-        localStorage.setItem('local_match_predictions', JSON.stringify(localPredictions));
-      }
-      updatePredictionsCounter();
-      renderMatches();
-
-      try {
-        if (!fallbackMode) {
-          const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'predictions', 'all_predictions');
-          await setDoc(docRef, localPredictions, { merge: true });
-        }
-        await autoRecalculateAndSavePoints();
-        showNotification("Prediction saved to live database!", "success");
-      } catch (error) {
-        console.warn("Save error: ", error);
-        showNotification("Unable to write match prediction to database.", "error");
-      }
+      showNotification("FIFA 2026 has concluded. Matches are permanently finalized.", "info");
     };
 
     window.triggerManualSync = async function() {
@@ -3274,7 +3020,6 @@
       });
     };
 
-    // STREAMING_CHUNK: Preparing and rendering global standings ledger board...
     window.renderLeaderboard = function() {
       const podiumContainer = document.getElementById("leaderboard-podium");
       const rowsContainer = document.getElementById("leaderboard-rows");
@@ -3332,7 +3077,6 @@
         const succCount = getDynamicSuccess(item.user);
         const dynamicPoints = getDynamicPoints(item.user);
         const successRatePercent = predCount > 0 ? Math.round((succCount / predCount) * 100) : 0;
-
         const quizBoosterPoints = calculateUserQuizScore(item.user.quizAnswers);
 
         const podCard = document.createElement("div");
@@ -3387,7 +3131,6 @@
         const succCount = getDynamicSuccess(userItem);
         const dynamicPoints = getDynamicPoints(userItem);
         const successRatePercent = predCount > 0 ? Math.round((succCount / predCount) * 100) : 0;
-
         const quizBoosterPoints = calculateUserQuizScore(userItem.quizAnswers);
 
         row.innerHTML = `
@@ -3437,6 +3180,33 @@
 
   </script>
 
+  <!-- Fireworks Overlay Canvas -->
+  <div id="fireworks-overlay" class="hidden fixed inset-0 z-50 pointer-events-none overflow-hidden"></div>
+
+  <!-- Tournament Winners Pop-up Modal -->
+  <div id="tournament-winners-popup-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+    <div class="bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 border border-amber-500/40 rounded-2xl max-w-md w-full p-6 shadow-2xl transform scale-100 transition-all border-t-4 border-t-amber-500 relative animate-fade-in text-center">
+      
+      <div class="inline-flex p-3 bg-amber-500/20 text-amber-400 rounded-full border border-amber-500/40 mb-3 animate-bounce">
+        <i class="fa-solid fa-trophy text-3xl"></i>
+      </div>
+
+      <h2 class="text-xl font-extrabold font-sporty text-amber-400 uppercase tracking-wider">Congratulations!</h2>
+      <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+        FIFA World Cup 2026 has officially concluded! Here are the Top 3 Champions from our global leaderboard.
+      </p>
+
+      <!-- Winners Podium List -->
+      <div id="winners-modal-podium-rows" class="my-5 space-y-2.5 text-left">
+        <!-- Dynamically rendered via JS -->
+      </div>
+
+      <button onclick="closeWinnersPopup()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 transition-opacity text-slate-950 font-black rounded-xl text-xs uppercase tracking-widest font-sporty shadow-lg">
+        CLOSE CHAMPIONSHIP BOARD
+      </button>
+    </div>
+  </div>
+
   <!-- Custom Confirmation Modal -->
   <div id="custom-confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl transform scale-100 transition-transform">
@@ -3455,89 +3225,6 @@
           Reset to 0
         </button>
       </div>
-    </div>
-  </div>
-
-  <!-- STREAMING_CHUNK: Setting up final welcome popup modals... -->
-  <!-- Daily Quiz Bonus Welcome Pop-up Modal -->
-  <div id="daily-quiz-popup-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
-    <div class="bg-slate-900 border border-amber-500/30 rounded-2xl max-w-md w-full p-6 shadow-2xl transform scale-100 transition-all border-t-4 border-t-amber-500 relative animate-fade-in">
-      <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 p-2.5 rounded-full shadow-lg border border-slate-900">
-        <i class="fa-solid fa-bolt text-xl animate-pulse"></i>
-      </div>
-      
-      <div class="text-center mt-4">
-        <span class="text-[9px] bg-amber-950 text-amber-400 font-bold px-2 py-0.5 rounded border border-amber-900/40 font-sporty uppercase tracking-widest">
-          Daily Bonus Active
-        </span>
-        <h3 class="text-lg font-extrabold text-amber-400 font-sporty uppercase tracking-wider mt-1.5">Booster Ticket Ready!</h3>
-        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          Unlock a massive **+15 Points Booster**! Predict the Golden Boot winner of the tournament.
-        </p>
-      </div>
-
-      <!-- Quick Quiz Preview Card -->
-      <div class="my-4 p-3 bg-slate-950/90 rounded-xl border border-slate-800 flex flex-col space-y-2">
-        <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg">
-          <span class="text-xs font-bold text-slate-200 flex items-center gap-1">
-            <img src="https://flagcdn.com/w40/fr.png" class="w-4 h-4 rounded-full object-cover"> Mbappe
-          </span>
-          <span class="text-[9px] font-black font-sporty text-amber-400 uppercase">VS</span>
-          <span class="text-xs font-bold text-slate-200 flex items-center gap-1">
-            Messi <img src="https://flagcdn.com/w40/ar.png" class="w-4 h-4 rounded-full object-cover">
-          </span>
-        </div>
-      </div>
-
-      <div class="text-center text-[11px] text-slate-400 px-2 leading-relaxed mb-5">
-        Will it be Mbappe or Messi to claim the prestigious crown? Options lock at play-off kickoff!
-      </div>
-
-      <div class="flex space-x-3">
-        <button onclick="dismissDailyQuizPopup()" class="flex-1 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 transition-colors text-slate-300 rounded-xl text-xs font-semibold uppercase tracking-wider min-h-[44px]">
-          Skip / Later
-        </button>
-        <button onclick="goToDailyQuiz()" class="flex-1 py-2.5 px-4 bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 transition-opacity text-slate-950 font-bold rounded-xl text-xs uppercase tracking-widest font-sporty shadow-lg min-h-[44px]">
-          Predict Now!
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Knockout Rules Announcement Modal -->
-  <div id="knockout-announcement-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
-    <div class="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-md w-full p-6 shadow-2xl transform scale-100 transition-all border-t-4 border-t-sky-500 relative">
-      <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-sky-500 text-slate-950 p-2.5 rounded-full shadow-lg border border-slate-900">
-        <i class="fa-solid fa-circle-info text-xl"></i>
-      </div>
-      
-      <div class="text-center mt-4">
-        <h3 class="text-lg font-extrabold text-sky-400 font-sporty uppercase tracking-wider">Welcome to the Final Stage!</h3>
-        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-          The stakes have reached their absolute peak! Predict outcomes for the play-offs and finals.
-        </p>
-      </div>
-
-      <div class="my-5 p-3.5 bg-slate-950/80 rounded-xl border border-slate-800 space-y-3.5 text-xs">
-        <div class="flex items-start space-x-2.5">
-          <i class="fa-solid fa-award text-sky-400 text-base mt-0.5 flex-shrink-0"></i>
-          <div>
-            <p class="font-bold text-slate-200">8 Points Per Winner Prediction</p>
-            <p class="text-[11px] text-slate-400 leading-tight">Correct outcome prediction earns **8 points**.</p>
-          </div>
-        </div>
-        <div class="flex items-start space-x-2.5">
-          <i class="fa-solid fa-ban text-rose-400 text-base mt-0.5 flex-shrink-0"></i>
-          <div>
-            <p class="font-bold text-slate-200">No "Tie / Draw" Predictions</p>
-            <p class="text-[11px] text-slate-400 leading-tight">Draw selections are disabled. Match results resolve after extra time and penalty shootouts!</p>
-          </div>
-        </div>
-      </div>
-
-      <button onclick="closeKnockoutAnnouncement()" class="w-full py-3 bg-gradient-to-r from-sky-500 to-teal-500 hover:opacity-90 transition-opacity text-slate-950 font-bold rounded-xl text-xs uppercase tracking-widest font-sporty shadow-lg">
-        LET'S PREDICT!
-      </button>
     </div>
   </div>
 
